@@ -1,3 +1,4 @@
+import { SiteFooter } from "./SiteFooter";
 import { useEffect, useState, type ReactNode } from "react";
 import { goalHours, todayKey } from "@ellma/shared";
 import { useEllma } from "../lib/ellma";
@@ -156,6 +157,7 @@ export function Shell({
             <Icon name="logout" />
           </button>
         </div>
+        <SiteFooter compact />
       </aside>
       <main className="content">
         <div className="page-stage" key={path}>

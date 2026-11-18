@@ -1,3 +1,4 @@
+import { SiteFooter } from "../components/SiteFooter";
 import { useState } from "react";
 import { AppleMark } from "../components/AppleMark";
 import { usePreferences } from "../lib/preferences";
@@ -87,6 +88,7 @@ export function AuthPage({ mode, session }: { mode: "login" | "signup"; session:
           {signup ? copy.auth.toLogin : copy.auth.toSignup}
         </a>
       </section>
+      <SiteFooter />
     </main>
   );
 }

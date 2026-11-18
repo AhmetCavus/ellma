@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { EllmaDock } from "./components/EllmaDock";
 import { Shell } from "./components/Shell";
 import { EllmaProvider } from "./lib/ellma";
+import { LEGAL_PAGES } from "./lib/legal";
 import { PreferencesProvider, usePreferences } from "./lib/preferences";
 import { navigate, useRoute } from "./lib/router";
 import { useSession, type Session } from "./lib/session";
@@ -11,6 +12,7 @@ import { FocusPage } from "./pages/FocusPage";
 import { GoalDetailPage } from "./pages/GoalDetailPage";
 import { GoalsPage } from "./pages/GoalsPage";
 import { LandingPage } from "./pages/LandingPage";
+import { LegalPage } from "./pages/LegalPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { TodayPage } from "./pages/TodayPage";
 
@@ -54,14 +56,23 @@ function Routes() {
   const signedIn = Boolean(session.profile);
   const isPublic = PUBLIC_PATHS.includes(route.path);
   const known = SECTIONS.includes(route.segments[0] ?? "");
+  // Legal pages are open to everyone, signed in or not.
+  const legal = LEGAL_PAGES.find((page) => route.path === `/${page}`);
 
   useEffect(() => {
+    if (legal) {
+      return;
+    }
     if (signedIn && (isPublic || !known)) {
       navigate(HOME, { replace: true });
     } else if (!signedIn && !isPublic) {
       navigate("/login", { replace: true });
     }
-  }, [isPublic, known, signedIn]);
+  }, [isPublic, known, legal, signedIn]);
+
+  if (legal) {
+    return <LegalPage page={legal} />;
+  }
 
   if (signedIn) {
     return (

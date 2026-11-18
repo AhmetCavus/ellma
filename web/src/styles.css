@@ -3319,3 +3319,245 @@ li:not(.journey-done) > button.journey-node:hover {
     transition: none !important;
   }
 }
+
+/* Site footer: legal links, storage settings and the yappai credit */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  width: 100%;
+  padding: 20px 0 32px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.site-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+}
+
+.site-footer a,
+.site-links button {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.site-footer a:hover,
+.site-links button:hover {
+  color: var(--accent);
+}
+
+.site-footer a:focus-visible,
+.site-links button:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.powered-by strong {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: color 0.15s ease;
+}
+
+.powered-by:hover strong {
+  color: var(--accent);
+}
+
+.auth .site-footer {
+  justify-content: center;
+  width: min(560px, 100%);
+  padding-bottom: 0;
+  border-top: 0;
+}
+
+.auth .site-links {
+  justify-content: center;
+}
+
+.sidebar .site-footer {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: -10px;
+  padding: 12px 8px 0;
+  font-size: 0.76rem;
+}
+
+.sidebar .site-links {
+  gap: 0 12px;
+}
+
+.sidebar .site-footer a,
+.sidebar .site-links button {
+  padding: 2px 0;
+}
+
+/* Legal pages */
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.legal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+}
+
+.legal-top .link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legal-body {
+  padding: 28px 0 56px;
+  animation: rise 0.4s ease both;
+}
+
+.legal-body h1 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.legal-lead {
+  margin: 0 0 36px;
+  color: var(--muted);
+  font-size: 1.12rem;
+  line-height: 1.55;
+}
+
+.legal-body section {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.legal-body h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 10px;
+  font-size: 1.08rem;
+}
+
+.legal-body h2 span {
+  color: var(--accent);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.legal-body section p,
+.legal-body address {
+  margin: 0 0 10px;
+  font-style: normal;
+  line-height: 1.65;
+}
+
+.legal-body address {
+  display: grid;
+}
+
+.legal-body section a {
+  color: var(--accent);
+}
+
+.legal-body .alert {
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+
+.legal-updated {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+/* Storage ("cookie") settings */
+.storage-settings {
+  gap: 12px;
+}
+
+.storage-settings > .muted {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.storage-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface-2);
+}
+
+.storage-row p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.storage-state {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.form .storage-toggle {
+  display: inline-flex;
+  flex-direction: row;
+  cursor: pointer;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+
+.storage-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .legal {
+    padding: 0 16px;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .auth .site-footer {
+    align-items: center;
+  }
+
+  .sidebar .site-footer {
+    display: none;
+  }
+}

@@ -28,6 +28,7 @@ import {
 } from "@ellma/shared";
 import { z } from "zod";
 import { usePreferences } from "./preferences";
+import { CACHE_PREFIX, comfortStorageAllowed } from "./consent";
 import { readStored, writeStored } from "./storage";
 import type { Session } from "./session";
 
@@ -65,11 +66,11 @@ const cacheSchema = z.object({
   active: focusSessionSchema.nullable(),
 });
 
-const cacheKey = (userId: string) => `ellma-cache-${userId}`;
+const cacheKey = (userId: string) => `${CACHE_PREFIX}${userId}`;
 
 function readCache(userId: string) {
   try {
-    const raw = readStored(cacheKey(userId));
+    const raw = comfortStorageAllowed() ? readStored(cacheKey(userId)) : null;
     return raw ? cacheSchema.parse(JSON.parse(raw)) : null;
   } catch {
     return null;
@@ -181,7 +182,7 @@ export function StoreProvider({ session, children }: { session: Session; childre
   }, [refresh]);
 
   useEffect(() => {
-    if (status === "ready") {
+    if (status === "ready" && comfortStorageAllowed()) {
       writeStored(cacheKey(userId), JSON.stringify({ goals, tasks, totals, active }));
     }
   }, [active, goals, status, tasks, totals, userId]);

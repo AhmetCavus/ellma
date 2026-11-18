@@ -1,0 +1,52 @@
+id: ellma
+name: Ellma
+slug: ellma
+type: app
+category: hosted-app
+description: Persönliche Ziel-Assistentin mit Sprachsteuerung auf einem Open-Weight-Modell
+composeFile: docker/docker-compose.yml
+composeEnvFile: .env
+publicUrl: https://ellma.yappai.de
+services:
+  - name: web
+    containerName: ellma-web
+    port: 80
+    healthUrl: http://ellma-web/health
+  - name: api
+    containerName: ellma-api
+    port: 4000
+    healthUrl: http://ellma-api:4000/yappio/health
+healthChecks:
+  - label: Web
+    type: container
+    containerName: ellma-web
+  - label: API
+    type: http
+    url: http://ellma-api:4000/yappio/health
+    expectedStatus: 200
+  - label: Open-weight model (Ollama)
+    type: http
+    url: http://ollama:11434/api/version
+    expectedStatus: 200
+actions:
+  start: true
+  stop: true
+  restart: true
+  logs: true
+  delete: false
+yappio:
+  enabled: true
+  serverUrl: https://ellma-api.yappai.de
+  managementUrl: http://ellma-api:4000
+  admin:
+    enabled: true
+    mode: shared-admin
+  auth:
+    enabled: true
+    rootAccessSupported: true
+    rootResetSupported: false
+database:
+  type: mongodb
+  name: ellma
+  connectionRef: shared-mongo
+tags: [ellma, assistant, goals, voice, ollama, yappio]

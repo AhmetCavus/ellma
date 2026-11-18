@@ -73,6 +73,13 @@ Ellma is also a test project. Besides being a useful app, it exists to try out t
 | **Progress**          | Hours per day (stacked by goal), per goal vs. target, sessions, manual time logging, reflect with Ellma.                                                                                                                                                                                                                                                                        |
 | **Everywhere**        | Animated page changes, celebrations for finished steps, milestones and ripe weeks, EN/DE, light/dark, mobile layout, keyboard shortcuts (`?`), local cache for instant start.                                                                                                                                                                                                   |
 
+### Legal pages and footer
+
+Every public page (and the app's sidebar) has a footer with **Data privacy**, **Terms and conditions**, **Cookie settings**, **Imprint** and a "Powered by yappai" link. The texts live in `shared/src/locales` (`legal`) in English and German and describe what Ellma actually does; have them reviewed before opening Ellma to the public.
+
+- **Imprint**: the operator comes from `VITE_LEGAL_*` in `.env` (see `.env.example`) and is built into the web app. Until name, address and email are set, the imprint says the details are missing.
+- **Cookie settings**: Ellma sets no cookies and has no tracking. The dialog shows what is kept in the browser's local storage and lets people switch off the local copy of their goals (`web/src/lib/consent.ts`).
+
 ### Keyboard shortcuts
 
 hold `Space` talk (anywhere) · `⌘/Ctrl J` listen on/off · `/` write to Ellma · `1–3` pages · `N` task · `G` guided new goal · `L` log time · `J/K` select task · `X` done · `E` edit · `P` focus on task · `F` focus mode · `⌘/Ctrl ↵` complete in focus · `S` stop focus · `V` read aloud · `D` theme · `Esc` stop Ellma / close · `?` overview

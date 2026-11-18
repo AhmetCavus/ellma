@@ -481,6 +481,167 @@ export const en = {
     reflectPrompt: "Let's look back at my week. What went well and what should I change?",
   },
 
+  legal: {
+    footer: {
+      label: "Legal",
+      privacy: "Data privacy",
+      terms: "Terms and conditions",
+      cookies: "Cookie settings",
+      imprint: "Imprint",
+      poweredBy: "Powered by",
+    },
+    back: "Back to Ellma",
+    updated: "Last updated: 18 November 2026",
+    imprint: {
+      title: "Imprint",
+      lead: "Who runs Ellma and how to reach us.",
+      operator: "Operator",
+      representative: "Represented by",
+      contact: "Contact",
+      email: "Email",
+      phone: "Phone",
+      register: "Register entry",
+      vat: "VAT ID",
+      missing:
+        "The operator details for this installation have not been entered yet. Ellma is in a closed alpha test and is not offered to the public.",
+      aboutTitle: "About this service",
+      about:
+        "Ellma is a personal guide for your goals and a test project of yappai. It is in alpha: free of charge, without guaranteed availability.",
+    },
+    privacy: {
+      title: "Data privacy",
+      lead: "Ellma is built to keep your goals with you. This page says plainly what is stored, where, and why.",
+      sections: [
+        {
+          title: "Who is responsible",
+          body: [
+            "The operator named in the imprint is responsible for processing your data. Use the contact details there for every privacy question or request.",
+          ],
+        },
+        {
+          title: "What Ellma stores",
+          body: [
+            "Your account: first name, email address and a hashed password.",
+            "Your content: goals with their reasons, milestones and weekly targets, steps, focus sessions and logged time, daily notes, and the conversation with Ellma.",
+            "We use this data only to provide Ellma to you (Art. 6(1)(b) GDPR). There is no advertising, no analytics and no profiling.",
+          ],
+        },
+        {
+          title: "Where it is stored",
+          body: [
+            "Everything is stored on yappai's own server. Requests reach it through Cloudflare, which transports the encrypted connection and processes technical connection data such as your IP address on our behalf.",
+            "Server logs with technical connection data are kept briefly to keep the service secure and working (Art. 6(1)(f) GDPR).",
+          ],
+        },
+        {
+          title: "The AI model",
+          body: [
+            "Ellma's answers come from an open-weight language model that runs on the same server. What you say or write to Ellma, and the goals she needs to answer, are not sent to an external AI provider and are not used to train models.",
+          ],
+        },
+        {
+          title: "Voice",
+          body: [
+            "Listening uses your browser's speech recognition. Depending on the browser, the audio is converted to text by the browser maker's servers (in Chrome, for example, by Google). Ellma itself only receives the text and stores no audio.",
+            "The microphone is only active while you hold the talk key or have switched listening on. If you prefer, write to Ellma instead.",
+          ],
+        },
+        {
+          title: "Cookies and storage in your browser",
+          body: [
+            "Ellma sets no cookies and uses no tracking. It uses your browser's local storage: your sign-in, language, theme and a few settings of the guide bar are necessary for the app to work.",
+            "For an instant start, Ellma can also keep a copy of your goals on this device. You can switch that off at any time under “Cookie settings”.",
+          ],
+        },
+        {
+          title: "How long data is kept",
+          body: [
+            "Your data is kept as long as your account exists. You can delete goals, steps, sessions and the conversation yourself in the app. To delete your account with all data, write to the contact in the imprint.",
+            "Ellma is in alpha. Data can be lost or reset when the data model changes; please do not keep the only copy of something important here.",
+          ],
+        },
+        {
+          title: "Your rights",
+          body: [
+            "You have the right to access, correct, delete, restrict and receive your data, and to object to processing. You can also complain to a data protection supervisory authority.",
+          ],
+        },
+      ],
+    },
+    terms: {
+      title: "Terms and conditions",
+      lead: "The short version: Ellma is a free alpha. Use it kindly, and don't rely on it for anything critical.",
+      sections: [
+        {
+          title: "The service",
+          body: [
+            "Ellma helps you keep goals, plan small steps, track the time you invest and talk about them with an AI guide. It is provided free of charge by the operator named in the imprint.",
+          ],
+        },
+        {
+          title: "Alpha status",
+          body: [
+            "Ellma is an early test version. Features can change or disappear, the service can be unavailable, and stored data can be reset without migration. There is no claim to availability or to a particular feature.",
+          ],
+        },
+        {
+          title: "Your account",
+          body: [
+            "You need an account with a valid email address and a password you keep to yourself. The account is personal. Tell us if you think someone else is using it.",
+          ],
+        },
+        {
+          title: "Fair use",
+          body: [
+            "Use Ellma for your own goals. Do not try to access other people's data, overload or attack the service, or use the AI guide to produce unlawful content. We may block accounts that do.",
+          ],
+        },
+        {
+          title: "What Ellma says",
+          body: [
+            "Ellma's answers are generated by an AI model and can be wrong or incomplete. They are encouragement and suggestions, not medical, psychological, legal or financial advice. Decisions remain yours.",
+          ],
+        },
+        {
+          title: "Your content",
+          body: [
+            "Your goals and notes remain yours. We only process them to run Ellma for you, as described under “Data privacy”.",
+          ],
+        },
+        {
+          title: "Liability",
+          body: [
+            "We are liable without limit for intent and gross negligence and for injury to life, body or health. Otherwise, because the service is free and in test operation, liability is limited to the extent the law allows.",
+          ],
+        },
+        {
+          title: "Ending and changes",
+          body: [
+            "You can stop using Ellma at any time and ask for your account to be deleted. We can end the test or change these terms; the current version is always on this page.",
+          ],
+        },
+      ],
+    },
+    storage: {
+      title: "Cookie settings",
+      lead: "Ellma sets no cookies and uses no tracking. It only uses storage in your browser, and you decide how much.",
+      necessaryTitle: "Necessary",
+      necessaryText:
+        "Your sign-in, language, theme and the settings of Ellma's guide bar. Without these the app does not work.",
+      alwaysOn: "Always on",
+      comfortTitle: "Instant start",
+      comfortText:
+        "Keeps a copy of your goals and steps on this device so Ellma opens without waiting. Switch it off on shared devices.",
+      trackingTitle: "Statistics and marketing",
+      trackingText: "None. There is nothing to switch off.",
+      never: "Not used",
+      on: "On",
+      off: "Off",
+      save: "Save",
+      saved: "Settings saved.",
+    },
+  },
+
   shortcuts: {
     title: "Keyboard shortcuts",
     hint: "Press ? anytime to see this list.",

@@ -27,6 +27,10 @@ There is no assistant page. `EllmaProvider` (`web/src/lib/ellma.tsx`) wraps ever
 
 Keyboard shortcuts live in `web/src/lib/ellma.tsx` (Space hold-to-talk, ⌘/Ctrl J, /, V, Esc; these work on every page), `web/src/components/Shell.tsx` (navigation, create, tasks) and `FocusPage` (⌘↵, S, Esc). Single-key shortcuts must use `isPlainShortcut`. Update the shortcut copy in both locales when adding one.
 
+## Legal pages
+
+`/privacy`, `/terms` and `/imprint` (`web/src/pages/LegalPage.tsx`) are open signed in or out; `SiteFooter` links them from every public page and the sidebar. Texts are in `copy.legal` and must stay true to what the code does: update them when Ellma starts storing something new, adds a third-party service, or sets a cookie. Operator details come only from `VITE_LEGAL_*`; never hard-code them. Optional browser storage must check `comfortStorageAllowed()` (`web/src/lib/consent.ts`).
+
 ## Verification
 
 Build shared first. Run `npm run check`, `npm test`, `npm run build`. `npm run test:database` boots the built server against a throwaway `ellma_test_*` / `elma_test_*` database on shared-mongo and drops it afterwards; add `ASSISTANT_TEST=1` to include a live model round trip. `npm run verify:infrastructure` validates Compose, routing and the manifest with Yoster's discovery code. Never run tests against the production database and do not start production services as part of tests.

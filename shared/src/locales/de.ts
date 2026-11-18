@@ -495,6 +495,167 @@ export const de: Copy = {
       "Lass uns auf meine Woche zurückblicken. Was lief gut und was sollte ich ändern?",
   },
 
+  legal: {
+    footer: {
+      label: "Rechtliches",
+      privacy: "Datenschutz",
+      terms: "AGB",
+      cookies: "Cookie-Einstellungen",
+      imprint: "Impressum",
+      poweredBy: "Powered by",
+    },
+    back: "Zurück zu Ellma",
+    updated: "Stand: 18. November 2026",
+    imprint: {
+      title: "Impressum",
+      lead: "Wer Ellma betreibt und wie du uns erreichst.",
+      operator: "Betreiber",
+      representative: "Vertreten durch",
+      contact: "Kontakt",
+      email: "E-Mail",
+      phone: "Telefon",
+      register: "Registereintrag",
+      vat: "USt-IdNr.",
+      missing:
+        "Die Angaben zum Betreiber wurden für diese Installation noch nicht hinterlegt. Ellma befindet sich im geschlossenen Alpha-Test und wird nicht öffentlich angeboten.",
+      aboutTitle: "Über diesen Dienst",
+      about:
+        "Ellma ist eine persönliche Begleiterin für deine Ziele und ein Testprojekt von yappai. Sie befindet sich im Alpha-Stadium: kostenlos und ohne zugesicherte Verfügbarkeit.",
+    },
+    privacy: {
+      title: "Datenschutz",
+      lead: "Ellma ist so gebaut, dass deine Ziele bei dir bleiben. Hier steht klar, was gespeichert wird, wo und warum.",
+      sections: [
+        {
+          title: "Wer verantwortlich ist",
+          body: [
+            "Verantwortlich für die Verarbeitung deiner Daten ist der im Impressum genannte Betreiber. Nutze die Kontaktdaten dort für alle Fragen und Anliegen zum Datenschutz.",
+          ],
+        },
+        {
+          title: "Was Ellma speichert",
+          body: [
+            "Dein Konto: Vorname, E-Mail-Adresse und ein gehashtes Passwort.",
+            "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen und Wochenzielen, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit Ellma.",
+            "Wir nutzen diese Daten nur, um dir Ellma bereitzustellen (Art. 6 Abs. 1 lit. b DSGVO). Es gibt keine Werbung, keine Analyse und kein Profiling.",
+          ],
+        },
+        {
+          title: "Wo es gespeichert wird",
+          body: [
+            "Alles liegt auf einem eigenen Server von yappai. Anfragen erreichen ihn über Cloudflare; Cloudflare transportiert die verschlüsselte Verbindung und verarbeitet dabei in unserem Auftrag technische Verbindungsdaten wie deine IP-Adresse.",
+            "Server-Protokolle mit technischen Verbindungsdaten werden kurzzeitig aufbewahrt, um den Dienst sicher und funktionsfähig zu halten (Art. 6 Abs. 1 lit. f DSGVO).",
+          ],
+        },
+        {
+          title: "Das KI-Modell",
+          body: [
+            "Ellmas Antworten stammen von einem Sprachmodell mit offenen Gewichten, das auf demselben Server läuft. Was du Ellma sagst oder schreibst und die Ziele, die sie für ihre Antwort braucht, gehen an keinen externen KI-Anbieter und werden nicht zum Training von Modellen verwendet.",
+          ],
+        },
+        {
+          title: "Sprache",
+          body: [
+            "Zum Zuhören nutzt Ellma die Spracherkennung deines Browsers. Je nach Browser wandeln die Server des Browser-Herstellers die Aufnahme in Text um (in Chrome zum Beispiel Google). Ellma selbst erhält nur den Text und speichert keine Tonaufnahmen.",
+            "Das Mikrofon ist nur aktiv, solange du die Sprechtaste hältst oder das Zuhören eingeschaltet hast. Du kannst Ellma stattdessen auch schreiben.",
+          ],
+        },
+        {
+          title: "Cookies und Speicher in deinem Browser",
+          body: [
+            "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet den lokalen Speicher deines Browsers: Anmeldung, Sprache, Design und einige Einstellungen der Begleitleiste sind nötig, damit die App funktioniert.",
+            "Für einen sofortigen Start kann Ellma zusätzlich eine Kopie deiner Ziele auf diesem Gerät behalten. Das kannst du jederzeit unter „Cookie-Einstellungen“ abschalten.",
+          ],
+        },
+        {
+          title: "Wie lange Daten bleiben",
+          body: [
+            "Deine Daten bleiben gespeichert, solange dein Konto besteht. Ziele, Schritte, Sitzungen und das Gespräch kannst du in der App selbst löschen. Um dein Konto mit allen Daten zu löschen, schreibe an den Kontakt im Impressum.",
+            "Ellma ist im Alpha-Stadium. Daten können verloren gehen oder zurückgesetzt werden, wenn sich das Datenmodell ändert; bewahre hier bitte nichts Wichtiges als einzige Kopie auf.",
+          ],
+        },
+        {
+          title: "Deine Rechte",
+          body: [
+            "Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung und Übertragbarkeit deiner Daten sowie auf Widerspruch gegen die Verarbeitung. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.",
+          ],
+        },
+      ],
+    },
+    terms: {
+      title: "Allgemeine Geschäftsbedingungen",
+      lead: "Die Kurzfassung: Ellma ist eine kostenlose Alpha-Version. Nutze sie fair und verlasse dich bei Kritischem nicht auf sie.",
+      sections: [
+        {
+          title: "Der Dienst",
+          body: [
+            "Ellma hilft dir, Ziele festzuhalten, kleine Schritte zu planen, investierte Zeit zu erfassen und mit einer KI-Begleiterin darüber zu sprechen. Der im Impressum genannte Betreiber stellt sie kostenlos bereit.",
+          ],
+        },
+        {
+          title: "Alpha-Stadium",
+          body: [
+            "Ellma ist eine frühe Testversion. Funktionen können sich ändern oder entfallen, der Dienst kann nicht erreichbar sein, und gespeicherte Daten können ohne Migration zurückgesetzt werden. Ein Anspruch auf Verfügbarkeit oder bestimmte Funktionen besteht nicht.",
+          ],
+        },
+        {
+          title: "Dein Konto",
+          body: [
+            "Du brauchst ein Konto mit einer gültigen E-Mail-Adresse und einem Passwort, das du für dich behältst. Das Konto ist persönlich. Gib uns Bescheid, wenn du glaubst, dass jemand anderes es nutzt.",
+          ],
+        },
+        {
+          title: "Faire Nutzung",
+          body: [
+            "Nutze Ellma für deine eigenen Ziele. Versuche nicht, auf Daten anderer zuzugreifen, den Dienst zu überlasten oder anzugreifen oder mit der KI-Begleiterin rechtswidrige Inhalte zu erzeugen. Konten, die das tun, können wir sperren.",
+          ],
+        },
+        {
+          title: "Was Ellma sagt",
+          body: [
+            "Ellmas Antworten erzeugt ein KI-Modell; sie können falsch oder unvollständig sein. Sie sind Ermutigung und Vorschläge, keine medizinische, psychologische, rechtliche oder finanzielle Beratung. Entscheidungen triffst du.",
+          ],
+        },
+        {
+          title: "Deine Inhalte",
+          body: [
+            "Deine Ziele und Notizen bleiben deine. Wir verarbeiten sie nur, um Ellma für dich zu betreiben, wie unter „Datenschutz“ beschrieben.",
+          ],
+        },
+        {
+          title: "Haftung",
+          body: [
+            "Wir haften unbeschränkt für Vorsatz und grobe Fahrlässigkeit sowie bei Verletzung von Leben, Körper oder Gesundheit. Im Übrigen ist die Haftung, weil der Dienst kostenlos und im Testbetrieb ist, im gesetzlich zulässigen Umfang beschränkt.",
+          ],
+        },
+        {
+          title: "Beendigung und Änderungen",
+          body: [
+            "Du kannst die Nutzung jederzeit beenden und die Löschung deines Kontos verlangen. Wir können den Test beenden oder diese Bedingungen ändern; die aktuelle Fassung steht immer auf dieser Seite.",
+          ],
+        },
+      ],
+    },
+    storage: {
+      title: "Cookie-Einstellungen",
+      lead: "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet nur Speicher in deinem Browser, und du bestimmst, wie viel.",
+      necessaryTitle: "Notwendig",
+      necessaryText:
+        "Deine Anmeldung, Sprache, Design und die Einstellungen von Ellmas Begleitleiste. Ohne sie funktioniert die App nicht.",
+      alwaysOn: "Immer an",
+      comfortTitle: "Sofortstart",
+      comfortText:
+        "Behält eine Kopie deiner Ziele und Schritte auf diesem Gerät, damit Ellma ohne Warten öffnet. Auf gemeinsam genutzten Geräten besser ausschalten.",
+      trackingTitle: "Statistik und Marketing",
+      trackingText: "Gibt es nicht. Hier ist nichts abzuschalten.",
+      never: "Nicht verwendet",
+      on: "An",
+      off: "Aus",
+      save: "Speichern",
+      saved: "Einstellungen gespeichert.",
+    },
+  },
+
   shortcuts: {
     title: "Tastenkürzel",
     hint: "Drücke jederzeit ?, um diese Liste zu sehen.",

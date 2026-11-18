@@ -1,3 +1,4 @@
+import { SiteFooter } from "../components/SiteFooter";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { goalHours } from "@ellma/shared";
 import { AppleMark } from "../components/AppleMark";
@@ -272,7 +273,8 @@ export function LandingPage() {
           <button className="button large">{landing.closingAction}</button>
         </form>
       </section>
-      <footer className="landing-footer">{landing.footer}</footer>
+      <p className="landing-footer">{landing.footer}</p>
+      <SiteFooter />
     </div>
   );
 }
