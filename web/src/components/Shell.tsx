@@ -106,6 +106,16 @@ export function Shell({
               </a>
             );
           })}
+          {/* On phones the sidebar footer is hidden, so the account gets a place in the bar. */}
+          <a
+            href="/account"
+            onClick={linkHandler("/account")}
+            className={`only-compact ${path === "/account" ? "active" : ""}`}
+            aria-current={path === "/account" ? "page" : undefined}
+          >
+            <Icon name="user" />
+            <span>{copy.nav.account}</span>
+          </a>
         </nav>
         <section className="sidebar-goals" aria-label={copy.nav.yourGoals}>
           <h2>{copy.nav.yourGoals}</h2>
@@ -147,6 +157,16 @@ export function Shell({
           >
             <Icon name="keyboard" />
           </button>
+          <a
+            className={`icon-button ${path === "/account" ? "is-on" : ""}`}
+            href="/account"
+            onClick={linkHandler("/account")}
+            aria-label={copy.nav.account}
+            aria-current={path === "/account" ? "page" : undefined}
+            title={copy.nav.account}
+          >
+            <Icon name="user" />
+          </a>
           <button
             type="button"
             className="icon-button"

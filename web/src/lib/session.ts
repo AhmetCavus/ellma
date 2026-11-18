@@ -19,6 +19,7 @@ function restoreProfile(client: YappioClient): Profile | null {
 }
 
 export type Session = ReturnType<typeof useSession>;
+export type SignInResult = "ok" | "code" | "failed";
 
 export function useSession(copy: Copy) {
   const client = useMemo(() => new YappioClient({ baseUrl: apiBase }), []);
@@ -28,24 +29,48 @@ export function useSession(copy: Copy) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
-  async function signIn(email: string, password: string): Promise<boolean> {
+  function failureMessage(failure: unknown): string {
+    const apiError = toApiError(failure);
+    if (apiError.isNetwork) {
+      return copy.common.error;
+    }
+    if (apiError.code === "too_many_attempts") {
+      return copy.auth.tooMany;
+    }
+    return apiError.code === "invalid_code" ? copy.auth.codeFailed : copy.auth.loginFailed;
+  }
+
+  /** Replaces the stored login token, for example after a password change. */
+  async function adoptToken(token: string): Promise<boolean> {
+    const result = await client.initialize(token);
+    const next = result.success && client.isInitialized() ? client.statusInfo().profile : null;
+    if (!next) {
+      client.reset();
+      setProfile(null);
+      return false;
+    }
+    setProfile(next);
+    return true;
+  }
+
+  /** "code" means the password was right and the account asks for its second factor. */
+  async function signIn(email: string, password: string, code?: string): Promise<SignInResult> {
     setBusy(true);
     setError("");
     try {
-      await client.authenticate(email.trim(), password);
-      const next = client.isInitialized() ? client.statusInfo().profile : null;
-      if (!next) {
-        client.reset();
+      const result = await api.login({ email: email.trim(), password, code: code || undefined });
+      if (result.status === "code_required") {
+        return "code";
+      }
+      if (!(await adoptToken(result.token))) {
         setError(copy.auth.loginFailed);
-        return false;
+        return "failed";
       }
       setNotice("");
-      setProfile(next);
-      return true;
-    } catch {
-      client.reset();
-      setError(copy.auth.loginFailed);
-      return false;
+      return "ok";
+    } catch (failure) {
+      setError(failureMessage(failure));
+      return "failed";
     } finally {
       setBusy(false);
     }
@@ -73,7 +98,7 @@ export function useSession(copy: Copy) {
       return false;
     }
     setBusy(false);
-    return signIn(email, password);
+    return (await signIn(email, password)) === "ok";
   }
 
   function signOut(message = "") {
@@ -91,8 +116,10 @@ export function useSession(copy: Copy) {
     error,
     notice,
     setError,
+    setNotice,
     signIn,
     signUp,
+    adoptToken,
     signOut,
   };
 }

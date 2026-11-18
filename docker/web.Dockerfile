@@ -6,9 +6,11 @@ COPY package.json package-lock.json tsconfig.json ./
 COPY shared/package.json shared/package.json
 COPY server/package.json server/package.json
 COPY web/package.json web/package.json
+COPY admin/package.json admin/package.json
 RUN npm ci --ignore-scripts --include=optional --no-audit --no-fund
 COPY shared shared
 COPY web web
+COPY admin admin
 ARG VITE_API_URL=https://ellma-api.yappai.de
 ENV VITE_API_URL=$VITE_API_URL
 # Operator details for the imprint; empty until the operator sets them in .env.
@@ -26,7 +28,7 @@ ENV VITE_LEGAL_NAME=$VITE_LEGAL_NAME \
     VITE_LEGAL_PHONE=$VITE_LEGAL_PHONE \
     VITE_LEGAL_REGISTER=$VITE_LEGAL_REGISTER \
     VITE_LEGAL_VAT_ID=$VITE_LEGAL_VAT_ID
-RUN npm run build -w shared && npm run build -w web
+RUN npm run build -w shared && npm run build -w web && npm run build -w admin
 
 FROM nginx:alpine AS runtime
 ARG VITE_API_URL=https://ellma-api.yappai.de
@@ -35,4 +37,13 @@ ENV ELLMA_API_ORIGIN=$VITE_API_URL
 # Only substitute our variable; nginx's own $uri etc. must stay untouched.
 ENV NGINX_ENVSUBST_FILTER=ELLMA_
 COPY --from=builder /app/web/dist /usr/share/nginx/html
+EXPOSE 80
+
+# The admin panel is its own site on its own host; it shares only the API.
+FROM nginx:alpine AS admin
+ARG VITE_API_URL=https://ellma-api.yappai.de
+COPY docker/nginx.admin.conf /etc/nginx/templates/default.conf.template
+ENV ELLMA_API_ORIGIN=$VITE_API_URL
+ENV NGINX_ENVSUBST_FILTER=ELLMA_
+COPY --from=builder /app/admin/dist /usr/share/nginx/html
 EXPOSE 80

@@ -73,6 +73,17 @@ Ellma is also a test project. Besides being a useful app, it exists to try out t
 | **Progress**          | Hours per day (stacked by goal), per goal vs. target, sessions, manual time logging, reflect with Ellma.                                                                                                                                                                                                                                                                        |
 | **Everywhere**        | Animated page changes, celebrations for finished steps, milestones and ripe weeks, EN/DE, light/dark, mobile layout, keyboard shortcuts (`?`), local cache for instant start.                                                                                                                                                                                                   |
 
+### Accounts, security and the admin panel
+
+- **Sign-in** goes through Ellma's own endpoint (`/api/ellma/account/login`), which limits attempts and asks for the second factor when the account has one.
+- **Account page** (`/account`, the person icon in the sidebar; "Account" in the phone bar): change the password (signs every other device out) and switch **two-factor sign-in** on or off. Two-factor uses any authenticator app (TOTP) via QR code, plus eight one-time backup codes that are shown once.
+- **Password recovery**: "Forgot your password?" sends a one-time link that works for 30 minutes. It needs the `MAIL_*` settings in `.env`; without them the page says that reset by email is not available. A reset keeps two-factor sign-in on.
+- **Admin panel**: a separate site (`admin/`, container `ellma-admin`, `https://ellma-admin.yappai.de`) for accounts with the `admin` or `root` role. It shows totals and the list of accounts, never goals, steps or conversations. Admins can grant or remove admin rights, switch off someone's two-factor sign-in, send a reset email and delete an account with all its data. Admins manage users; only root manages other admins.
+
+The first administrator is created by Yappio at first start. Sign in with the name `admin` (not an email address) and `INITIAL_ADMIN_PASS` from `.env`.
+
+What is stored for this: the authenticator key encrypted, backup codes and reset links only as keyed fingerprints (`EllmaAccountSecurity`). This collection is closed to Yappio's generic API, also for admins.
+
 ### Legal pages and footer
 
 Every public page (and the app's sidebar) has a footer with **Data privacy**, **Terms and conditions**, **Cookie settings**, **Imprint** and a "Powered by yappai" link. The texts live in `shared/src/locales` (`legal`) in English and German and describe what Ellma actually does; have them reviewed before opening Ellma to the public.
@@ -101,14 +112,15 @@ What Yappio provides out of the box:
 - **Platform**: app metadata (`appId`, version, environment), a health endpoint (`/yappio/health`) and admin/root access.
 - **Realtime**: optional WebSocket channels via socket.io.
 
-How Ellma uses it: Yappio handles accounts, sessions and storage. Ellma adds its own routes under `/api/ellma` (goals, tasks, focus, assistant) on top of the Yappio server and puts a boundary in front of Yappio's generic management API, so only admins can reach it and users only ever see their own records. WebSockets are turned off; the assistant stream is plain server-sent events because Yappio's REST engine cannot stream.
+How Ellma uses it: Yappio handles accounts, sessions and storage. Ellma adds its own routes under `/api/ellma` (goals, tasks, focus, assistant, account, admin) on top of the Yappio server and puts a boundary in front of Yappio's generic management API, so only admins can reach it and users only ever see their own records. Yappio's own password-reset, mail-code and authenticator routes are closed at that boundary because Ellma replaces them (see [Accounts, security and the admin panel](#accounts-security-and-the-admin-panel)). WebSockets are turned off; the assistant stream is plain server-sent events because Yappio's REST engine cannot stream.
 
 ## Stack
 
 - **Yappio** (`yappio@1.3.1`, `yappio-client@1.0.1` from Verdaccio): auth (register/login), collections, platform/health and admin.
-- **Server**: Express via Yappio, Mongoose collections `EllmaGoal`, `EllmaTask`, `EllmaFocusSession`, `EllmaAssistantMessage`, `EllmaDailyNote` on `shared-mongo` / database `ellma`.
+- **Server**: Express via Yappio, Mongoose collections `EllmaGoal`, `EllmaTask`, `EllmaFocusSession`, `EllmaAssistantMessage`, `EllmaDailyNote`, `EllmaAccountSecurity` on `shared-mongo` / database `ellma`.
 - **Model**: Ollama `qwen3.5:4b` (configurable `OLLAMA_MODEL`) with tool calling, streamed to the browser as server-sent events.
 - **Voice**: the browser's Web Speech API (recognition and synthesis). In Chrome, recognition audio goes to the browser vendor's speech service; see _Notes_.
+- **Admin**: a second small React + Vite app (`admin/`) on its own host; it talks to the same API.
 - **Web**: React 18 + Vite, no UI framework (`yappio-ui` only offers MUI media/PIN inputs, which Ellma doesn't need).
 
 ## Develop
@@ -116,8 +128,10 @@ How Ellma uses it: Yappio handles accounts, sessions and storage. Ellma adds its
 ```bash
 npm install --registry http://192.168.178.131:4873/
 cp .env.example .env            # or: npm run setup:environment
-npm run dev                      # API :4000 + web :5180
+npm run dev                      # API :4000 + web :5180 + admin :5181
 ```
+
+For local work, `ALLOWED_ORIGINS` in `.env` must include the web and the admin dev origins (see `.env.example`).
 
 ## Verify
 
@@ -140,19 +154,21 @@ How it fits together:
   - `ollama`: one model server that all apps share.
   - Traefik on the external `dev-proxy` Docker network: routes domains to containers via dynamic config files (`infra/traefik/dynamic/`), not Docker labels.
   - A Cloudflare tunnel makes the `*.yappai.de` domains reachable from outside.
-- **Apps stay plain Compose projects**: Ellma only declares its two containers (`ellma-web`, `ellma-api`) and joins `dev-proxy`. Everything else comes from the shared infrastructure. That is why it can also be started by hand with `docker compose`.
+- **Apps stay plain Compose projects**: Ellma only declares its three containers (`ellma-web`, `ellma-admin`, `ellma-api`) and joins `dev-proxy`. Everything else comes from the shared infrastructure. That is why it can also be started by hand with `docker compose`.
 
 `npm run verify:infrastructure` runs Yoster's own discovery code against the manifest, so a broken manifest shows up before deployment.
 
 Steps:
 
 1. `npm run setup:environment`: creates the `ellma` DB user on shared-mongo, writes `.env` (0600) with generated secrets, and installs `infra/traefik/dynamic/ellma.yml`.
-2. Point DNS / the Cloudflare tunnel at `ellma.yappai.de` and `ellma-api.yappai.de` (change the domains in `docker/traefik.yml`, `yappai.host.yaml` and `.env` if needed).
-3. `npm run verify:infrastructure`, then start **Ellma** from Yoster (or `docker compose --env-file .env -f docker/docker-compose.yml up -d --build`).
+2. Point DNS / the Cloudflare tunnel at `ellma.yappai.de`, `ellma-admin.yappai.de` and `ellma-api.yappai.de` (change the domains in `docker/traefik.yml`, `yappai.host.yaml` and `.env` if needed).
+3. For password reset by email, set `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASS` and `MAIL_SENDER` in `.env` (SMTP over TLS, usually port 465).
+4. `npm run verify:infrastructure`, then start **Ellma** from Yoster (or `docker compose --env-file .env -f docker/docker-compose.yml up -d --build`).
 
 ## Notes
 
 - **Speed**: on this CPU-only host, `qwen3.5:4b` answers in roughly 10–60 s depending on tool rounds; replies stream so text and voice start early. A GPU or a smaller model (`qwen3:1.7b`) makes it much faster.
 - **One reply at a time per user**; a second simultaneous request gets `assistant_busy`.
 - **Fully local voice** would need a self-hosted speech-to-text (e.g. Whisper) container; the API is ready to accept text from any source.
-- Open registration is enabled (`/authenticate/register` creates `user` profiles). Consider rate limiting at Traefik before going public.
+- Open registration is enabled (`/authenticate/register` creates `user` profiles). Sign-in, code and reset attempts are limited in the API (in memory, per address and per account); registration is not, so consider rate limiting at Traefik before going public.
+- **An admin with two-factor sign-in** can only sign in through Ellma's own login. Tools that log in through Yappio's `/authenticate` directly get no usable token for that account.

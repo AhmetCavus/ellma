@@ -7,6 +7,7 @@ import { PreferencesProvider, usePreferences } from "./lib/preferences";
 import { navigate, useRoute } from "./lib/router";
 import { useSession, type Session } from "./lib/session";
 import { StoreProvider } from "./lib/store";
+import { AccountPage } from "./pages/AccountPage";
 import { AuthPage } from "./pages/AuthPage";
 import { FocusPage } from "./pages/FocusPage";
 import { GoalDetailPage } from "./pages/GoalDetailPage";
@@ -14,10 +15,13 @@ import { GoalsPage } from "./pages/GoalsPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LegalPage } from "./pages/LegalPage";
 import { ProgressPage } from "./pages/ProgressPage";
+import { ForgotPasswordPage, ResetPasswordPage } from "./pages/RecoveryPages";
 import { TodayPage } from "./pages/TodayPage";
 
-const PUBLIC_PATHS = ["/", "/login", "/signup"];
-const SECTIONS = ["goals", "today", "progress", "focus"];
+const PUBLIC_PATHS = ["/", "/login", "/signup", "/forgot-password"];
+const SECTIONS = ["goals", "today", "progress", "focus", "account"];
+/** Reset links open for everyone: the person may still be signed in on this device. */
+const RESET_PATH = "/reset-password";
 /** Goals are home: everything else in Ellma exists to move them forward. */
 const HOME = "/goals";
 
@@ -39,6 +43,8 @@ function SignedIn({ session }: { session: Session }) {
       <GoalDetailPage goalId={id} />
     ) : section === "progress" ? (
       <ProgressPage />
+    ) : section === "account" ? (
+      <AccountPage session={session} />
     ) : (
       <GoalsPage />
     );
@@ -59,8 +65,10 @@ function Routes() {
   // Legal pages are open to everyone, signed in or not.
   const legal = LEGAL_PAGES.find((page) => route.path === `/${page}`);
 
+  const resetting = route.path === RESET_PATH;
+
   useEffect(() => {
-    if (legal) {
+    if (legal || resetting) {
       return;
     }
     if (signedIn && (isPublic || !known)) {
@@ -68,10 +76,13 @@ function Routes() {
     } else if (!signedIn && !isPublic) {
       navigate("/login", { replace: true });
     }
-  }, [isPublic, known, legal, signedIn]);
+  }, [isPublic, known, legal, resetting, signedIn]);
 
   if (legal) {
     return <LegalPage page={legal} />;
+  }
+  if (resetting) {
+    return <ResetPasswordPage session={session} />;
   }
 
   if (signedIn) {
@@ -85,6 +96,9 @@ function Routes() {
   }
   if (route.path === "/signup") {
     return <AuthPage mode="signup" session={session} />;
+  }
+  if (route.path === "/forgot-password") {
+    return <ForgotPasswordPage session={session} />;
   }
   if (route.path === "/login" || !isPublic) {
     return <AuthPage mode="login" session={session} />;

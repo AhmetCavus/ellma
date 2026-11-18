@@ -6,6 +6,7 @@ services:
     build:
       context: ..
       dockerfile: docker/web.Dockerfile
+      target: runtime
       args:
         NPM_REGISTRY: ${NPM_REGISTRY:-http://192.168.178.131:4873/}
         VITE_API_URL: ${ELLMA_API_URL:-https://ellma-api.yappai.de}
@@ -16,6 +17,27 @@ services:
         VITE_LEGAL_PHONE: ${VITE_LEGAL_PHONE:-}
         VITE_LEGAL_REGISTER: ${VITE_LEGAL_REGISTER:-}
         VITE_LEGAL_VAT_ID: ${VITE_LEGAL_VAT_ID:-}
+    restart: unless-stopped
+    expose: ["80"]
+    networks: [dev-proxy]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1/health]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    labels:
+      traefik.enable: "false"
+
+  admin:
+    container_name: ellma-admin
+    build:
+      context: ..
+      dockerfile: docker/web.Dockerfile
+      target: admin
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-http://192.168.178.131:4873/}
+        VITE_API_URL: ${ELLMA_API_URL:-https://ellma-api.yappai.de}
     restart: unless-stopped
     expose: ["80"]
     networks: [dev-proxy]
@@ -45,7 +67,9 @@ services:
       DB_ENGINE: mongodb
       DBNAME: ellma
       DB_URI: ${DB_URI_DOCKER:?Configure the server-side shared-mongo URI}
-      ALLOWED_ORIGINS: ${ELLMA_WEB_URL:-https://ellma.yappai.de}
+      ALLOWED_ORIGINS: ${ELLMA_WEB_URL:-https://ellma.yappai.de},${ELLMA_ADMIN_URL:-https://ellma-admin.yappai.de}
+      # Password-reset links point at the web app.
+      ELLMA_WEB_URL: ${ELLMA_WEB_URL:-https://ellma.yappai.de}
       # Open-weight model served by the shared Ollama container on dev-proxy.
       OLLAMA_URL: ${OLLAMA_URL_DOCKER:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.5:4b}

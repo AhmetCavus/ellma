@@ -12,6 +12,10 @@ services:
     containerName: ellma-web
     port: 80
     healthUrl: http://ellma-web/health
+  - name: admin
+    containerName: ellma-admin
+    port: 80
+    healthUrl: http://ellma-admin/health
   - name: api
     containerName: ellma-api
     port: 4000
@@ -20,6 +24,9 @@ healthChecks:
   - label: Web
     type: container
     containerName: ellma-web
+  - label: Administration
+    type: container
+    containerName: ellma-admin
   - label: API
     type: http
     url: http://ellma-api:4000/yappio/health

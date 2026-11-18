@@ -3,9 +3,10 @@
 ## Structure
 
 - `shared/`: canonical contracts (zod), date and progress logic, assistant stream protocol, EN/DE copy, and the `EllmaApi` client over `yappio-client`.
-- `server/`: Yappio bootstrap, private models, and feature folders `goals/`, `tasks/`, `focus/`, `assistant/` (router → service → repository). `platform/` holds the CORS boundary, account access and the endpoint wrapper.
+- `server/`: Yappio bootstrap, private models, and feature folders `goals/`, `tasks/`, `focus/`, `assistant/`, `account/`, `admin/` (router → service → repository). `platform/` holds the CORS boundary, account access, the endpoint wrapper, attempt limits and `yappio.ts`, the only file that reaches into Yappio's unexported services.
 - `web/`: React SPA (landing, auth, Goals as home, Today, Progress, Focus). No router or UI framework; `lib/` holds session, store, voice, shortcuts and `ellma.tsx`, the provider that keeps Ellma present on every signed-in page.
-- `docker/`: two services (`ellma-web`, `ellma-api`) on `dev-proxy`. Reuse `shared-mongo` and the shared `ollama` container.
+- `admin/`: separate React SPA for administrators (sign-in, overview, accounts) on its own host. It uses `EllmaApi` and `copy.admin` from `shared` and has its own small stylesheet.
+- `docker/`: three services (`ellma-web`, `ellma-admin`, `ellma-api`) on `dev-proxy`. Reuse `shared-mongo` and the shared `ollama` container.
 
 ## Guidelines
 
@@ -14,6 +15,19 @@ Use strict TypeScript, descriptive names and small feature components. Reuse Yap
 Every record carries `ownerId`; every query and write filters by it. Users must never reach Yappio's generic `/collection` API (the boundary limits it to admins). Accept only full login tokens (`apiMode`, `_id`, no `otp`/`uid` claims).
 
 The assistant runs on an open-weight model through Ollama (`OLLAMA_URL`, `OLLAMA_MODEL`). Keep its system prompt stable and short so Ollama reuses the cached prefix; dynamic facts go into the snapshot message. Tools change data only through the same services the UI uses. Resolve goal/task names and relative days on the server (`assistant/matching.ts`) instead of trusting model output. The model gets the user's calendar day from the client (`today`, `utcOffsetMinutes`).
+
+## Accounts and security
+
+Sign-in, password change, two-factor sign-in and password recovery live in `server/src/account` and are reached under `/api/ellma/account`; the contracts are in `shared/src/account.ts`. Keep these rules:
+
+- Browsers sign in through `POST /api/ellma/account/login`, never through Yappio's `/authenticate`. Tokens it issues carry `mfa: true` once the second factor was checked.
+- `requireAccount` (`platform/access.ts`) is the single gate. It refuses tokens without `mfa` for accounts with two-factor sign-in, and tokens issued before `sessionsValidFrom` (set by a password change, reset or role change). Do not add a route that authenticates another way.
+- The boundary closes Yappio's `/password`, `/otp`, `/totp`, `/email` and `/authenticate/totp` routes and the `EllmaAccountSecurity` collection. Do not reopen them.
+- Store no readable secret: seal what must be read back (`seal`), fingerprint what is only compared (`fingerprint`), both in `account/secrets.ts`.
+- Answers must not reveal whether an address has an account (login, recovery). Guessable inputs (password, code, reset token) go through a `RateLimiter`.
+- Mail is sent only for password recovery, through Yappio's mailer (`MAIL_*`). Mail texts are in `copy.mail`.
+
+The admin API (`server/src/admin`, `/api/ellma/admin`, admins and root only) returns account data and totals, never content. `canManageAccount` in `shared` decides who may change whom; use it on the server and for the UI. Deleting an account must remove every record with its `ownerId`: add new models to `deleteUser`.
 
 ## Ellma is a guide, not a chat page
 
@@ -29,7 +43,7 @@ Keyboard shortcuts live in `web/src/lib/ellma.tsx` (Space hold-to-talk, ⌘/Ctrl
 
 ## Legal pages
 
-`/privacy`, `/terms` and `/imprint` (`web/src/pages/LegalPage.tsx`) are open signed in or out; `SiteFooter` links them from every public page and the sidebar. Texts are in `copy.legal` and must stay true to what the code does: update them when Ellma starts storing something new, adds a third-party service, or sets a cookie. Operator details come only from `VITE_LEGAL_*`; never hard-code them. Optional browser storage must check `comfortStorageAllowed()` (`web/src/lib/consent.ts`).
+`/privacy`, `/terms` and `/imprint` (`web/src/pages/LegalPage.tsx`) are open signed in or out, as is `/reset-password`; `SiteFooter` links them from every public page and the sidebar. Texts are in `copy.legal` and must stay true to what the code does: update them when Ellma starts storing something new, adds a third-party service, sets a cookie, or shows administrators more than they see today. Operator details come only from `VITE_LEGAL_*`; never hard-code them. Optional browser storage must check `comfortStorageAllowed()` (`web/src/lib/consent.ts`).
 
 ## Verification
 

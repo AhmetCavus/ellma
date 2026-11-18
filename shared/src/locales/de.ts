@@ -86,6 +86,31 @@ export const de: Copy = {
     passwordLength: "Das Passwort muss 8–72 Zeichen haben.",
     passwordSpecial: "Das Passwort braucht mindestens zwei Sonderzeichen.",
     logout: "Abmelden",
+    forgot: "Passwort vergessen?",
+    backToLogin: "Zurück zur Anmeldung",
+    codeTitle: "Noch ein Schritt",
+    codeLead:
+      "Gib den 6-stelligen Code aus deiner Authenticator-App ein. Handy nicht zur Hand? Nimm einen deiner Ersatzcodes.",
+    code: "Code",
+    codeFailed: "Dieser Code stimmt nicht. Warte auf den nächsten und versuch es noch einmal.",
+    tooMany: "Zu viele Versuche. Bitte warte ein paar Minuten und versuch es dann noch einmal.",
+    forgotTitle: "Passwort zurücksetzen",
+    forgotLead:
+      "Gib deine E-Mail ein. Wenn es dazu ein Konto gibt, schickt Ellma dir einen Link, mit dem du ein neues Passwort wählst.",
+    forgotSend: "Link senden",
+    forgotSent:
+      "Wenn es zu dieser Adresse ein Konto gibt, ist ein Link unterwegs. Er gilt einmal und 30 Minuten lang.",
+    forgotUnavailable:
+      "Diese Installation kann noch keine E-Mails senden. Bitte wende dich an den Kontakt im Impressum, um dein Passwort zurückzusetzen.",
+    resetTitle: "Neues Passwort wählen",
+    resetLead:
+      "Beim Speichern wirst du überall abgemeldet. Danach meldest du dich mit dem neuen Passwort an.",
+    newPassword: "Neues Passwort",
+    repeatPassword: "Neues Passwort wiederholen",
+    passwordMismatch: "Die beiden Passwörter stimmen nicht überein.",
+    resetSave: "Neues Passwort speichern",
+    resetDone: "Dein Passwort ist geändert. Melde dich mit dem neuen an.",
+    resetInvalid: "Dieser Link ist nicht mehr gültig. Fordere einen neuen an.",
   },
 
   nav: {
@@ -94,6 +119,7 @@ export const de: Copy = {
     progress: "Fortschritt",
     label: "Hauptnavigation",
     yourGoals: "Deine Ziele",
+    account: "Konto",
   },
 
   common: {
@@ -495,6 +521,138 @@ export const de: Copy = {
       "Lass uns auf meine Woche zurückblicken. Was lief gut und was sollte ich ändern?",
   },
 
+  account: {
+    title: "Dein Konto",
+    lead: "Halte deine Anmeldung sicher. Deine Ziele hängen daran.",
+    profileTitle: "Profil",
+    name: "Name",
+    role: "Rolle",
+    roles: { user: "Nutzer", admin: "Admin", root: "Root" },
+    passwordTitle: "Passwort",
+    passwordLead: "Wenn du es änderst, wirst du auf deinen anderen Geräten abgemeldet.",
+    currentPassword: "Aktuelles Passwort",
+    changePassword: "Passwort ändern",
+    passwordChanged: "Passwort geändert. Andere Geräte sind abgemeldet.",
+    wrongPassword: "Das aktuelle Passwort stimmt nicht.",
+    twoFactorTitle: "Zwei-Faktor-Anmeldung",
+    twoFactorLead:
+      "Füge der Anmeldung einen zweiten Schritt hinzu: einen Code aus einer Authenticator-App auf deinem Handy. Selbst mit deinem Passwort kommt dann niemand sonst hinein.",
+    statusOn: "An",
+    statusOff: "Aus",
+    enable: "Zwei-Faktor-Anmeldung einrichten",
+    confirmPassword: "Bestätige zuerst mit deinem Passwort",
+    next: "Weiter",
+    scanTitle: "Scanne diesen Code",
+    scanLead:
+      "Öffne eine Authenticator-App (zum Beispiel Aegis, Google Authenticator oder 1Password) und scanne den QR-Code. Keine Kamera? Gib den Schlüssel von Hand ein.",
+    qrLabel: "QR-Code für deine Authenticator-App",
+    manualKey: "Schlüssel",
+    enterCode: "Gib dann den 6-stelligen Code ein, den die App anzeigt",
+    activate: "Einschalten",
+    enabled: "Die Zwei-Faktor-Anmeldung ist an.",
+    backupTitle: "Sichere deine Ersatzcodes",
+    backupLead:
+      "Jeder Code gilt einmal, wenn du nicht an deine Authenticator-App kommst. Sie werden nur jetzt angezeigt, also bewahre sie sicher auf.",
+    backupCopy: "Codes kopieren",
+    backupCopied: "Kopiert.",
+    backupDone: "Ich habe sie gesichert",
+    backupLeft: (count: number) =>
+      count === 1 ? "Noch 1 Ersatzcode" : `Noch ${count} Ersatzcodes`,
+    disable: "Ausschalten",
+    disableLead:
+      "Gib dein Passwort und einen aktuellen Code ein, um die Zwei-Faktor-Anmeldung auszuschalten.",
+    disabled: "Die Zwei-Faktor-Anmeldung ist aus.",
+  },
+  mail: {
+    recovery: {
+      subject: "Dein Ellma-Passwort zurücksetzen",
+      body: (name: string, link: string, minutes: number) => [
+        `Hallo ${name},`,
+        "du möchtest dein Ellma-Passwort zurücksetzen. Öffne diesen Link, um ein neues zu wählen:",
+        link,
+        `Der Link gilt einmal und ${minutes} Minuten lang. Wenn du die Zwei-Faktor-Anmeldung nutzt, bleibt sie an.`,
+        "Wenn du das nicht warst, ignoriere diese E-Mail. Dein Passwort bleibt, wie es ist.",
+      ],
+    },
+  },
+  admin: {
+    title: "Ellma Admin",
+    subtitle: "Verwaltung",
+    loginTitle: "Admin-Anmeldung",
+    noPermission: "Dieses Konto hat keine Admin-Rechte.",
+    refresh: "Aktualisieren",
+    tabs: { overview: "Überblick", users: "Konten" },
+    privacyNote:
+      "Hier siehst du nur Konten und Summen. Ziele, Schritte und Gespräche bleiben privat.",
+    overview: {
+      users: "Konten",
+      admins: "Admins",
+      twoFactorUsers: "Mit Zwei-Faktor-Anmeldung",
+      newUsersThisWeek: "Neu diese Woche",
+      activeUsersThisWeek: "Aktiv diese Woche",
+      goals: "Ziele",
+      tasks: "Schritte",
+      tasksDone: "Erledigte Schritte",
+      focusHours: "Investierte Stunden",
+      focusHoursThisWeek: "Stunden diese Woche",
+      assistantMessages: "Nachrichten an Ellma",
+      peopleTitle: "Menschen",
+      usageTitle: "Nutzung",
+    },
+    system: {
+      title: "System",
+      version: "Version",
+      model: "KI-Modell",
+      modelUp: "erreichbar",
+      modelDown: "nicht erreichbar",
+      mail: "E-Mail",
+      mailOn: "eingerichtet",
+      mailOff: "nicht eingerichtet, daher ist das Zurücksetzen per E-Mail aus",
+    },
+    users: {
+      search: "Name oder E-Mail suchen",
+      count: (shown: number, total: number) => {
+        const accounts = total === 1 ? "1 Konto" : `${total} Konten`;
+        return shown === total ? accounts : `${shown} von ${accounts}`;
+      },
+      empty: "Keine passenden Konten.",
+      name: "Name",
+      email: "E-Mail",
+      role: "Rolle",
+      twoFactor: "2FA",
+      joined: "Dabei seit",
+      lastActive: "Zuletzt aktiv",
+      goals: "Ziele",
+      tasks: "Schritte",
+      hours: "Stunden",
+      never: "nie",
+      you: "du",
+      actions: "Aktionen",
+      makeAdmin: "Zum Admin machen",
+      makeUser: "Admin-Rechte entziehen",
+      resetTwoFactor: "Zwei-Faktor-Anmeldung zurücksetzen",
+      sendRecovery: "E-Mail zum Zurücksetzen senden",
+      delete: "Konto löschen",
+      confirmMakeAdmin: (name: string) =>
+        `${name} Admin-Rechte geben? Admins können alle Konten verwalten.`,
+      confirmMakeUser: (name: string) => `${name} die Admin-Rechte entziehen?`,
+      confirmResetTwoFactor: (name: string) =>
+        `Die Zwei-Faktor-Anmeldung für ${name} ausschalten? Tu das nur, wenn du sicher bist, wer fragt.`,
+      confirmSendRecovery: (email: string) =>
+        `Einen Link zum Zurücksetzen des Passworts an ${email} senden?`,
+      deleteTitle: "Konto löschen",
+      deleteLead:
+        "Das entfernt das Konto mit allen Zielen, Schritten, Fokuszeiten und Gesprächen. Es lässt sich nicht rückgängig machen.",
+      deleteConfirm: (email: string) => `Tippe zur Bestätigung ${email}`,
+      roleChanged: "Rolle geändert. Das Konto muss sich neu anmelden.",
+      twoFactorReset: "Die Zwei-Faktor-Anmeldung ist für dieses Konto ausgeschaltet.",
+      recoverySent: "E-Mail zum Zurücksetzen gesendet.",
+      deleted: "Konto gelöscht.",
+      mailUnavailable: "E-Mail ist nicht eingerichtet oder dieses Konto hat keine E-Mail-Adresse.",
+      mailFailed: "Der Mailserver hat die Nachricht nicht angenommen.",
+      notAllowed: "Du darfst dieses Konto nicht ändern.",
+    },
+  },
   legal: {
     footer: {
       label: "Rechtliches",
@@ -536,6 +694,7 @@ export const de: Copy = {
           title: "Was Ellma speichert",
           body: [
             "Dein Konto: Vorname, E-Mail-Adresse und ein gehashtes Passwort.",
+            "Wenn du die Zwei-Faktor-Anmeldung einschaltest: den Schlüssel deiner Authenticator-App in verschlüsselter Form und deine Ersatzcodes nur als Prüfsummen. Wenn du dein Passwort zurücksetzen lässt: eine Prüfsumme des Links, bis er benutzt wurde oder nach 30 Minuten abläuft.",
             "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen und Wochenzielen, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit Ellma.",
             "Wir nutzen diese Daten nur, um dir Ellma bereitzustellen (Art. 6 Abs. 1 lit. b DSGVO). Es gibt keine Werbung, keine Analyse und kein Profiling.",
           ],
@@ -575,6 +734,19 @@ export const de: Copy = {
           ],
         },
         {
+          title: "E-Mail",
+          body: [
+            "Ellma schreibt dir nur dann eine E-Mail, wenn für deine Adresse das Zurücksetzen des Passworts angefordert wird. Die Nachricht wird über den Mailserver des Betreibers versendet und enthält nichts außer dem Link.",
+          ],
+        },
+        {
+          title: "Verwaltung",
+          body: [
+            "Die Administratoren des Betreibers sehen deinen Namen, deine E-Mail-Adresse, deine Rolle, ob die Zwei-Faktor-Anmeldung an ist, seit wann du dabei bist und wann du zuletzt aktiv warst, sowie Summen wie die Zahl deiner Ziele und investierten Stunden. Die Verwaltung zeigt nicht, was in deinen Zielen, Schritten oder Gesprächen steht.",
+            "Auf deinen Wunsch können Administratoren deine Zwei-Faktor-Anmeldung ausschalten, dir eine E-Mail zum Zurücksetzen des Passworts senden und dein Konto mit allen Daten löschen.",
+          ],
+        },
+        {
           title: "Deine Rechte",
           body: [
             "Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung und Übertragbarkeit deiner Daten sowie auf Widerspruch gegen die Verarbeitung. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.",
@@ -601,7 +773,7 @@ export const de: Copy = {
         {
           title: "Dein Konto",
           body: [
-            "Du brauchst ein Konto mit einer gültigen E-Mail-Adresse und einem Passwort, das du für dich behältst. Das Konto ist persönlich. Gib uns Bescheid, wenn du glaubst, dass jemand anderes es nutzt.",
+            "Du brauchst ein Konto mit einer gültigen E-Mail-Adresse und einem Passwort, das du für dich behältst. Unter „Konto“ kannst du die Zwei-Faktor-Anmeldung hinzufügen. Das Konto ist persönlich. Gib uns Bescheid, wenn du glaubst, dass jemand anderes es nutzt.",
           ],
         },
         {

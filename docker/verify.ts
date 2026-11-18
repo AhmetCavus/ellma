@@ -11,8 +11,12 @@ const compose = parse(await readFile("docker/docker-compose.yml", "utf8"));
 const manifest = parse(await readFile("yappai.host.yaml", "utf8"));
 const routing = parse(await readFile("docker/traefik.yml", "utf8"));
 
-const domains: Record<string, string> = { web: "ellma.yappai.de", api: "ellma-api.yappai.de" };
-assert.deepEqual(Object.keys(compose.services).sort(), ["api", "web"]);
+const domains: Record<string, string> = {
+  web: "ellma.yappai.de",
+  admin: "ellma-admin.yappai.de",
+  api: "ellma-api.yappai.de",
+};
+assert.deepEqual(Object.keys(compose.services).sort(), ["admin", "api", "web"]);
 assert.equal(compose.networks["dev-proxy"].external, true);
 for (const [name, domain] of Object.entries(domains)) {
   const service = compose.services[name];
@@ -33,6 +37,10 @@ assert.equal(manifest.database.name, "ellma");
 assert.equal(manifest.database.connectionRef, "shared-mongo");
 assert.ok(compose.services.api.environment.DB_URI.includes("DB_URI_DOCKER"));
 assert.ok(compose.services.api.environment.OLLAMA_URL.includes("ollama:11434"));
+// The API must accept both browser apps, and each image must build its own site.
+assert.ok(compose.services.api.environment.ALLOWED_ORIGINS.includes("ellma-admin.yappai.de"));
+assert.equal(compose.services.web.build.target, "runtime");
+assert.equal(compose.services.admin.build.target, "admin");
 console.log("Compose, routers, internal ports, shared Mongo and Ollama references: passed.");
 
 let hasEnvironment = true;

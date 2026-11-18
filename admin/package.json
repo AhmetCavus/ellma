@@ -1,0 +1,24 @@
+{
+  "name": "@ellma/admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5181",
+    "build": "tsc --noEmit && vite build",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ellma/shared": "1.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yappio-client": "1.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.21"
+  }
+}

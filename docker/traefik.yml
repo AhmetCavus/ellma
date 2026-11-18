@@ -4,6 +4,10 @@ http:
       rule: "Host(`ellma.yappai.de`)"
       entryPoints: [web]
       service: ellma-web
+    ellma-admin:
+      rule: "Host(`ellma-admin.yappai.de`)"
+      entryPoints: [web]
+      service: ellma-admin
     ellma-api:
       rule: "Host(`ellma-api.yappai.de`)"
       entryPoints: [web]
@@ -13,6 +17,10 @@ http:
       loadBalancer:
         servers:
           - url: http://ellma-web:80
+    ellma-admin:
+      loadBalancer:
+        servers:
+          - url: http://ellma-admin:80
     ellma-api:
       loadBalancer:
         servers:

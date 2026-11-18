@@ -1,14 +1,8 @@
-import { createRequire } from "node:module";
-import path from "node:path";
 import type { Request, RequestHandler, Response } from "express";
 import { retrieveProfileFromToken } from "yappio";
 import { z } from "zod";
-
-const require = createRequire(import.meta.url);
-// Yappio 1.3.1 does not export its verifier; isolate the pinned platform adapter here.
-const tokenModule: { default: { verify: (token: string) => unknown } } = require(
-  path.join(path.dirname(require.resolve("yappio")), "src/core/services/token.service.js"),
-);
+import { findSecurity } from "../account/account.repository.js";
+import { tokens } from "./yappio.js";
 
 // Only full login tokens qualify. OTP-stage tokens ({ uid, otp }) and device API tokens are rejected.
 const sessionClaimsSchema = z.object({
@@ -17,6 +11,9 @@ const sessionClaimsSchema = z.object({
   role: z.enum(["user", "admin", "root"]),
   otp: z.undefined(),
   uid: z.undefined(),
+  iat: z.number(),
+  /** Set by Ellma's own login once the second factor was checked. */
+  mfa: z.boolean().optional(),
 });
 
 export type Account = { id: string; role: "user" | "admin" | "root"; name: string };
@@ -26,9 +23,20 @@ function bearer(request: Request): string {
 }
 
 async function resolveAccount(request: Request): Promise<Account> {
-  const claims = sessionClaimsSchema.parse(tokenModule.default.verify(bearer(request)));
-  const profile = await retrieveProfileFromToken(request);
+  const claims = sessionClaimsSchema.parse(tokens.verify(bearer(request)));
+  const [profile, security] = await Promise.all([
+    retrieveProfileFromToken(request),
+    findSecurity(claims._id),
+  ]);
   if (!profile || String(profile._id) !== claims._id) {
+    throw new Error("access_denied");
+  }
+  // Accounts with a second factor only accept tokens from Ellma's login, which checks it.
+  if (security?.totpEnabledAt && claims.mfa !== true) {
+    throw new Error("access_denied");
+  }
+  // A password change or reset signs out every token issued before it.
+  if (security?.sessionsValidFrom && claims.iat * 1000 < security.sessionsValidFrom.getTime()) {
     throw new Error("access_denied");
   }
   const role = z.enum(["user", "admin", "root"]).parse(profile.role);

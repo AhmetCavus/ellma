@@ -23,6 +23,8 @@ const { goalRoutes } = await import("./goals/goal.routes.js");
 const { taskRoutes } = await import("./tasks/task.routes.js");
 const { focusRoutes } = await import("./focus/focus.routes.js");
 const { assistantRoutes } = await import("./assistant/assistant.routes.js");
+const { accountPublicRoutes, accountRoutes } = await import("./account/account.routes.js");
+const { adminRoutes } = await import("./admin/admin.routes.js");
 
 const app = new Yappio({
   platform: {
@@ -46,11 +48,15 @@ app.use((server) => {
     server,
     (process.env.ALLOWED_ORIGINS ?? "https://ellma.yappai.de")
       .split(",")
-      .map((origin) => origin.trim())
+      .map((origin) => origin.trim().replace(/\/$/, ""))
       .filter(Boolean),
   );
+  // Signing in and password recovery work without a session, so they mount first.
+  server.use("/api/ellma/account", express.json({ limit: "8kb" }), accountPublicRoutes);
   const api = express.Router();
   api.use(express.json({ limit: "64kb" }), requireAccount());
+  api.use("/account", accountRoutes);
+  api.use("/admin", requireAccount(true), adminRoutes);
   api.use("/goals", goalRoutes);
   api.use("/tasks", taskRoutes);
   api.use("/focus", focusRoutes);

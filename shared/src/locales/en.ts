@@ -82,6 +82,30 @@ export const en = {
     passwordLength: "The password must have 8–72 characters.",
     passwordSpecial: "The password needs at least two symbols.",
     logout: "Log out",
+    forgot: "Forgot your password?",
+    backToLogin: "Back to log in",
+    codeTitle: "One more step",
+    codeLead:
+      "Enter the 6-digit code from your authenticator app. Lost your phone? Use one of your backup codes.",
+    code: "Code",
+    codeFailed: "That code is not correct. Wait for the next one and try again.",
+    tooMany: "Too many attempts. Please wait a few minutes and try again.",
+    forgotTitle: "Reset your password",
+    forgotLead:
+      "Enter your email. If an account exists for it, Ellma sends you a link to choose a new password.",
+    forgotSend: "Send reset link",
+    forgotSent:
+      "If an account exists for this address, a link is on its way. It works once and for 30 minutes.",
+    forgotUnavailable:
+      "This installation cannot send email yet. Please ask the contact in the imprint to reset your password.",
+    resetTitle: "Choose a new password",
+    resetLead: "Saving signs you out everywhere. Then log in with the new password.",
+    newPassword: "New password",
+    repeatPassword: "Repeat new password",
+    passwordMismatch: "The two passwords do not match.",
+    resetSave: "Save new password",
+    resetDone: "Your password is changed. Log in with the new one.",
+    resetInvalid: "This link is no longer valid. Request a new one.",
   },
 
   nav: {
@@ -90,6 +114,7 @@ export const en = {
     progress: "Progress",
     label: "Main navigation",
     yourGoals: "Your goals",
+    account: "Account",
   },
 
   common: {
@@ -481,6 +506,136 @@ export const en = {
     reflectPrompt: "Let's look back at my week. What went well and what should I change?",
   },
 
+  account: {
+    title: "Your account",
+    lead: "Keep your sign-in safe. Your goals depend on it.",
+    profileTitle: "Profile",
+    name: "Name",
+    role: "Role",
+    roles: { user: "User", admin: "Admin", root: "Root" },
+    passwordTitle: "Password",
+    passwordLead: "Changing it signs you out on your other devices.",
+    currentPassword: "Current password",
+    changePassword: "Change password",
+    passwordChanged: "Password changed. Other devices are signed out.",
+    wrongPassword: "The current password is not correct.",
+    twoFactorTitle: "Two-factor sign-in",
+    twoFactorLead:
+      "Add a second step when you log in: a code from an authenticator app on your phone. Even with your password, nobody else gets in.",
+    statusOn: "On",
+    statusOff: "Off",
+    enable: "Set up two-factor sign-in",
+    confirmPassword: "First, confirm with your password",
+    next: "Continue",
+    scanTitle: "Scan this code",
+    scanLead:
+      "Open an authenticator app (for example Aegis, Google Authenticator or 1Password) and scan the QR code. No camera? Enter the key by hand.",
+    qrLabel: "QR code for your authenticator app",
+    manualKey: "Key",
+    enterCode: "Then enter the 6-digit code the app shows",
+    activate: "Switch on",
+    enabled: "Two-factor sign-in is on.",
+    backupTitle: "Save your backup codes",
+    backupLead:
+      "Each code works once when you can't reach your authenticator. They are shown only now, so keep them somewhere safe.",
+    backupCopy: "Copy codes",
+    backupCopied: "Copied.",
+    backupDone: "I have saved them",
+    backupLeft: (count: number) =>
+      count === 1 ? "1 backup code left" : `${count} backup codes left`,
+    disable: "Switch off",
+    disableLead: "Enter your password and a current code to switch two-factor sign-in off.",
+    disabled: "Two-factor sign-in is off.",
+  },
+  mail: {
+    recovery: {
+      subject: "Reset your Ellma password",
+      body: (name: string, link: string, minutes: number) => [
+        `Hi ${name},`,
+        "you asked to reset your Ellma password. Open this link to choose a new one:",
+        link,
+        `The link works once and for ${minutes} minutes. If you use two-factor sign-in, it stays on.`,
+        "If this wasn't you, ignore this email. Your password stays as it is.",
+      ],
+    },
+  },
+  admin: {
+    title: "Ellma Admin",
+    subtitle: "Administration",
+    loginTitle: "Admin sign-in",
+    noPermission: "This account has no admin rights.",
+    refresh: "Refresh",
+    tabs: { overview: "Overview", users: "Accounts" },
+    privacyNote:
+      "This panel shows accounts and totals only. Goals, steps and conversations stay private.",
+    overview: {
+      users: "Accounts",
+      admins: "Admins",
+      twoFactorUsers: "With two-factor sign-in",
+      newUsersThisWeek: "New this week",
+      activeUsersThisWeek: "Active this week",
+      goals: "Goals",
+      tasks: "Steps",
+      tasksDone: "Steps done",
+      focusHours: "Hours invested",
+      focusHoursThisWeek: "Hours this week",
+      assistantMessages: "Messages to Ellma",
+      peopleTitle: "People",
+      usageTitle: "Usage",
+    },
+    system: {
+      title: "System",
+      version: "Version",
+      model: "AI model",
+      modelUp: "reachable",
+      modelDown: "not reachable",
+      mail: "Email",
+      mailOn: "configured",
+      mailOff: "not configured, so password reset by email is off",
+    },
+    users: {
+      search: "Search name or email",
+      count: (shown: number, total: number) => {
+        const accounts = total === 1 ? "1 account" : `${total} accounts`;
+        return shown === total ? accounts : `${shown} of ${accounts}`;
+      },
+      empty: "No accounts match.",
+      name: "Name",
+      email: "Email",
+      role: "Role",
+      twoFactor: "2FA",
+      joined: "Joined",
+      lastActive: "Last active",
+      goals: "Goals",
+      tasks: "Steps",
+      hours: "Hours",
+      never: "never",
+      you: "you",
+      actions: "Actions",
+      makeAdmin: "Make admin",
+      makeUser: "Remove admin rights",
+      resetTwoFactor: "Reset two-factor sign-in",
+      sendRecovery: "Send password reset email",
+      delete: "Delete account",
+      confirmMakeAdmin: (name: string) =>
+        `Give ${name} admin rights? Admins can manage every account.`,
+      confirmMakeUser: (name: string) => `Remove admin rights from ${name}?`,
+      confirmResetTwoFactor: (name: string) =>
+        `Switch two-factor sign-in off for ${name}? Only do this when you are sure who is asking.`,
+      confirmSendRecovery: (email: string) => `Send a password reset link to ${email}?`,
+      deleteTitle: "Delete account",
+      deleteLead:
+        "This removes the account with all its goals, steps, focus time and conversations. It cannot be undone.",
+      deleteConfirm: (email: string) => `Type ${email} to confirm`,
+      roleChanged: "Role changed. The account has to log in again.",
+      twoFactorReset: "Two-factor sign-in is switched off for this account.",
+      recoverySent: "Password reset email sent.",
+      deleted: "Account deleted.",
+      mailUnavailable: "Email is not configured, or this account has no email address.",
+      mailFailed: "The mail server did not accept the message.",
+      notAllowed: "You are not allowed to change this account.",
+    },
+  },
   legal: {
     footer: {
       label: "Legal",
@@ -522,6 +677,7 @@ export const en = {
           title: "What Ellma stores",
           body: [
             "Your account: first name, email address and a hashed password.",
+            "If you switch on two-factor sign-in: the key of your authenticator app in encrypted form, and your backup codes as fingerprints only. If you ask for a password reset: a fingerprint of the reset link until it is used or expires after 30 minutes.",
             "Your content: goals with their reasons, milestones and weekly targets, steps, focus sessions and logged time, daily notes, and the conversation with Ellma.",
             "We use this data only to provide Ellma to you (Art. 6(1)(b) GDPR). There is no advertising, no analytics and no profiling.",
           ],
@@ -561,6 +717,19 @@ export const en = {
           ],
         },
         {
+          title: "Email",
+          body: [
+            "Ellma emails you only when a password reset is requested for your address. The message is sent through the mail server the operator uses and contains nothing but the reset link.",
+          ],
+        },
+        {
+          title: "Administration",
+          body: [
+            "The operator's administrators see your name, email address, role, whether two-factor sign-in is on, when you joined and were last active, and totals such as the number of goals and invested hours. The admin panel does not show what your goals, steps or conversations say.",
+            "On your request, administrators can switch off your two-factor sign-in, send you a password reset email, and delete your account with all its data.",
+          ],
+        },
+        {
           title: "Your rights",
           body: [
             "You have the right to access, correct, delete, restrict and receive your data, and to object to processing. You can also complain to a data protection supervisory authority.",
@@ -587,7 +756,7 @@ export const en = {
         {
           title: "Your account",
           body: [
-            "You need an account with a valid email address and a password you keep to yourself. The account is personal. Tell us if you think someone else is using it.",
+            "You need an account with a valid email address and a password you keep to yourself. You can add two-factor sign-in under “Account”. The account is personal. Tell us if you think someone else is using it.",
           ],
         },
         {

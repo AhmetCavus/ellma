@@ -102,11 +102,13 @@ try {
         ? current.INITIAL_ADMIN_PASS
         : `${randomBytes(24).toString("base64url")}!#aA1`,
     PORT: current.PORT || "4000",
-    ALLOWED_ORIGINS: current.ALLOWED_ORIGINS || "https://ellma.yappai.de",
+    ALLOWED_ORIGINS:
+      current.ALLOWED_ORIGINS || "https://ellma.yappai.de,https://ellma-admin.yappai.de",
     OLLAMA_URL: current.OLLAMA_URL || "http://127.0.0.1:11434",
     OLLAMA_URL_DOCKER: current.OLLAMA_URL_DOCKER || "http://ollama:11434",
     OLLAMA_MODEL: current.OLLAMA_MODEL || "qwen3.5:4b",
     ELLMA_WEB_URL: current.ELLMA_WEB_URL || "https://ellma.yappai.de",
+    ELLMA_ADMIN_URL: current.ELLMA_ADMIN_URL || "https://ellma-admin.yappai.de",
     ELLMA_API_URL: current.ELLMA_API_URL || "https://ellma-api.yappai.de",
     NPM_REGISTRY: current.NPM_REGISTRY || "http://192.168.178.131:4873/",
   };
