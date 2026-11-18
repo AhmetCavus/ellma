@@ -6,6 +6,52 @@
 
 The name and the flat red apple come from _kızıl elma_, the "red apple" on the horizon: the goal you keep walking towards.
 
+## See it
+
+<p align="center">
+  <img src="docs/screens/ellma-talk.gif" width="500" alt="Three sentences spoken to Ellma: she listens, logs the time, names the next step, and the goal's apple fills until it is ripe">
+</p>
+
+<p align="center"><em>You say a sentence. Ellma acts on it, names the next step, and the goal's apple fills.</em><br><sub>The live preview from the landing page, built from the same components as the app.</sub></p>
+
+**Goals are home.** Every goal is an apple that fills with the time you invest this week. Ellma sits at the bottom of every page with the one next step and a button to do it.
+
+![Goals page: three goals as apples at different fill levels, each with its next step, and Ellma's guide bar suggesting what to do now](docs/screens/goals.png)
+
+### How it works
+
+**1. Plant a goal.** No form. Ellma asks five short questions (what, why, hours a week, a date, the first small step) and you answer by typing or by voice.
+
+![Guided goal setup: Ellma asks five questions and the goal is planted as an apple](docs/screens/plant-a-goal.gif)
+
+**2. Follow the next step.** Ellma always knows what is next. One click starts focus mode on that step, and she still listens there: say or write "done" and the step is finished and the time is logged.
+
+![Ellma suggests the next step, focus mode starts, and "done" completes it](docs/screens/guide-to-focus.gif)
+
+**3. Watch it ripen.** Time you invest fills the apple. When the weekly target is reached, the apple is ripe and Ellma celebrates with you.
+
+![Logging an hour fills the apple of a goal until it turns ripe](docs/screens/ripen.gif)
+
+### The pages
+
+| Today: the day sorted by goal                                                  | A goal: its week, steps and journey                                                       |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| ![Today page with one card per goal and today's steps](docs/screens/today.png) | ![Goal page with weekly hours, next steps and a milestone journey](docs/screens/goal.png) |
+| **Focus: one step, one timer**                                                 | **Progress: where the hours went**                                                        |
+| ![Focus mode with a timer on one step](docs/screens/focus.png)                 | ![Progress page with hours per day and per goal](docs/screens/progress.png)               |
+
+<p align="center">
+  <img src="docs/screens/mobile-goals.png" width="250" alt="Goals page on a phone">
+  &nbsp;&nbsp;
+  <img src="docs/screens/mobile-today.png" width="250" alt="Today page on a phone">
+</p>
+
+<p align="center"><em>On a phone, and in the dark:</em></p>
+
+![Goals page in the dark theme](docs/screens/goals-dark.png)
+
+All screens were recorded from the running app with demo data. The first animation is the scripted preview from the landing page; the model itself answers more slowly on our CPU-only server (see [Notes](#notes)).
+
 ## Background
 
 The idea is based on [Quest — Make time for what matters.](https://quest.app/): define what you want to achieve, order it by priority and invest real time in it every week. Ellma takes that idea and puts a voice-capable guide on top of it.
