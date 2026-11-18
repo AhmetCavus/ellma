@@ -1,0 +1,23 @@
+{
+  "name": "@ellma/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc && concurrently -k -n tsc,node \"tsc --watch --preserveWatchOutput\" \"node --watch dist/index.js\"",
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@ellma/shared": "1.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.19.3",
+    "yappio": "1.3.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
+}

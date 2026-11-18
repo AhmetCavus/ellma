@@ -1,0 +1,19 @@
+http:
+  routers:
+    ellma-web:
+      rule: "Host(`ellma.yappai.de`)"
+      entryPoints: [web]
+      service: ellma-web
+    ellma-api:
+      rule: "Host(`ellma-api.yappai.de`)"
+      entryPoints: [web]
+      service: ellma-api
+  services:
+    ellma-web:
+      loadBalancer:
+        servers:
+          - url: http://ellma-web:80
+    ellma-api:
+      loadBalancer:
+        servers:
+          - url: http://ellma-api:4000

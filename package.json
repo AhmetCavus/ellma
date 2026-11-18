@@ -1,0 +1,31 @@
+{
+  "name": "ellma",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "setup:environment": "node docker/setup-environment.mjs",
+    "dev": "npm run build -w shared && dotenv -e .env --no-expand -- concurrently -k -n api,web \"npm run dev -w server\" \"npm run dev -w web\"",
+    "build": "npm run build -w shared && npm run build -w server && npm run build -w web",
+    "check": "npm run build -w shared && npm run check --workspaces --if-present && tsc -p tsconfig.tests.json",
+    "test": "npm run build -w shared && node --import tsx --test --test-isolation=none shared/tests/*.test.ts server/tests/*.test.ts",
+    "test:database": "npm run build -w shared && npm run build -w server && node docker/with-test-database.mjs node --import tsx --test --test-isolation=none server/tests/api.integration.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify:infrastructure": "node --import tsx docker/verify.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "concurrently": "^9.2.0",
+    "dotenv-cli": "^11.0.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "yaml": "^2.8.1"
+  }
+}
