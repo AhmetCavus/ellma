@@ -32,7 +32,14 @@ function at(key: string, hours: number): string {
 }
 
 function session(start: string, end: string | null, goal: string | null = goalId): FocusSession {
-  return { id: "b".repeat(24), taskId: null, goalId: goal, startedAt: start, endedAt: end };
+  return {
+    id: "b".repeat(24),
+    taskId: null,
+    goalId: goal,
+    startedAt: start,
+    endedAt: end,
+    taskIds: [],
+  };
 }
 
 test("sessions crossing midnight count toward both days", () => {
@@ -80,6 +87,32 @@ test("running sessions count up to now", () => {
   const now = new Date(at("2026-11-17", 10));
   const review = reviewWeek("2026-11-16", [session(at("2026-11-17", 9), null)], [goal], [], now);
   assert.equal(review.totalSeconds, 3600);
+});
+
+test("a running multiple focus counts in equal shares per step", () => {
+  const otherGoal: Goal = { ...goal, id: "d".repeat(24), title: "Garden" };
+  const step = (id: string, goalOf: string): Task => ({
+    id: id.repeat(24),
+    title: id,
+    notes: "",
+    goalId: goalOf,
+    plannedOn: null,
+    estimateMinutes: null,
+    position: 0,
+    doneAt: null,
+    createdAt: at("2026-11-15", 10),
+  });
+  const tasks = [step("1", goalId), step("2", goalId), step("3", otherGoal.id)];
+  const running: FocusSession = {
+    ...session(at("2026-11-17", 9), null),
+    taskId: tasks[0]!.id,
+    taskIds: tasks.map((task) => task.id),
+  };
+  const now = new Date(at("2026-11-17", 10.5));
+  const review = reviewWeek("2026-11-16", [running], [goal, otherGoal], tasks, now);
+  assert.equal(review.totalSeconds, 5400);
+  assert.equal(review.goals.find((entry) => entry.goalId === goalId)?.seconds, 3600);
+  assert.equal(review.goals.find((entry) => entry.goalId === otherGoal.id)?.seconds, 1800);
 });
 
 test("active goals with targets appear without time", () => {

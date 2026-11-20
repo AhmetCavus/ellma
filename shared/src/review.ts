@@ -74,14 +74,24 @@ export function reviewWeek(
     }
   }
   for (const session of sessions) {
-    const entry = goalFor(session.goalId ?? UNASSIGNED);
+    // A running multiple focus already counts in equal shares, as it will once saved.
+    const goalIds =
+      session.taskIds.length > 1
+        ? session.taskIds.map(
+            (id) => tasks.find((task) => task.id === id)?.goalId ?? session.goalId,
+          )
+        : [session.goalId];
+    const entries = goalIds.map((goalId) => goalFor(goalId ?? UNASSIGNED));
     for (const [day, seconds] of splitByDay(session, now)) {
       const index = dayIndex.get(day);
       if (index === undefined) {
         continue;
       }
-      entry.seconds += seconds;
-      entry.perDay[index] = (entry.perDay[index] ?? 0) + seconds;
+      for (const entry of entries) {
+        const share = seconds / entries.length;
+        entry.seconds += share;
+        entry.perDay[index] = (entry.perDay[index] ?? 0) + share;
+      }
       perDay[index] = (perDay[index] ?? 0) + seconds;
     }
   }

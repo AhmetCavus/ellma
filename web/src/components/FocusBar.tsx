@@ -30,7 +30,11 @@ export function FocusBar() {
       ) : (
         <Icon name="pause" size={14} label={copy.focus.paused} />
       )}
-      <span className="focus-bar-title">{task?.title ?? goal?.title ?? copy.focus.freeFocus}</span>
+      <span className="focus-bar-title">
+        {run.taskIds.length > 1
+          ? copy.focus.multiTitle(run.taskIds.length)
+          : (task?.title ?? goal?.title ?? copy.focus.freeFocus)}
+      </span>
       <span className="focus-bar-clock">{formatClock(seconds)}</span>
       <Icon name="chevronRight" size={16} />
     </button>

@@ -179,3 +179,60 @@ export function goalAttention(pulse: GoalPulse): GoalAttention {
   }
   return pulse.nextTask ? null : "no_next_step";
 }
+
+/** The groups a goal can be dropped on; overdue is where steps end up, not a choice. */
+export const PLAN_TARGETS = ["today", "tomorrow", "later", "none"] as const;
+export type PlanTarget = (typeof PLAN_TARGETS)[number];
+
+/** The day a drop on a group plans for: "later" means the day after tomorrow. */
+export function planTargetDate(target: PlanTarget, today: string): string | null {
+  return target === "none"
+    ? null
+    : addDays(today, target === "today" ? 0 : target === "tomorrow" ? 1 : 2);
+}
+
+export type GoalPlan =
+  | { kind: "moves"; moves: { taskId: string; plannedOn: string | null }[] }
+  | { kind: "needs_step"; plannedOn: string | null };
+
+/**
+ * Dropping a goal on a day plans its next step for that day. Steps planned before that day
+ * would keep the goal in an earlier group, so they come along; nothing else moves. "No date"
+ * takes every planned step off the calendar. A goal without an open step needs one first.
+ */
+export function planGoal(
+  goalId: string,
+  tasks: readonly Task[],
+  target: PlanTarget,
+  today: string,
+): GoalPlan {
+  const plannedOn = planTargetDate(target, today);
+  const open = tasks
+    .filter((task) => task.goalId === goalId && !task.doneAt)
+    .sort((left, right) => left.position - right.position);
+  if (open.length === 0) {
+    return { kind: "needs_step", plannedOn };
+  }
+  const scheduled = open
+    .filter((task) => task.plannedOn !== null)
+    .sort((left, right) => (left.plannedOn ?? "").localeCompare(right.plannedOn ?? ""));
+  if (plannedOn === null) {
+    return {
+      kind: "moves",
+      moves: scheduled.map((task) => ({ taskId: task.id, plannedOn: null })),
+    };
+  }
+  const earlier = scheduled.filter((task) => (task.plannedOn ?? "") < plannedOn);
+  if (earlier.length > 0) {
+    return { kind: "moves", moves: earlier.map((task) => ({ taskId: task.id, plannedOn })) };
+  }
+  const next = scheduled[0] ?? open[0];
+  const alreadyThere =
+    next?.plannedOn !== null &&
+    next?.plannedOn !== undefined &&
+    dateGroupOf(next.plannedOn, today) === target;
+  return {
+    kind: "moves",
+    moves: next && !alreadyThere ? [{ taskId: next.id, plannedOn }] : [],
+  };
+}

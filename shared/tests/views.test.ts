@@ -12,6 +12,7 @@ import {
   groupGoals,
   groupSteps,
   isFiltering,
+  planGoal,
 } from "../src/views.ts";
 
 const today = "2026-11-18";
@@ -202,4 +203,45 @@ test("tags are user-defined, trimmed and kept once regardless of case", () => {
     allTags([goal("a", "A", { tags: ["Mind", "health"] }), goal("b", "B", { tags: ["Health"] })]),
     ["health", "Mind"],
   );
+});
+
+test("dropping a goal on a day plans its next step there and nothing more", () => {
+  const g = goal("p", "Plan").id;
+  const overdue = task("Overdue", g, "2026-11-16");
+  const onToday = task("Today", g, today);
+  const inFive = task("In five days", g, "2026-11-23");
+  const loose = task("Unplanned", g, null);
+  const tasks = [overdue, onToday, inFive, loose];
+  // Tomorrow: both steps before tomorrow move, so the goal lands in Tomorrow.
+  assert.deepEqual(planGoal(g, tasks, "tomorrow", today), {
+    kind: "moves",
+    moves: [
+      { taskId: overdue.id, plannedOn: tomorrow },
+      { taskId: onToday.id, plannedOn: tomorrow },
+    ],
+  });
+  // Earlier than every step: only the next one moves.
+  const later = [inFive, loose];
+  assert.deepEqual(planGoal(g, later, "today", today), {
+    kind: "moves",
+    moves: [{ taskId: inFive.id, plannedOn: today }],
+  });
+  // Already in that group: nothing to do.
+  assert.deepEqual(planGoal(g, later, "later", today), { kind: "moves", moves: [] });
+  // Nothing planned yet: the first open step gets the day.
+  assert.deepEqual(planGoal(g, [loose], "later", today), {
+    kind: "moves",
+    moves: [{ taskId: loose.id, plannedOn: "2026-11-20" }],
+  });
+  // No date takes planned steps off the calendar.
+  assert.equal(
+    planGoal(g, tasks, "none", today).kind === "moves" &&
+      (planGoal(g, tasks, "none", today) as { moves: unknown[] }).moves.length,
+    3,
+  );
+  // Without an open step the goal needs one first.
+  assert.deepEqual(planGoal(g, [task("Done", g, today, true)], "today", today), {
+    kind: "needs_step",
+    plannedOn: today,
+  });
 });

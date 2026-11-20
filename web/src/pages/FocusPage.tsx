@@ -49,7 +49,9 @@ function FocusDone({ outcome, onAgain }: { outcome: Outcome; onAgain: () => void
   }, [after]);
 
   const parts = [copy.focus.saved(copy.focus.savedDuration(outcome.seconds))];
-  if (outcome.goalId) {
+  if (outcome.steps > 1) {
+    parts.push(copy.focus.savedSplit(outcome.steps));
+  } else if (outcome.goalId) {
     parts.push(
       outcome.targetSeconds > 0
         ? copy.focus.savedWeek(
@@ -61,7 +63,8 @@ function FocusDone({ outcome, onAgain }: { outcome: Outcome; onAgain: () => void
         : copy.focus.savedWeekFree(hoursAndMinutes(outcome.weekSeconds)),
     );
   }
-  const sentence = `${parts.join(" · ")}.${outcome.completed ? ` ${copy.focus.savedTask}` : ""}`;
+  const completed = outcome.steps > 1 ? copy.focus.savedTasks : copy.focus.savedTask;
+  const sentence = `${parts.join(" · ")}.${outcome.completed ? ` ${completed}` : ""}`;
 
   return (
     <div className="focus-center focus-done">
@@ -104,8 +107,17 @@ export function FocusPage() {
   const paused = active ? null : store.paused;
   // The focus on screen: running, or paused with its time already saved.
   const run = active ?? paused;
-  const task = store.tasks.find((entry) => entry.id === run?.taskId);
-  const goal = store.goals.find((entry) => entry.id === (run?.goalId ?? task?.goalId));
+  // A multiple focus shares its time between two or more steps.
+  const multiIds = run?.taskIds ?? [];
+  const multi = multiIds.length > 1;
+  const multiTasks = multiIds.flatMap((id) => store.tasks.filter((entry) => entry.id === id));
+  const task = multi ? undefined : store.tasks.find((entry) => entry.id === run?.taskId);
+  const goal = multi
+    ? undefined
+    : store.goals.find((entry) => entry.id === (run?.goalId ?? task?.goalId));
+  const heading = multi
+    ? copy.focus.multiTitle(multiIds.length)
+    : (task?.title ?? goal?.title ?? copy.focus.freeFocus);
   const elapsed = active
     ? store.carriedSeconds + sessionSeconds(active, now)
     : (paused?.seconds ?? 0);
@@ -185,12 +197,12 @@ export function FocusPage() {
   useEffect(() => {
     const previous = document.title;
     if (run) {
-      document.title = `${active ? "" : `${copy.focus.paused} · `}${formatClock(elapsed)} · ${task?.title ?? copy.focus.freeFocus}`;
+      document.title = `${active ? "" : `${copy.focus.paused} · `}${formatClock(elapsed)} · ${heading}`;
     }
     return () => {
       document.title = previous;
     };
-  }, [active, copy, elapsed, run, task]);
+  }, [active, copy, elapsed, heading, run]);
 
   return (
     <div className="focus-screen">
@@ -246,10 +258,29 @@ export function FocusPage() {
             <AppleMark size={56} className="focus-apple" />
           )}
           <p className="eyebrow" role="status">
-            {paused ? copy.focus.paused : copy.focus.running}
+            {paused ? copy.focus.paused : multi ? copy.focus.multi : copy.focus.running}
           </p>
-          <h1 className="focus-task">{task?.title ?? goal?.title ?? copy.focus.freeFocus}</h1>
+          <h1 className="focus-task">{heading}</h1>
           {goal && <GoalTag goal={goal} />}
+          {multi && (
+            <ul className="focus-steps">
+              {multiTasks.map((entry) => (
+                <li key={entry.id} className={entry.doneAt ? "is-done" : ""}>
+                  <button
+                    type="button"
+                    className="task-check"
+                    aria-pressed={Boolean(entry.doneAt)}
+                    aria-label={entry.doneAt ? copy.tasks.markOpen : copy.tasks.markDone}
+                    onClick={() => void store.patchTask(entry.id, { done: !entry.doneAt })}
+                  >
+                    <Icon name="check" size={14} />
+                  </button>
+                  <span className="focus-step-title">{entry.title}</span>
+                  <GoalTag goal={store.goals.find((item) => item.id === entry.goalId)} />
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="focus-clock" aria-live="off">
             {formatClock(elapsed)}
           </div>
@@ -289,7 +320,9 @@ export function FocusPage() {
               >
                 <Icon name="stop" size={18} /> {saving ? copy.focus.saving : copy.focus.stop}
               </button>
-              <small id="focus-stop-help">{copy.focus.stopHelp}</small>
+              <small id="focus-stop-help">
+                {multi ? copy.focus.stopHelpMulti : copy.focus.stopHelp}
+              </small>
             </div>
             {run.taskId && (
               <div className="focus-action">
@@ -301,10 +334,16 @@ export function FocusPage() {
                   title={copy.focus.completeHint}
                   onClick={() => void stop(true)}
                 >
-                  <Icon name="check" size={18} /> {saving ? copy.focus.saving : copy.focus.complete}
+                  <Icon name="check" size={18} />{" "}
+                  {saving
+                    ? copy.focus.saving
+                    : multi
+                      ? copy.focus.completeAll
+                      : copy.focus.complete}
                 </button>
                 <small id="focus-complete-help">
-                  {copy.focus.completeHelp} <kbd>{copy.focus.completeHint}</kbd>
+                  {multi ? copy.focus.completeAllHelp : copy.focus.completeHelp}{" "}
+                  <kbd>{copy.focus.completeHint}</kbd>
                 </small>
               </div>
             )}

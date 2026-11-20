@@ -1,7 +1,6 @@
 import {
   allTags,
   EMPTY_TODAY_FILTER,
-  goalHours,
   groupSteps,
   hasAnyTag,
   isFiltering,
@@ -11,17 +10,16 @@ import {
   STEP_SORTS,
   toDateKey,
   type DateGroup,
-  type GoalPulse,
   type Task,
 } from "@ellma/shared";
-import { CountedDuration, CountedHours, CountedNumber } from "../components/Counted";
+import { CountedDuration, CountedNumber } from "../components/Counted";
 import { GoalApple } from "../components/GoalApple";
 import { Icon } from "../components/Icon";
 import { TaskComposer } from "../components/TaskComposer";
 import { TaskList } from "../components/TaskItem";
+import { TodayCards } from "../components/TodayCards";
 import { useEllma } from "../lib/ellma";
 import { usePreferences } from "../lib/preferences";
-import { linkHandler } from "../lib/router";
 import type { Session } from "../lib/session";
 import { useNow, useStore } from "../lib/store";
 import { useViewFilter, useViewLayout } from "../lib/viewFilter";
@@ -32,73 +30,6 @@ function greeting(copy: ReturnType<typeof usePreferences>["copy"], hour: number)
     return copy.today.greetingMorning;
   }
   return hour < 18 ? copy.today.greetingAfternoon : copy.today.greetingEvening;
-}
-
-/**
- * Card view: one goal's share of today, with its overdue and today steps, and a nudge to
- * pull a waiting step in when the day is still empty.
- */
-function GoalDay({
-  pulse,
-  overdue,
-  todays,
-  today,
-}: {
-  pulse: GoalPulse;
-  overdue: Task[];
-  todays: Task[];
-  today: string;
-}) {
-  const { copy } = usePreferences();
-  const store = useStore();
-  const { goal } = pulse;
-  const path = `/goals/${goal.id}`;
-  const empty = overdue.length + todays.length === 0;
-  return (
-    <section
-      className={`card goal-day goal-${pulse.state}`}
-      style={{ ["--goal" as string]: `var(--goal-${goal.color})` }}
-    >
-      <a className="goal-day-head" href={path} onClick={linkHandler(path)}>
-        <GoalApple
-          color={goal.color}
-          ratio={pulse.ratio}
-          size={44}
-          transitionName={`goal-${goal.id}`}
-        />
-        <span>
-          <h2>{goal.title}</h2>
-          <small>
-            <CountedHours seconds={pulse.weekSeconds} />
-            {pulse.targetSeconds > 0
-              ? copy.goals.weekOf("", goalHours(pulse.targetSeconds))
-              : copy.goals.weekFree("")}
-          </small>
-        </span>
-        <span className={`state state-${pulse.state}`}>{copy.goals.states[pulse.state]}</span>
-      </a>
-      <TaskList tasks={overdue} showGoal={false} showDay />
-      <TaskList tasks={todays} showGoal={false} />
-      {empty && (
-        <div className="goal-day-empty">
-          <p className="muted">{copy.today.noStepToday}</p>
-          {pulse.backlog.slice(0, 2).map((task) => (
-            <button
-              key={task.id}
-              type="button"
-              className="pull"
-              onClick={() => void store.patchTask(task.id, { plannedOn: today })}
-            >
-              <Icon name="plus" size={16} />
-              <span>{task.title}</span>
-              <em>{copy.today.pull}</em>
-            </button>
-          ))}
-        </div>
-      )}
-      <TaskComposer plannedOn={today} goalId={goal.id} placeholder={copy.today.addStep} />
-    </section>
-  );
 }
 
 export function TodayPage({ session }: { session: Session }) {
@@ -142,24 +73,25 @@ export function TodayPage({ session }: { session: Session }) {
   // Card view: every goal the tag filter keeps, those with something for today first.
   const activeIds = new Set(pulses.map((pulse) => pulse.goal.id));
   const ofGoal = (steps: Task[], goalId: string) => steps.filter((task) => task.goalId === goalId);
-  const cards = pulses
+  const cardSteps = (goalId: string) => ({
+    overdue: ofGoal(overdue, goalId),
+    todays: ofGoal(todays, goalId),
+  });
+  const hasToday = (goalId: string) => {
+    const steps = cardSteps(goalId);
+    return steps.overdue.length + steps.todays.length > 0;
+  };
+  const cardPulses = pulses
     .filter((pulse) => hasAnyTag(pulse.goal, filter.tags))
-    .map((pulse) => ({
-      pulse,
-      overdue: ofGoal(overdue, pulse.goal.id),
-      todays: ofGoal(todays, pulse.goal.id),
-    }))
     .sort(
       (left, right) =>
-        Number(right.overdue.length + right.todays.length > 0) -
-          Number(left.overdue.length + left.todays.length > 0) ||
+        Number(hasToday(right.goal.id)) - Number(hasToday(left.goal.id)) ||
         (filter.sort === "goal"
-          ? left.pulse.goal.title.localeCompare(right.pulse.goal.title, copy.dateLocale)
+          ? left.goal.title.localeCompare(right.goal.title, copy.dateLocale)
           : 0),
     );
   const isLoose = (task: Task) => !(task.goalId && activeIds.has(task.goalId));
-  const looseOverdue = overdue.filter(isLoose);
-  const looseToday = todays.filter(isLoose);
+  const loose = { overdue: overdue.filter(isLoose), todays: todays.filter(isLoose) };
   const dateLabel = now.toLocaleDateString(copy.dateLocale, {
     weekday: "long",
     day: "numeric",
@@ -229,26 +161,14 @@ export function TodayPage({ session }: { session: Session }) {
               </button>
             </p>
           )}
-          <div className="day-grid">
-            {cards.map((card) => (
-              <GoalDay key={card.pulse.goal.id} today={today} {...card} />
-            ))}
-            {anything && filter.tags.length === 0 && (
-              <section className="card subtle goal-day">
-                <div className="goal-day-head">
-                  <span className="loose-mark" aria-hidden="true" />
-                  <span>
-                    <h2>{copy.today.otherTitle}</h2>
-                    <small>{copy.today.otherHint}</small>
-                  </span>
-                </div>
-                <TaskList tasks={looseOverdue} showDay />
-                <TaskList tasks={looseToday} />
-                <TaskComposer plannedOn={today} />
-              </section>
-            )}
-          </div>
-          {cards.length === 0 && filter.tags.length > 0 && (
+          <TodayCards
+            pulses={cardPulses}
+            stepsOf={cardSteps}
+            loose={loose}
+            showLoose={anything && filter.tags.length === 0}
+            today={today}
+          />
+          {cardPulses.length === 0 && filter.tags.length > 0 && (
             <p className="empty">{copy.views.nothing}</p>
           )}
         </>

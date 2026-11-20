@@ -103,3 +103,61 @@ export function useViewLayout(
   );
   return [layout, setLayout];
 }
+
+/** The key of the "Without a goal" card, so it can be merged like a goal card. */
+export const LOOSE_CARD = "loose";
+
+const cardGroups = new Map<string, string[][]>();
+
+/**
+ * Cards merged on Today, as groups of card keys (goal ids or `LOOSE_CARD`). Kept like the
+ * layout: on this device with "Instant start", otherwise for the tab. A card is in at most
+ * one group; merging two groups joins them.
+ */
+export function useCardGroups(
+  userId: string,
+): [string[][], (left: string, right: string) => string[], (key: string) => void] {
+  const key = `${CACHE_PREFIX}merged-today-${userId}`;
+  const [groups, setGroupsState] = useState<string[][]>(() => {
+    const remembered = cardGroups.get(key);
+    if (remembered) {
+      return remembered;
+    }
+    try {
+      const raw: unknown = comfortStorageAllowed() ? JSON.parse(readStored(key) ?? "[]") : [];
+      return Array.isArray(raw)
+        ? raw
+            .filter((group): group is unknown[] => Array.isArray(group))
+            .map((group) => group.filter((entry): entry is string => typeof entry === "string"))
+            .filter((group) => group.length > 1)
+            .slice(0, 50)
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const save = useCallback(
+    (next: string[][]) => {
+      cardGroups.set(key, next);
+      if (comfortStorageAllowed()) {
+        writeStored(key, JSON.stringify(next));
+      }
+      setGroupsState(next);
+    },
+    [key],
+  );
+  const merge = useCallback(
+    (left: string, right: string) => {
+      const of = (card: string) => groups.find((group) => group.includes(card)) ?? [card];
+      const joined = [...new Set([...of(right), ...of(left)])];
+      save([...groups.filter((group) => !group.includes(left) && !group.includes(right)), joined]);
+      return joined;
+    },
+    [groups, save],
+  );
+  const split = useCallback(
+    (card: string) => save(groups.filter((group) => !group.includes(card))),
+    [groups, save],
+  );
+  return [groups, merge, split];
+}

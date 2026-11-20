@@ -10,6 +10,7 @@ function toSession(record: StoredSession): FocusSession {
     goalId: record.goalId ?? null,
     startedAt: record.startedAt.toISOString(),
     endedAt: record.endedAt ? record.endedAt.toISOString() : null,
+    taskIds: Array.isArray(record.taskIds) ? record.taskIds.map(String) : [],
   });
 }
 
@@ -30,6 +31,18 @@ export async function listOpen(ownerId: string): Promise<FocusSession[]> {
 
 export async function endSession(ownerId: string, id: string, endedAt: Date): Promise<void> {
   await FocusSessionModel.model.updateOne({ _id: id, ownerId, endedAt: null }, { endedAt });
+}
+
+/** Ends a running session as the first slice of a multiple focus, holding one step. */
+export async function endAsSlice(
+  ownerId: string,
+  id: string,
+  slice: { taskId: string | null; goalId: string | null; endedAt: Date },
+): Promise<void> {
+  await FocusSessionModel.model.updateOne(
+    { _id: id, ownerId, endedAt: null },
+    { ...slice, taskIds: [] },
+  );
 }
 
 export async function createSession(record: FocusSessionRecord): Promise<FocusSession> {

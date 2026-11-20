@@ -204,6 +204,63 @@ test("full goal → task → focus → review flow, isolated per user", async ()
   assert.equal(afterDelete.json.data[0].goalId, null);
 });
 
+test("multiple focus splits its time evenly into one session per step", async () => {
+  const carol = await account("carol");
+  const dave = await account("dave");
+  const goal = await call("POST", "/api/ellma/goals", carol, {
+    title: "Write a book",
+    weeklyTargetMinutes: 120,
+  });
+  const other = await call("POST", "/api/ellma/goals", carol, { title: "Garden" });
+  const ids: string[] = [];
+  for (const [title, goalId] of [
+    ["Outline", goal.json.data.id],
+    ["Chapter one", goal.json.data.id],
+    ["Plant tulips", other.json.data.id],
+  ]) {
+    ids.push((await call("POST", "/api/ellma/tasks", carol, { title, goalId })).json.data.id);
+  }
+  // Someone else's step can't be part of your focus.
+  assert.equal(
+    (await call("POST", "/api/ellma/focus/start", dave, { taskIds: [ids[0], ids[1]] })).status,
+    404,
+  );
+  const started = await call("POST", "/api/ellma/focus/start", carol, { taskIds: ids });
+  assert.equal(started.status, 200, JSON.stringify(started.json));
+  assert.deepEqual(started.json.data.active.taskIds, ids);
+  assert.equal(started.json.data.active.taskId, ids[0]);
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  const stopped = await call("POST", "/api/ellma/focus/stop", carol, { completeTask: true });
+  assert.deepEqual(stopped.json.data.stopped.taskIds, ids);
+  assert.equal(stopped.json.data.completedTasks.length, 3);
+  assert.ok(stopped.json.data.completedTasks.every((task: any) => task.doneAt));
+
+  const from = new Date(Date.now() - 3600_000).toISOString();
+  const to = new Date(Date.now() + 60_000).toISOString();
+  const sessions = (await call("GET", `/api/ellma/focus/sessions?from=${from}&to=${to}`, carol))
+    .json.data;
+  assert.equal(sessions.length, 3);
+  assert.deepEqual(
+    sessions.map((session: any) => session.taskId),
+    ids,
+  );
+  assert.ok(sessions.every((session: any) => session.taskIds.length === 0 && session.endedAt));
+  // Back to back, covering exactly the time that ran, in equal parts.
+  const span = Date.parse(sessions[2].endedAt) - Date.parse(sessions[0].startedAt);
+  assert.equal(
+    Date.parse(stopped.json.data.stopped.endedAt) - Date.parse(stopped.json.data.stopped.startedAt),
+    span,
+  );
+  for (let index = 0; index < 3; index += 1) {
+    if (index > 0) {
+      assert.equal(sessions[index].startedAt, sessions[index - 1].endedAt);
+    }
+    const length = Date.parse(sessions[index].endedAt) - Date.parse(sessions[index].startedAt);
+    assert.ok(Math.abs(length - span / 3) <= 1, `slice ${index} is a third (${length}/${span})`);
+  }
+  assert.equal(sessions[2].goalId, other.json.data.id);
+});
+
 test("validates input", async () => {
   const token = await account("carol");
   assert.equal((await call("POST", "/api/ellma/goals", token, { title: "" })).status, 400);

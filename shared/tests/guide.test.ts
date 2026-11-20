@@ -52,6 +52,7 @@ function session(goalId: string, hours: number, running = false): FocusSession {
     goalId,
     startedAt: new Date(start).toISOString(),
     endedAt: running ? null : new Date(start + hours * 3600_000).toISOString(),
+    taskIds: [],
   };
 }
 

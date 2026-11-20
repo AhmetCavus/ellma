@@ -4160,3 +4160,241 @@ li:not(.journey-done) > button.journey-node:hover {
 .focus-bar.is-paused {
   color: var(--muted);
 }
+
+/* ───────── Drag and drop: goals onto days, Today cards onto each other ───────── */
+.goal-card {
+  position: relative;
+}
+
+.goal-card[draggable="true"],
+.goal-day[draggable="true"] {
+  cursor: grab;
+}
+
+.goal-card a,
+.goal-card button,
+.goal-day a,
+.goal-day button,
+.goal-day input {
+  cursor: pointer;
+}
+
+.goal-day input {
+  cursor: text;
+}
+
+.goal-card.is-dragging,
+.goal-day.is-dragging {
+  opacity: 0.45;
+}
+
+.goal-card-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Leave room for the plan button so the badge never sits under it. */
+.goal-card-top {
+  padding-right: 34px;
+}
+
+.menu-title {
+  margin: 4px 10px 6px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.date-group.is-droppable {
+  padding: 10px;
+  margin-inline: -10px;
+  border: 2px dashed color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: 22px;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.date-group.is-drop-target,
+.goal-day.is-drop-target {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.drop-zone {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  margin: 0;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.goal-day {
+  position: relative;
+}
+
+.goal-day.is-drop-target {
+  outline: 3px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+.drop-label {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  z-index: 2;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.goal-day-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.goal-day-top > .goal-day-head {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-day-merged {
+  --goal: var(--accent);
+}
+
+.merged-apples {
+  display: flex;
+  flex: none;
+}
+
+.merged-apples > * + * {
+  margin-left: -10px;
+}
+
+.loose-mark.small {
+  width: 30px;
+  height: 30px;
+}
+
+.goal-day-actions {
+  margin-top: 6px;
+}
+
+/* ───────── Multiple focus ───────── */
+.multi-focus-group {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.multi-focus-group legend {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.form .multi-focus-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.form .multi-focus-item.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.multi-focus-item input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  accent-color: var(--accent);
+}
+
+.multi-focus-item > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.multi-focus-title {
+  overflow-wrap: anywhere;
+}
+
+.focus-steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  width: min(420px, 100%);
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.focus-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 3fr) minmax(0, 2fr);
+  align-items: center;
+  gap: 4px 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.focus-step-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Goal names stay on one line next to a step, cut short when long. */
+.focus-center {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.focus-steps .goal-tag {
+  justify-self: end;
+  max-width: 100%;
+}
+
+.focus-steps .goal-tag span {
+  min-width: 0;
+}
+
+.focus-steps .goal-tag span,
+.multi-focus-item .goal-tag span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focus-steps li.is-done .focus-step-title {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.focus-steps li.is-done .task-check {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}

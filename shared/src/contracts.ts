@@ -30,6 +30,8 @@ export const LIMITS = {
   sessionHours: 16,
   tag: 30,
   tagsPerGoal: 10,
+  /** Steps one multiple focus can hold. */
+  focusItems: 8,
 } as const;
 
 const title = z.string().trim().min(1, "required").max(LIMITS.title);
@@ -116,12 +118,23 @@ export const focusSessionSchema = z.object({
   goalId: identifier.nullable(),
   startedAt: isoTimestamp,
   endedAt: isoTimestamp.nullable(),
+  /**
+   * The steps of a running multiple focus (two or more). When it ends, the server saves it
+   * as back-to-back equal slices, one per step, so saved sessions always hold one step.
+   */
+  taskIds: z.array(identifier).default([]),
 });
 export type FocusSession = z.infer<typeof focusSessionSchema>;
 
 export const focusStartSchema = z.object({
   taskId: identifier.nullable().default(null),
   goalId: identifier.nullable().default(null),
+  /** Two or more steps start a multiple focus; the time is split evenly between them. */
+  taskIds: z
+    .array(identifier)
+    .max(LIMITS.focusItems)
+    .default([])
+    .transform((ids) => [...new Set(ids)]),
 });
 export type FocusStart = z.input<typeof focusStartSchema>;
 
@@ -155,6 +168,8 @@ export const sessionQuerySchema = z.object({
 export const focusStateSchema = z.object({
   active: focusSessionSchema.nullable(),
   completedTask: taskSchema.nullable().default(null),
+  /** Every step a stop checked off (all steps of a multiple focus). */
+  completedTasks: z.array(taskSchema).default([]),
   /** The session that a stop just saved, as stored. */
   stopped: focusSessionSchema.nullable().default(null),
 });
