@@ -10,6 +10,8 @@ export const en = {
     lead: "Ellma keeps your goals in view, listens when you talk, and always knows your next small step. Every hour you invest fills an apple, until it's ripe.",
     primary: "Meet Ellma",
     secondary: "Log in",
+    github: "GitHub",
+    githubHint: "Source code on GitHub (opens in a new tab)",
     demo: {
       caption: "This is Ellma at work. Pick a sentence to try it.",
       goal: "Run a half marathon",
@@ -354,7 +356,7 @@ export const en = {
     greetingMorning: "Good morning",
     greetingAfternoon: "Good afternoon",
     greetingEvening: "Good evening",
-    lead: "Your day, sorted by goal. One small step per goal is plenty.",
+    lead: "Your steps by day, today first. One small step per goal is plenty.",
     noStepToday: "No step for today yet.",
     pull: "Do today",
     waiting: "Waiting for a day",
@@ -408,7 +410,7 @@ export const en = {
     states: {
       ripe: "Ripe this week",
       on_track: "On track",
-      behind: "Needs attention",
+      behind: "Behind this week",
       resting: "Resting",
     },
     journey: "Journey",
@@ -451,6 +453,14 @@ export const en = {
       "Delete this goal? Its tasks and logged time stay, but are no longer linked to a goal.",
     empty: "A goal is something worth your best hours. Start with one.",
     showInactive: "Show reached and archived",
+    attention: { step_overdue: "Step overdue", no_next_step: "No next step" },
+    deadline: (date: string) => `Target ${date}`,
+    tags: "Tags",
+    tagPlaceholder: "New or existing tag, e.g. Health",
+    addTag: "Add tag",
+    removeTag: (tag: string) => `Remove tag ${tag}`,
+    tagLimit: "Up to 10 tags per goal.",
+    groupedHint: "Grouped by the day of each goal's next planned step.",
     back: "All goals",
     colors: {
       apple: "Apple red",
@@ -464,12 +474,65 @@ export const en = {
     },
   },
 
+  views: {
+    label: "Filter and sort",
+    groups: {
+      overdue: "Overdue",
+      today: "Today",
+      tomorrow: "Tomorrow",
+      later: "Later",
+      none: "No date",
+    },
+    tags: "Tags",
+    status: "Status",
+    sort: "Sort",
+    noTags: "Add tags to a goal when you edit it, then filter by them here.",
+    active: (list: string) => `Filtered by ${list}`,
+    reset: "Reset filters",
+    nothing: "Nothing matches these filters.",
+    goalSorts: { position: "Your order", deadline: "Target date", title: "Title" },
+    stepSorts: { position: "Your order", goal: "Goal", title: "Step title" },
+    stepStatuses: { open: "Open", done: "Done" },
+    moveOverdue: "Move all to today",
+    layout: "Layout",
+    cards: "Card view",
+    list: "List view",
+    overdueNote: (count: number) =>
+      count === 1 ? "1 step is overdue." : `${count} steps are overdue.`,
+  },
+
   focus: {
     title: "Focus",
     start: "Start focus",
-    stop: "Stop",
-    complete: "Complete",
+    stop: "End focus",
+    complete: "Complete task",
     completeHint: "⌘/Ctrl + Enter",
+    stopHelp: "Saves the time. The task stays open.",
+    pause: "Pause",
+    resume: "Resume",
+    paused: "Paused",
+    pauseHelp: "Saves the time so far. Resume when you are ready.",
+    pausedNote: "The time so far is saved. Resume when you are ready.",
+    pauseFailed: "The pause could not be saved. Your timer keeps running, please try again.",
+    resumeFailed: "The focus could not be resumed. Please try again.",
+    completeHelp: "Saves the time and checks the task off.",
+    saving: "Saving…",
+    saveFailed: "The session could not be saved. Your timer keeps running, please try again.",
+    saved: (duration: string) => `${duration} saved`,
+    savedWeek: (done: string, target: string) => `${done} of ${target} hours this week`,
+    savedWeekFree: (done: string) => `${done} hours this week`,
+    savedTask: "Task completed.",
+    savedDuration: (seconds: number) => {
+      const total = Math.max(0, Math.round(seconds / 60));
+      const hours = Math.floor(total / 60);
+      const rest = total % 60;
+      if (hours === 0) {
+        return total === 1 ? "1 minute" : `${total} minutes`;
+      }
+      return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
+    },
+    backToToday: "Back to Today",
+    again: "Start another focus",
     pickTask: "What will you focus on?",
     freeFocus: "Free focus",
     running: "Focusing",
@@ -477,6 +540,16 @@ export const en = {
     sessionSaved: (duration: string) => `${duration} logged.`,
     taskCompleted: "Task done. Well earned.",
     open: "Open focus mode",
+    scenes: {
+      pendulum: "Pendulum",
+      bright: "Pendulum · bright",
+      melodic: "Pendulum · melodic",
+      vintage: "Pendulum · vintage",
+      warm: "Pendulum · warm",
+      night: "Pendulum · night",
+    },
+    muteSound: "Mute the focus sound",
+    unmuteSound: "Play the focus sound",
     logTime: "Log time",
     logTitle: "Log time",
     minutes: "Minutes",
@@ -506,9 +579,34 @@ export const en = {
     reflectPrompt: "Let's look back at my week. What went well and what should I change?",
   },
 
+  reminder: {
+    tabTitle: (task: string) =>
+      task ? `🍎 Ellma: “${task}” is waiting` : "🍎 Ellma: your next step is waiting",
+  },
+
   account: {
     title: "Your account",
     lead: "Keep your sign-in safe. Your goals depend on it.",
+    behaviour: {
+      title: "Sounds and reminders",
+      lead: "How Ellma behaves on this device. Everything here can be switched off.",
+      sounds: {
+        title: "Sounds",
+        text: "Short, quiet sounds when you start or stop focus, finish a step or reach a milestone.",
+      },
+      ambience: {
+        title: "Focus sound",
+        text: "Calm pendulum pieces with quiet pauses, brighter in the morning and softer at night. You can also mute it in focus mode.",
+      },
+      notificationSounds: {
+        title: "Notification sounds",
+        text: "One soft sound when Ellma has done something for you or has news, and the reminder sound. Your focus sound is not affected.",
+      },
+      reminders: {
+        title: "Reminders",
+        text: "When a step is waiting and you have been away from this tab for 20 minutes, Ellma plays a soft sound and shows the step in the tab title. At most three times, with an hour in between.",
+      },
+    },
     profileTitle: "Profile",
     name: "Name",
     role: "Role",
@@ -678,7 +776,7 @@ export const en = {
           body: [
             "Your account: first name, email address and a hashed password.",
             "If you switch on two-factor sign-in: the key of your authenticator app in encrypted form, and your backup codes as fingerprints only. If you ask for a password reset: a fingerprint of the reset link until it is used or expires after 30 minutes.",
-            "Your content: goals with their reasons, milestones and weekly targets, steps, focus sessions and logged time, daily notes, and the conversation with Ellma.",
+            "Your content: goals with their reasons, milestones, weekly targets and your own tags, steps, focus sessions and logged time, daily notes, and the conversation with Ellma.",
             "We use this data only to provide Ellma to you (Art. 6(1)(b) GDPR). There is no advertising, no analytics and no profiling.",
           ],
         },
@@ -705,8 +803,8 @@ export const en = {
         {
           title: "Cookies and storage in your browser",
           body: [
-            "Ellma sets no cookies and uses no tracking. It uses your browser's local storage: your sign-in, language, theme and a few settings of the guide bar are necessary for the app to work.",
-            "For an instant start, Ellma can also keep a copy of your goals on this device. You can switch that off at any time under “Cookie settings”.",
+            "Ellma sets no cookies and uses no tracking. It uses your browser's local storage: your sign-in, language, theme, your sound and reminder settings and a few settings of the guide bar are necessary for the app to work.",
+            "For an instant start, Ellma can also keep a copy of your goals and a paused focus on this device and remember your filters on Goals and Today and the card or list view on Today. You can switch that off at any time under “Cookie settings”.",
           ],
         },
         {
@@ -796,11 +894,11 @@ export const en = {
       lead: "Ellma sets no cookies and uses no tracking. It only uses storage in your browser, and you decide how much.",
       necessaryTitle: "Necessary",
       necessaryText:
-        "Your sign-in, language, theme and the settings of Ellma's guide bar. Without these the app does not work.",
+        "Your sign-in, language, theme, your sound and reminder settings and the settings of Ellma's guide bar. Without these the app does not work.",
       alwaysOn: "Always on",
       comfortTitle: "Instant start",
       comfortText:
-        "Keeps a copy of your goals and steps on this device so Ellma opens without waiting. Switch it off on shared devices.",
+        "Keeps a copy of your goals and steps on this device so Ellma opens without waiting (a paused focus included), and remembers your filters on Goals and Today and the card or list view on Today. Switch it off on shared devices.",
       trackingTitle: "Statistics and marketing",
       trackingText: "None. There is nothing to switch off.",
       never: "Not used",
@@ -855,7 +953,9 @@ export const en = {
         list: [
           { combo: "F", label: "Focus mode" },
           { combo: "⌘/Ctrl ↵", label: "Complete the task in focus" },
+          { combo: "P", label: "Pause / resume the session" },
           { combo: "S", label: "Stop and save the session" },
+          { combo: "M", label: "Focus sound on / off" },
         ],
       },
     ],

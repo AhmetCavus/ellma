@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { goalHours, type Goal, type GoalPulse } from "@ellma/shared";
+import {
+  allTags,
+  EMPTY_GOALS_FILTER,
+  GOAL_FILTER_STATUSES,
+  GOAL_SORTS,
+  goalAttention,
+  goalHours,
+  groupGoals,
+  type Goal,
+  type GoalPulse,
+} from "@ellma/shared";
 import { CountedHours } from "../components/Counted";
 import { GoalApple } from "../components/GoalApple";
 import { Icon } from "../components/Icon";
@@ -7,6 +17,8 @@ import { useEllma } from "../lib/ellma";
 import { usePreferences } from "../lib/preferences";
 import { linkHandler, navigate } from "../lib/router";
 import { useStore } from "../lib/store";
+import { useViewFilter } from "../lib/viewFilter";
+import { ViewControls } from "../components/ViewControls";
 
 /** Home. Every goal is an apple with its week, its why and the one step that comes next. */
 export function GoalsPage() {
@@ -14,8 +26,17 @@ export function GoalsPage() {
   const store = useStore();
   const ellma = useEllma();
   const [showInactive, setShowInactive] = useState(false);
-  const { pulses } = ellma.guide;
+  const { pulses, today } = ellma.guide;
   const inactive = store.goals.filter((goal) => goal.status !== "active");
+  const [filter, setFilter, resetFilter] = useViewFilter(
+    "goals",
+    store.userId,
+    EMPTY_GOALS_FILTER,
+    GOAL_FILTER_STATUSES,
+    GOAL_SORTS,
+  );
+  const groups = groupGoals(pulses, store.tasks, today, filter);
+  const tags = allTags(store.goals.filter((goal) => goal.status === "active"));
 
   return (
     <div className="page">
@@ -40,11 +61,41 @@ export function GoalsPage() {
         </div>
       )}
 
-      <ul className="goal-grid">
-        {pulses.map((pulse) => (
-          <GoalCard key={pulse.goal.id} pulse={pulse} />
-        ))}
-      </ul>
+      {pulses.length > 0 && (
+        <>
+          <ViewControls
+            tags={tags}
+            statuses={GOAL_FILTER_STATUSES.map((value) => ({
+              value,
+              label: copy.goals.states[value],
+            }))}
+            sorts={GOAL_SORTS.map((value) => ({ value, label: copy.views.goalSorts[value] }))}
+            filter={filter}
+            onChange={setFilter}
+            onReset={resetFilter}
+          />
+          <p className="hint view-hint">{copy.goals.groupedHint}</p>
+        </>
+      )}
+
+      {pulses.length > 0 && groups.length === 0 && <p className="empty">{copy.views.nothing}</p>}
+
+      {groups.map(({ group, items }) => (
+        <section
+          key={group}
+          className={`date-group date-group-${group}`}
+          aria-labelledby={`goals-${group}`}
+        >
+          <h2 id={`goals-${group}`} className="date-group-title">
+            {copy.views.groups[group]} <span className="date-group-count">{items.length}</span>
+          </h2>
+          <ul className="goal-grid">
+            {items.map((pulse) => (
+              <GoalCard key={pulse.goal.id} pulse={pulse} />
+            ))}
+          </ul>
+        </section>
+      ))}
 
       {inactive.length > 0 && (
         <>
@@ -77,6 +128,7 @@ function GoalCard({ pulse }: { pulse: GoalPulse }) {
   const ellma = useEllma();
   const { goal, nextTask } = pulse;
   const path = `/goals/${goal.id}`;
+  const attention = goalAttention(pulse);
   return (
     <li
       className={`goal-card goal-${pulse.state}`}
@@ -91,8 +143,11 @@ function GoalCard({ pulse }: { pulse: GoalPulse }) {
         />
         <span className="goal-card-text">
           <span className="goal-card-top">
-            <span className={`state state-${pulse.state}`}>{copy.goals.states[pulse.state]}</span>
-            {pulse.daysLeft !== null && <span>{copy.goals.daysLeft(pulse.daysLeft)}</span>}
+            {attention ? (
+              <span className="state state-behind">{copy.goals.attention[attention]}</span>
+            ) : (
+              <span className={`state state-${pulse.state}`}>{copy.goals.states[pulse.state]}</span>
+            )}
           </span>
           <span className="goal-card-title">{goal.title}</span>
           <span className="goal-card-week">
@@ -105,6 +160,28 @@ function GoalCard({ pulse }: { pulse: GoalPulse }) {
           </span>
         </span>
       </a>
+      {(goal.targetDate || goal.tags.length > 0) && (
+        <p className="goal-card-facts">
+          {goal.targetDate && pulse.daysLeft !== null && (
+            <span className={`goal-deadline ${pulse.daysLeft < 0 ? "is-late" : ""}`}>
+              <Icon name="flag" size={14} />
+              {copy.goals.deadline(
+                new Date(`${goal.targetDate}T12:00:00`).toLocaleDateString(copy.dateLocale, {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                }),
+              )}
+              <small>{copy.goals.daysLeft(pulse.daysLeft)}</small>
+            </span>
+          )}
+          {goal.tags.map((tag) => (
+            <span key={tag} className="tag">
+              #{tag}
+            </span>
+          ))}
+        </p>
+      )}
       {goal.why && <p className="goal-card-why">{goal.why}</p>}
       {pulse.milestonesTotal > 0 && (
         <p

@@ -6,4 +6,6 @@ export * from "./locales/index.js";
 export * from "./api/client.js";
 export * from "./assistant.js";
 export * from "./guide.js";
+export * from "./reminder.js";
+export * from "./views.js";
 export * from "./intents.js";

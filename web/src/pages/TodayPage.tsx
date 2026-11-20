@@ -1,4 +1,19 @@
-import { goalHours, reviewWeek, startOfWeek, toDateKey, type GoalPulse } from "@ellma/shared";
+import {
+  allTags,
+  EMPTY_TODAY_FILTER,
+  goalHours,
+  groupSteps,
+  hasAnyTag,
+  isFiltering,
+  reviewWeek,
+  startOfWeek,
+  STEP_FILTER_STATUSES,
+  STEP_SORTS,
+  toDateKey,
+  type DateGroup,
+  type GoalPulse,
+  type Task,
+} from "@ellma/shared";
 import { CountedDuration, CountedHours, CountedNumber } from "../components/Counted";
 import { GoalApple } from "../components/GoalApple";
 import { Icon } from "../components/Icon";
@@ -9,6 +24,8 @@ import { usePreferences } from "../lib/preferences";
 import { linkHandler } from "../lib/router";
 import type { Session } from "../lib/session";
 import { useNow, useStore } from "../lib/store";
+import { useViewFilter, useViewLayout } from "../lib/viewFilter";
+import { ViewControls } from "../components/ViewControls";
 
 function greeting(copy: ReturnType<typeof usePreferences>["copy"], hour: number): string {
   if (hour < 12) {
@@ -17,13 +34,26 @@ function greeting(copy: ReturnType<typeof usePreferences>["copy"], hour: number)
   return hour < 18 ? copy.today.greetingAfternoon : copy.today.greetingEvening;
 }
 
-/** One goal's share of today: its steps, and a nudge to pick one when the day is empty. */
-function GoalDay({ pulse, today }: { pulse: GoalPulse; today: string }) {
+/**
+ * Card view: one goal's share of today, with its overdue and today steps, and a nudge to
+ * pull a waiting step in when the day is still empty.
+ */
+function GoalDay({
+  pulse,
+  overdue,
+  todays,
+  today,
+}: {
+  pulse: GoalPulse;
+  overdue: Task[];
+  todays: Task[];
+  today: string;
+}) {
   const { copy } = usePreferences();
   const store = useStore();
   const { goal } = pulse;
   const path = `/goals/${goal.id}`;
-  const empty = pulse.todayTasks.length + pulse.overdueTasks.length === 0;
+  const empty = overdue.length + todays.length === 0;
   return (
     <section
       className={`card goal-day goal-${pulse.state}`}
@@ -47,8 +77,8 @@ function GoalDay({ pulse, today }: { pulse: GoalPulse; today: string }) {
         </span>
         <span className={`state state-${pulse.state}`}>{copy.goals.states[pulse.state]}</span>
       </a>
-      <TaskList tasks={pulse.overdueTasks} showGoal={false} showDay />
-      <TaskList tasks={pulse.todayTasks} showGoal={false} />
+      <TaskList tasks={overdue} showGoal={false} showDay />
+      <TaskList tasks={todays} showGoal={false} />
       {empty && (
         <div className="goal-day-empty">
           <p className="muted">{copy.today.noStepToday}</p>
@@ -85,31 +115,56 @@ export function TodayPage({ session }: { session: Session }) {
     store.tasks,
     now,
   );
-  const activeIds = new Set(pulses.map((pulse) => pulse.goal.id));
-  // Steps of no goal (or of a goal that is no longer active) still need a home.
-  const loose = store.tasks.filter(
-    (task) => !task.doneAt && !(task.goalId && activeIds.has(task.goalId)),
+  const [filter, setFilter, resetFilter] = useViewFilter(
+    "today",
+    store.userId,
+    EMPTY_TODAY_FILTER,
+    STEP_FILTER_STATUSES,
+    STEP_SORTS,
   );
-  const looseOverdue = loose.filter((task) => task.plannedOn && task.plannedOn < today);
-  const looseToday = loose
-    .filter((task) => task.plannedOn === today)
-    .sort((a, b) => a.position - b.position);
-  const looseLater = loose.filter((task) => !task.plannedOn);
+  const [layout, setLayout] = useViewLayout("today", store.userId);
+  const { open, done } = groupSteps(store.tasks, store.goals, today, filter, (task) =>
+    task.doneAt ? toDateKey(new Date(task.doneAt)) : null,
+  );
+  const stepsOf = (group: DateGroup): Task[] =>
+    open.find((entry) => entry.group === group)?.items ?? [];
+  const pulseOf = (goalId: string | null) => pulses.find((pulse) => pulse.goal.id === goalId);
   const doneToday = store.tasks.filter(
     (task) => task.doneAt && toDateKey(new Date(task.doneAt)) === today,
   );
+  const tags = allTags(store.goals.filter((goal) => goal.status === "active"));
+  const overdue = stepsOf("overdue");
+  const todays = stepsOf("today");
+  const showOpen = filter.statuses.length === 0 || filter.statuses.includes("open");
+  const anything = store.tasks.length > 0 || pulses.length > 0;
+  const moveOverdue = () =>
+    void Promise.all(overdue.map((task) => store.patchTask(task.id, { plannedOn: today })));
+  // Card view: every goal the tag filter keeps, those with something for today first.
+  const activeIds = new Set(pulses.map((pulse) => pulse.goal.id));
+  const ofGoal = (steps: Task[], goalId: string) => steps.filter((task) => task.goalId === goalId);
+  const cards = pulses
+    .filter((pulse) => hasAnyTag(pulse.goal, filter.tags))
+    .map((pulse) => ({
+      pulse,
+      overdue: ofGoal(overdue, pulse.goal.id),
+      todays: ofGoal(todays, pulse.goal.id),
+    }))
+    .sort(
+      (left, right) =>
+        Number(right.overdue.length + right.todays.length > 0) -
+          Number(left.overdue.length + left.todays.length > 0) ||
+        (filter.sort === "goal"
+          ? left.pulse.goal.title.localeCompare(right.pulse.goal.title, copy.dateLocale)
+          : 0),
+    );
+  const isLoose = (task: Task) => !(task.goalId && activeIds.has(task.goalId));
+  const looseOverdue = overdue.filter(isLoose);
+  const looseToday = todays.filter(isLoose);
   const dateLabel = now.toLocaleDateString(copy.dateLocale, {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
-  // Goals with something to do today come first.
-  const ordered = [...pulses].sort(
-    (left, right) =>
-      Number(right.todayTasks.length + right.overdueTasks.length > 0) -
-      Number(left.todayTasks.length + left.overdueTasks.length > 0),
-  );
-
   return (
     <div className="page">
       <header className="page-header">
@@ -148,37 +203,114 @@ export function TodayPage({ session }: { session: Session }) {
         </div>
       )}
 
-      <div className="day-grid">
-        {ordered.map((pulse) => (
-          <GoalDay key={pulse.goal.id} pulse={pulse} today={today} />
-        ))}
+      {anything && (
+        <ViewControls
+          tags={tags}
+          statuses={STEP_FILTER_STATUSES.map((value) => ({
+            value,
+            label: copy.views.stepStatuses[value],
+          }))}
+          sorts={STEP_SORTS.map((value) => ({ value, label: copy.views.stepSorts[value] }))}
+          filter={filter}
+          onChange={setFilter}
+          onReset={resetFilter}
+          layout={layout}
+          onLayout={setLayout}
+        />
+      )}
 
-        {(loose.length > 0 || pulses.length > 0) && (
-          <section className="card subtle goal-day">
-            <div className="goal-day-head">
-              <span className="loose-mark" aria-hidden="true" />
-              <span>
-                <h2>{copy.today.otherTitle}</h2>
-                <small>{copy.today.otherHint}</small>
-              </span>
-            </div>
-            <TaskList tasks={looseOverdue} showDay />
-            <TaskList tasks={looseToday} />
-            {looseLater.length > 0 && (
-              <>
-                <p className="eyebrow">{copy.today.waiting}</p>
-                <TaskList tasks={looseLater} />
-              </>
+      {layout === "cards" && showOpen && (
+        <>
+          {overdue.length > 0 && (
+            <p className="day-overdue-note">
+              <span>{copy.views.overdueNote(overdue.length)}</span>
+              <button type="button" className="button ghost small" onClick={moveOverdue}>
+                <Icon name="calendar" size={14} /> {copy.views.moveOverdue}
+              </button>
+            </p>
+          )}
+          <div className="day-grid">
+            {cards.map((card) => (
+              <GoalDay key={card.pulse.goal.id} today={today} {...card} />
+            ))}
+            {anything && filter.tags.length === 0 && (
+              <section className="card subtle goal-day">
+                <div className="goal-day-head">
+                  <span className="loose-mark" aria-hidden="true" />
+                  <span>
+                    <h2>{copy.today.otherTitle}</h2>
+                    <small>{copy.today.otherHint}</small>
+                  </span>
+                </div>
+                <TaskList tasks={looseOverdue} showDay />
+                <TaskList tasks={looseToday} />
+                <TaskComposer plannedOn={today} />
+              </section>
             )}
-            <TaskComposer plannedOn={today} />
+          </div>
+          {cards.length === 0 && filter.tags.length > 0 && (
+            <p className="empty">{copy.views.nothing}</p>
+          )}
+        </>
+      )}
+
+      <div className="day-sections">
+        {layout === "list" && overdue.length > 0 && (
+          <section className="card day-section day-section-overdue" aria-labelledby="day-overdue">
+            <header className="day-section-head">
+              <h2 id="day-overdue">
+                {copy.views.groups.overdue}{" "}
+                <span className="date-group-count">{overdue.length}</span>
+              </h2>
+              <button type="button" className="button ghost small" onClick={moveOverdue}>
+                <Icon name="calendar" size={14} /> {copy.views.moveOverdue}
+              </button>
+            </header>
+            <TaskList tasks={overdue} showDay focusLabel pulseOf={pulseOf} />
           </section>
         )}
+
+        {layout === "list" && showOpen && (
+          <section className="card day-section day-section-today" aria-labelledby="day-today">
+            <header className="day-section-head">
+              <h2 id="day-today">
+                {copy.views.groups.today} <span className="date-group-count">{todays.length}</span>
+              </h2>
+            </header>
+            <TaskList
+              tasks={todays}
+              focusLabel
+              pulseOf={pulseOf}
+              empty={isFiltering(filter) ? copy.views.nothing : copy.today.empty}
+            />
+            <TaskComposer plannedOn={today} placeholder={copy.today.addStep} />
+          </section>
+        )}
+
+        {(["tomorrow", "later", "none"] as const).map((group) => {
+          const steps = stepsOf(group);
+          if (steps.length === 0) {
+            return null;
+          }
+          return (
+            <details key={group} className="card subtle day-section day-section-folded">
+              <summary>
+                <h2>
+                  {copy.views.groups[group]}{" "}
+                  <span className="date-group-count">{steps.length}</span>
+                </h2>
+                <Icon name="chevronDown" size={18} />
+              </summary>
+              <TaskList tasks={steps} showDay={group === "later"} focusLabel pulseOf={pulseOf} />
+            </details>
+          );
+        })}
       </div>
 
-      {doneToday.length > 0 && (
+      {done.length > 0 && (
         <section className="card subtle done-today">
           <h2>{copy.today.done}</h2>
-          <TaskList tasks={doneToday} />
+          <TaskList tasks={done} pulseOf={pulseOf} />
         </section>
       )}
     </div>

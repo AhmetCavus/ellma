@@ -109,9 +109,27 @@ test("full goal → task → focus → review flow, isolated per user", async ()
     title: "Half marathon",
     weeklyTargetMinutes: 240,
     milestones: [{ id: "m1", title: "First 10k", doneAt: null }],
+    tags: ["Health", " health ", "Running"],
   });
   assert.equal(goal.status, 200, JSON.stringify(goal.json));
   const goalId = goal.json.data.id;
+  // Tags are the user's own words, kept once regardless of case and stored with the goal.
+  assert.deepEqual(goal.json.data.tags, ["Health", "Running"]);
+  const retagged = await call("PUT", `/api/ellma/goals/${goalId}`, alice, {
+    ...goal.json.data,
+    tags: ["Running"],
+  });
+  assert.equal(retagged.status, 200, JSON.stringify(retagged.json));
+  assert.deepEqual((await call("GET", "/api/ellma/goals", alice)).json.data[0].tags, ["Running"]);
+  assert.equal(
+    (
+      await call("PUT", `/api/ellma/goals/${goalId}`, alice, {
+        ...goal.json.data,
+        tags: ["x".repeat(31)],
+      })
+    ).status,
+    400,
+  );
 
   const task = await call("POST", "/api/ellma/tasks", alice, {
     title: "Run 5k",
@@ -149,6 +167,11 @@ test("full goal → task → focus → review flow, isolated per user", async ()
   const stopped = await call("POST", "/api/ellma/focus/stop", alice, { completeTask: true });
   assert.equal(stopped.json.data.active, null);
   assert.ok(stopped.json.data.completedTask.doneAt);
+  // The stop returns the session as saved, so the app can show the real time.
+  assert.equal(stopped.json.data.stopped.taskId, taskId);
+  assert.ok(stopped.json.data.stopped.endedAt);
+  const nothingRunning = await call("POST", "/api/ellma/focus/stop", alice, {});
+  assert.equal(nothingRunning.json.data.stopped, null);
 
   const logged = await call("POST", "/api/ellma/focus/sessions", alice, {
     goalId,

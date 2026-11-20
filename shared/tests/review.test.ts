@@ -21,6 +21,7 @@ const goal: Goal = {
   targetDate: null,
   status: "active",
   milestones: [],
+  tags: [],
   position: 0,
   createdAt: "2026-11-01T00:00:00.000Z",
   updatedAt: "2026-11-01T00:00:00.000Z",

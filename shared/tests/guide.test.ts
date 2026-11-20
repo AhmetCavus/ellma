@@ -20,6 +20,7 @@ function goal(id: string, title: string, weeklyHours = 4, extra: Partial<Goal> =
     targetDate: null,
     status: "active",
     milestones: [],
+    tags: [],
     position: 0,
     createdAt: stamp,
     updatedAt: stamp,

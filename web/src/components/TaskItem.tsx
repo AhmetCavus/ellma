@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { addDays, todayKey, type Task } from "@ellma/shared";
+import { addDays, goalHours, todayKey, type GoalPulse, type Task } from "@ellma/shared";
 import { usePreferences } from "../lib/preferences";
 import { useStore } from "../lib/store";
 import { navigate } from "../lib/router";
 import { celebrate as burst } from "../lib/motion";
-import { playChime } from "../lib/voice";
+import { playChime } from "../lib/sound";
 import { confirmAction } from "./Dialog";
+import { GoalApple } from "./GoalApple";
 import { GoalTag } from "./GoalDot";
 import { Icon } from "./Icon";
 import { TaskDialog } from "./TaskDialog";
@@ -14,10 +15,16 @@ export function TaskItem({
   task,
   showGoal = true,
   showDay = false,
+  focusLabel = false,
+  pulse,
 }: {
   task: Task;
   showGoal?: boolean;
   showDay?: boolean;
+  /** Shows "Start focus" as a labelled button instead of a quiet icon. */
+  focusLabel?: boolean;
+  /** The goal's week, so the row can show it as a small apple. */
+  pulse?: GoalPulse;
 }) {
   const { copy, locale } = usePreferences();
   const store = useStore();
@@ -63,7 +70,21 @@ export function TaskItem({
       <button type="button" className="task-main" onClick={() => setEditing(true)}>
         <span className="task-title">{task.title}</span>
         <span className="task-meta">
-          {showGoal && <GoalTag goal={goal} />}
+          {showGoal && pulse && goal && (
+            <span
+              className="goal-tag"
+              style={{ color: `var(--goal-${goal.color})` }}
+              title={
+                pulse.targetSeconds > 0
+                  ? copy.goals.weekOf(goalHours(pulse.weekSeconds), goalHours(pulse.targetSeconds))
+                  : copy.goals.weekFree(goalHours(pulse.weekSeconds))
+              }
+            >
+              <GoalApple color={goal.color} ratio={pulse.ratio} size={16} />
+              <span>{goal.title}</span>
+            </span>
+          )}
+          {showGoal && !pulse && <GoalTag goal={goal} />}
           {showDay && task.plannedOn && (
             <span className="task-day">
               {new Date(`${task.plannedOn}T12:00:00`).toLocaleDateString(copy.dateLocale, {
@@ -78,17 +99,20 @@ export function TaskItem({
           ) : null}
         </span>
       </button>
-      {!done && (
+      {!done && !isActive && (
         <button
           type="button"
-          className="icon-button task-focus"
+          className={
+            focusLabel ? "button small ghost task-focus-labelled" : "icon-button task-focus"
+          }
           aria-label={copy.tasks.startFocus}
           title={copy.tasks.startFocus}
           onClick={() => {
             void store.startFocus(task.id).then((started) => started && navigate("/focus"));
           }}
         >
-          <Icon name="play" size={16} />
+          <Icon name="play" size={focusLabel ? 14 : 16} />
+          {focusLabel && <span>{copy.tasks.startFocus}</span>}
         </button>
       )}
       <div className="menu-anchor">
@@ -152,11 +176,15 @@ export function TaskList({
   empty,
   showGoal,
   showDay,
+  focusLabel,
+  pulseOf,
 }: {
   tasks: Task[];
   empty?: string;
   showGoal?: boolean;
   showDay?: boolean;
+  focusLabel?: boolean;
+  pulseOf?: (goalId: string | null) => GoalPulse | undefined;
 }) {
   if (tasks.length === 0) {
     return empty ? <p className="empty">{empty}</p> : null;
@@ -164,7 +192,14 @@ export function TaskList({
   return (
     <ul className="task-list">
       {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} showGoal={showGoal} showDay={showDay} />
+        <TaskItem
+          key={task.id}
+          task={task}
+          showGoal={showGoal}
+          showDay={showDay}
+          focusLabel={focusLabel}
+          pulse={pulseOf?.(task.goalId)}
+        />
       ))}
     </ul>
   );

@@ -13,7 +13,7 @@ import { navigate } from "../lib/router";
 import { SHORTCUTS_EVENT } from "../lib/shortcuts";
 import { readStored, writeStored } from "../lib/storage";
 import { useNow, useStore } from "../lib/store";
-import { playChime } from "../lib/voice";
+import { playChime } from "../lib/sound";
 import { AppleMark } from "./AppleMark";
 import { confirmAction } from "./Dialog";
 import { EllmaOrb } from "./EllmaOrb";
@@ -86,7 +86,9 @@ function useNudge(step: GuideStep, name: string): Nudge {
       return {
         text: copy.guide.focus_running.text(what),
         extra: store.active && (
-          <span className="dock-clock">{formatClock(sessionSeconds(store.active, now))}</span>
+          <span className="dock-clock">
+            {formatClock(store.carriedSeconds + sessionSeconds(store.active, now))}
+          </span>
         ),
         primary: {
           label: copy.guide.focus_running.action,
@@ -381,7 +383,9 @@ export function EllmaDock({ name = "", solo = false }: { name?: string; solo?: b
   } else if (ellma.cheer) {
     line = (
       <div className="dock-line dock-cheer" key={ellma.cheer}>
-        <p className="dock-reply">{ellma.cheer}</p>
+        <p className="dock-reply" role="status">
+          {ellma.cheer}
+        </p>
       </div>
     );
   } else if (introStep) {
@@ -506,7 +510,7 @@ export function EllmaDock({ name = "", solo = false }: { name?: string; solo?: b
           title={compact && !solo ? copy.dock.expand : `${orbLabel} (⌘/Ctrl J)`}
           aria-pressed={listening}
         >
-          <EllmaOrb phase={phase} size={compact ? 34 : 40} />
+          <EllmaOrb phase={phase} size={compact ? 34 : 40} success={ellma.success} />
           {compact && !solo && <span className="orb-badge" />}
         </button>
         {compact ? (

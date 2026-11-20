@@ -13,6 +13,7 @@ import {
   focusSessionSchema,
   goalSchema,
   localMidnight,
+  reviewWeek,
   startOfWeek,
   taskSchema,
   toApiError,
@@ -29,22 +30,51 @@ import {
 import { z } from "zod";
 import { usePreferences } from "./preferences";
 import { CACHE_PREFIX, comfortStorageAllowed } from "./consent";
+import { playSound } from "./sound";
 import { readStored, writeStored } from "./storage";
 import type { Session } from "./session";
 
 type Status = "loading" | "ready" | "offline";
 
+/** What a stop saved, as the server stored it, and where the goal's week stands now. */
+export type FocusResult = {
+  seconds: number;
+  completed: boolean;
+  goalId: string | null;
+  weekSeconds: number;
+  targetSeconds: number;
+};
+
+/**
+ * A paused focus: its time is already saved on the server (pausing ends the running
+ * session), so only what to resume and how long this focus has lasted so far live here.
+ */
+export type PausedFocus = { taskId: string | null; goalId: string | null; seconds: number };
+
+function savedSeconds(session: FocusSession | null): number {
+  if (!session) {
+    return 0;
+  }
+  const end = Date.parse(session.endedAt ?? new Date().toISOString());
+  return Math.max(0, Math.floor((end - Date.parse(session.startedAt)) / 1000));
+}
+
 type Store = {
+  userId: string;
   status: Status;
   goals: Goal[];
   tasks: Task[];
   totals: Record<string, number>;
   active: FocusSession | null;
+  /** Set while the focus is paused. */
+  paused: PausedFocus | null;
+  /** Seconds this focus saved before its last resume; the clock adds the running session. */
+  carriedSeconds: number;
   sessionsByWeek: Record<string, FocusSession[]>;
   toast: string;
   notify: (message: string) => void;
   refresh: () => Promise<void>;
-  loadWeek: (weekStart: string) => Promise<void>;
+  loadWeek: (weekStart: string) => Promise<FocusSession[] | null>;
   createGoal: (input: GoalInput) => Promise<Goal | null>;
   updateGoal: (id: string, input: GoalInput) => Promise<boolean>;
   deleteGoal: (id: string) => Promise<boolean>;
@@ -52,7 +82,9 @@ type Store = {
   patchTask: (id: string, patch: TaskPatch) => Promise<Task | null>;
   deleteTask: (id: string) => Promise<boolean>;
   startFocus: (taskId: string | null, goalId?: string | null) => Promise<boolean>;
-  stopFocus: (completeTask: boolean) => Promise<{ seconds: number; completed: boolean } | null>;
+  stopFocus: (completeTask: boolean) => Promise<FocusResult | null>;
+  pauseFocus: () => Promise<boolean>;
+  resumeFocus: () => Promise<boolean>;
   logSession: (input: ManualSession) => Promise<boolean>;
   deleteSession: (id: string) => Promise<boolean>;
 };
@@ -64,6 +96,16 @@ const cacheSchema = z.object({
   tasks: z.array(taskSchema),
   totals: z.record(z.number()),
   active: focusSessionSchema.nullable(),
+  // A pause and the time a resumed focus carries survive a reload with the local copy.
+  paused: z
+    .object({
+      taskId: z.string().nullable(),
+      goalId: z.string().nullable(),
+      seconds: z.number().min(0),
+    })
+    .nullable()
+    .default(null),
+  carriedSeconds: z.number().min(0).default(0),
 });
 
 const cacheKey = (userId: string) => `${CACHE_PREFIX}${userId}`;
@@ -104,6 +146,8 @@ export function StoreProvider({ session, children }: { session: Session; childre
   const [tasks, setTasks] = useState<Task[]>(cached?.tasks ?? []);
   const [totals, setTotals] = useState<Record<string, number>>(cached?.totals ?? {});
   const [active, setActive] = useState<FocusSession | null>(cached?.active ?? null);
+  const [paused, setPaused] = useState<PausedFocus | null>(cached?.paused ?? null);
+  const [carriedSeconds, setCarriedSeconds] = useState(cached?.carriedSeconds ?? 0);
   const [sessionsByWeek, setSessionsByWeek] = useState<Record<string, FocusSession[]>>({});
   const [toast, setToast] = useState("");
   const toastTimer = useRef<number>();
@@ -140,6 +184,7 @@ export function StoreProvider({ session, children }: { session: Session; childre
       if (sessions) {
         setSessionsByWeek((previous) => ({ ...previous, [weekStart]: sessions }));
       }
+      return sessions;
     },
     [api, attempt],
   );
@@ -156,6 +201,10 @@ export function StoreProvider({ session, children }: { session: Session; childre
       setGoals(nextGoals);
       setTasks(nextTasks);
       setActive(focus.active);
+      if (focus.active) {
+        // A focus started or resumed elsewhere replaces a pause shown here.
+        setPaused(null);
+      }
       setTotals(Object.fromEntries(goalTotals.map((row) => [row.goalId, row.seconds])));
       setStatus("ready");
     } catch (failure) {
@@ -183,9 +232,12 @@ export function StoreProvider({ session, children }: { session: Session; childre
 
   useEffect(() => {
     if (status === "ready" && comfortStorageAllowed()) {
-      writeStored(cacheKey(userId), JSON.stringify({ goals, tasks, totals, active }));
+      writeStored(
+        cacheKey(userId),
+        JSON.stringify({ goals, tasks, totals, active, paused, carriedSeconds }),
+      );
     }
-  }, [active, goals, status, tasks, totals, userId]);
+  }, [active, carriedSeconds, goals, paused, status, tasks, totals, userId]);
 
   const value = useMemo<Store>(() => {
     const reloadProgress = async () => {
@@ -193,14 +245,17 @@ export function StoreProvider({ session, children }: { session: Session; childre
       if (goalTotals) {
         setTotals(Object.fromEntries(goalTotals.map((row) => [row.goalId, row.seconds])));
       }
-      await loadWeek(startOfWeek(todayKey()));
+      return loadWeek(startOfWeek(todayKey()));
     };
     return {
+      userId,
       status,
       goals,
       tasks,
       totals,
       active,
+      paused,
+      carriedSeconds,
       sessionsByWeek,
       toast,
       notify,
@@ -264,27 +319,100 @@ export function StoreProvider({ session, children }: { session: Session; childre
       async startFocus(taskId, goalId = null) {
         const state = await attempt(() => api.startFocus({ taskId, goalId }));
         if (state) {
+          playSound("focusStart");
           setActive(state.active);
+          setPaused(null);
+          setCarriedSeconds(0);
           await reloadProgress();
         }
         return Boolean(state);
       },
       async stopFocus(completeTask) {
+        let seconds: number;
+        let goalId: string | null;
+        let completed = false;
+        if (!active && paused) {
+          // The time is already saved; finishing a pause only checks the task off if asked.
+          const pausedTaskId = paused.taskId;
+          if (completeTask && pausedTaskId) {
+            const task = await attempt(() => api.updateTask(pausedTaskId, { done: true }));
+            if (!task) {
+              return null;
+            }
+            setTasks((previous) => upsert(previous, task));
+            completed = true;
+          }
+          seconds = paused.seconds;
+          goalId = paused.goalId;
+        } else {
+          const running = active;
+          const state = await attempt(() => api.stopFocus(completeTask));
+          if (!state) {
+            return null;
+          }
+          setActive(null);
+          if (state.completedTask) {
+            const done = state.completedTask;
+            setTasks((previous) => upsert(previous, done));
+            completed = true;
+          }
+          const saved = state.stopped ?? running;
+          seconds = carriedSeconds + savedSeconds(saved);
+          goalId = saved?.goalId ?? tasks.find((task) => task.id === saved?.taskId)?.goalId ?? null;
+        }
+        playSound(completed ? "complete" : "focusEnd");
+        setPaused(null);
+        setCarriedSeconds(0);
+        const weekSessions = (await reloadProgress()) ?? [];
+        const week = reviewWeek(startOfWeek(todayKey()), weekSessions, goals, tasks).goals.find(
+          (entry) => entry.goalId === goalId,
+        );
+        const goal = goals.find((entry) => entry.id === goalId);
+        return {
+          seconds,
+          completed,
+          goalId,
+          weekSeconds: week?.seconds ?? 0,
+          targetSeconds: (goal?.weeklyTargetMinutes ?? 0) * 60,
+        };
+      },
+      async pauseFocus() {
         const running = active;
-        const state = await attempt(() => api.stopFocus(completeTask));
+        if (!running) {
+          return false;
+        }
+        const state = await attempt(() => api.stopFocus(false));
         if (!state) {
-          return null;
+          return false;
         }
+        playSound("focusEnd");
+        const saved = state.stopped ?? running;
         setActive(null);
-        if (state.completedTask) {
-          const completed = state.completedTask;
-          setTasks((previous) => upsert(previous, completed));
-        }
+        setPaused({
+          taskId: saved.taskId,
+          goalId: saved.goalId,
+          seconds: carriedSeconds + savedSeconds(saved),
+        });
+        setCarriedSeconds(0);
         await reloadProgress();
-        const seconds = running
-          ? Math.floor((Date.now() - Date.parse(running.startedAt)) / 1000)
-          : 0;
-        return { seconds, completed: Boolean(state.completedTask) };
+        return true;
+      },
+      async resumeFocus() {
+        if (!paused) {
+          return false;
+        }
+        const state = await attempt(() =>
+          api.startFocus({ taskId: paused.taskId, goalId: paused.taskId ? null : paused.goalId }),
+        );
+        if (!state) {
+          return false;
+        }
+        playSound("focusStart");
+        setActive(state.active);
+        setCarriedSeconds(paused.seconds);
+        setPaused(null);
+        await reloadProgress();
+        return true;
       },
       async logSession(input) {
         const logged = await attempt(() => api.logSession(input));
@@ -313,6 +441,8 @@ export function StoreProvider({ session, children }: { session: Session; childre
     active,
     api,
     attempt,
+    carriedSeconds,
+    paused,
     goals,
     loadWeek,
     notify,

@@ -194,6 +194,16 @@ function RipeningApple({ ratio }: { ratio: number }) {
   );
 }
 
+const REPOSITORY_URL = "https://github.com/AhmetCavus/ellma";
+
+function GitHubMark() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.56 9.56 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+
 export function LandingPage() {
   const { copy } = usePreferences();
   const { landing } = copy;
@@ -207,6 +217,17 @@ export function LandingPage() {
           <span>Ellma</span>
         </a>
         <div className="landing-nav-actions">
+          <a
+            className="button ghost small"
+            href={REPOSITORY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={landing.githubHint}
+            aria-label={landing.githubHint}
+          >
+            <GitHubMark />
+            <span className="landing-nav-label">{landing.github}</span>
+          </a>
           <SettingsInline />
           <a className="button ghost small" href="/login" onClick={linkHandler("/login")}>
             {landing.secondary}

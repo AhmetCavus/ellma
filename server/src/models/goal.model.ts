@@ -10,6 +10,7 @@ export type GoalRecord = {
   targetDate: string | null;
   status: string;
   milestones: Milestone[];
+  tags: string[];
   position: number;
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +25,7 @@ export default createCollection<GoalRecord>("EllmaGoal").withSchema({
   targetDate: { ...Provider.String, default: null },
   status: { ...Provider.String, enum: [...GOAL_STATUSES], default: "active" },
   milestones: Provider.Mixed,
+  tags: Provider.Mixed,
   position: { ...Provider.Number, default: 0 },
   createdAt: { ...Provider.Date, required: true },
   updatedAt: { ...Provider.Date, required: true },

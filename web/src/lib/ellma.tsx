@@ -11,6 +11,7 @@ import {
 import {
   formatDuration,
   localIntent,
+  reminderTaskId,
   startOfWeek,
   takeSentences,
   toApiError,
@@ -31,7 +32,9 @@ import type { Session } from "./session";
 import { isPlainShortcut, SHORTCUTS_EVENT } from "./shortcuts";
 import { readStored, writeStored } from "./storage";
 import { useStore } from "./store";
-import { playChime, useSpeaker, useVoiceInput } from "./voice";
+import { useAwayReminder, useFocusAmbience } from "./presence";
+import { playSound } from "./sound";
+import { useSpeaker, useVoiceInput } from "./voice";
 
 /** The latest thing said to Ellma and her answer. Older turns live in the history. */
 export type Exchange = {
@@ -56,6 +59,8 @@ type Ellma = {
   composeFor: string | null;
   guide: Guide & { today: string };
   cheer: string;
+  /** Counts finished interactions, so the orb can play its short "done" animation. */
+  success: number;
   intro: number | null;
   view: AssistantView;
   send: (text: string, viaVoice?: boolean) => Promise<void>;
@@ -88,6 +93,24 @@ export function EllmaProvider({ session, children }: { session: Session; childre
   const store = useStore();
   const route = useRoute();
   const guide = useGuide();
+  /**
+   * Ellma finished something or has news: one soft sound, the apple's short hop and a text
+   * that screen readers announce. `announce` is false when the dock already shows the text.
+   */
+  const acknowledge = useCallback(
+    (message: string, announce = true) => {
+      if (announce) {
+        store.notify(message);
+      }
+      playSound("notification");
+      setSuccess((count) => count + 1);
+      celebrate(document.querySelector(".orb"));
+    },
+    [store],
+  );
+  const reminderTask = store.tasks.find((task) => task.id === reminderTaskId(guide.step));
+  useFocusAmbience(Boolean(store.active));
+  useAwayReminder(guide.step, copy.reminder.tabTitle(reminderTask?.title ?? ""));
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [exchange, setExchange] = useState<Exchange | null>(null);
   const [problem, setProblem] = useState("");
@@ -96,6 +119,7 @@ export function EllmaProvider({ session, children }: { session: Session; childre
   const [writing, setWriting] = useState(false);
   const [composeFor, setComposeFor] = useState<string | null>(null);
   const [cheer, setCheer] = useState("");
+  const [success, setSuccess] = useState(0);
   const [intro, setIntro] = useState<number | null>(() =>
     readStored("ellma-intro") === "done" ? null : 0,
   );
@@ -171,9 +195,6 @@ export function EllmaProvider({ session, children }: { session: Session; childre
           const result = await store.stopFocus(complete);
           if (!result) {
             return false;
-          }
-          if (result.completed) {
-            playChime();
           }
           if (route.segments[0] === "focus") {
             navigate("/today");
@@ -299,16 +320,28 @@ export function EllmaProvider({ session, children }: { session: Session; childre
         } else if (created?.targetId) {
           navigate(`/goals/${created.targetId}`);
         }
-        if (actions.some((action) => /completed|done|created/.test(action.kind))) {
-          playChime();
-          celebrate(document.querySelector(".orb"), "large");
-        }
+        // One interaction, one confirmation, however many tools ran.
+        const kinds = [...new Set(actions.map((action) => action.kind))];
+        acknowledge(kinds.map((kind) => copy.dock.actions[kind]).join(" · "));
       }
       if (viaVoice && handsFree) {
         speaker.whenIdle(() => window.setTimeout(() => voice.start(), 250));
       }
     },
-    [copy, handsFree, locale, runIntent, say, session, speakReplies, speaker, store, view, voice],
+    [
+      acknowledge,
+      copy,
+      handsFree,
+      locale,
+      runIntent,
+      say,
+      session,
+      speakReplies,
+      speaker,
+      store,
+      view,
+      voice,
+    ],
   );
   sendRef.current = send;
 
@@ -387,10 +420,9 @@ export function EllmaProvider({ session, children }: { session: Session; childre
     // The first pass only records where things stand; loading data must not throw a party.
     if (before && before.size > 0 && ripened) {
       setCheer(copy.dock.ripe(ripened.goal.title));
-      playChime();
-      celebrate(document.querySelector(".orb"), "large");
+      acknowledge(copy.dock.ripe(ripened.goal.title), false);
     }
-  }, [copy, guide.pulses, store.status, weekLoaded]);
+  }, [acknowledge, copy, guide.pulses, store.status, weekLoaded]);
 
   useEffect(() => {
     if (!cheer) {
@@ -517,6 +549,7 @@ export function EllmaProvider({ session, children }: { session: Session; childre
     composeFor,
     guide,
     cheer,
+    success,
     intro,
     view,
     send,

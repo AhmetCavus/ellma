@@ -12,6 +12,8 @@ export const de: Copy = {
     lead: "Ellma behält deine Ziele im Blick, hört zu, wenn du sprichst, und kennt immer deinen nächsten kleinen Schritt. Jede investierte Stunde füllt einen Apfel, bis er reif ist.",
     primary: "Ellma kennenlernen",
     secondary: "Anmelden",
+    github: "GitHub",
+    githubHint: "Quellcode auf GitHub (öffnet in neuem Tab)",
     demo: {
       caption: "So arbeitet Ellma. Wähle einen Satz und probiere es aus.",
       goal: "Einen Halbmarathon laufen",
@@ -367,7 +369,7 @@ export const de: Copy = {
     greetingMorning: "Guten Morgen",
     greetingAfternoon: "Guten Tag",
     greetingEvening: "Guten Abend",
-    lead: "Dein Tag, nach Zielen sortiert. Ein kleiner Schritt pro Ziel genügt.",
+    lead: "Deine Schritte nach Tagen, heute zuerst. Ein kleiner Schritt pro Ziel genügt.",
     noStepToday: "Noch kein Schritt für heute.",
     pull: "Heute machen",
     waiting: "Wartet auf einen Tag",
@@ -421,7 +423,7 @@ export const de: Copy = {
     states: {
       ripe: "Diese Woche reif",
       on_track: "Auf Kurs",
-      behind: "Braucht Aufmerksamkeit",
+      behind: "Hinter dem Wochenplan",
       resting: "Ruht",
     },
     journey: "Weg",
@@ -464,6 +466,14 @@ export const de: Copy = {
       "Dieses Ziel löschen? Aufgaben und erfasste Zeit bleiben, sind aber keinem Ziel mehr zugeordnet.",
     empty: "Ein Ziel ist etwas, das deine besten Stunden verdient. Fang mit einem an.",
     showInactive: "Erreichte und archivierte anzeigen",
+    attention: { step_overdue: "Schritt überfällig", no_next_step: "Kein nächster Schritt" },
+    deadline: (date: string) => `Ziel bis ${date}`,
+    tags: "Tags",
+    tagPlaceholder: "Neuer oder vorhandener Tag, z. B. Gesundheit",
+    addTag: "Tag hinzufügen",
+    removeTag: (tag: string) => `Tag ${tag} entfernen`,
+    tagLimit: "Bis zu 10 Tags pro Ziel.",
+    groupedHint: "Gruppiert nach dem Tag des nächsten geplanten Schritts.",
     back: "Alle Ziele",
     colors: {
       apple: "Apfelrot",
@@ -477,12 +487,67 @@ export const de: Copy = {
     },
   },
 
+  views: {
+    label: "Filtern und sortieren",
+    groups: {
+      overdue: "Überfällig",
+      today: "Heute",
+      tomorrow: "Morgen",
+      later: "Später",
+      none: "Ohne Termin",
+    },
+    tags: "Tags",
+    status: "Status",
+    sort: "Sortierung",
+    noTags: "Tags fügst du beim Bearbeiten eines Ziels hinzu und filterst dann hier danach.",
+    active: (list: string) => `Gefiltert nach ${list}`,
+    reset: "Filter zurücksetzen",
+    nothing: "Nichts passt zu diesen Filtern.",
+    goalSorts: { position: "Eigene Reihenfolge", deadline: "Zieldatum", title: "Titel" },
+    stepSorts: { position: "Eigene Reihenfolge", goal: "Ziel", title: "Schritttitel" },
+    stepStatuses: { open: "Offen", done: "Erledigt" },
+    moveOverdue: "Alle auf heute legen",
+    layout: "Ansicht",
+    cards: "Kartenansicht",
+    list: "Listenansicht",
+    overdueNote: (count: number) =>
+      count === 1 ? "1 Schritt ist überfällig." : `${count} Schritte sind überfällig.`,
+  },
+
   focus: {
     title: "Fokus",
     start: "Fokus starten",
-    stop: "Stopp",
-    complete: "Abschließen",
+    stop: "Fokus beenden",
+    complete: "Aufgabe abschließen",
     completeHint: "⌘/Strg + Enter",
+    stopHelp: "Speichert die Zeit. Die Aufgabe bleibt offen.",
+    pause: "Pause",
+    resume: "Weiter",
+    paused: "Pausiert",
+    pauseHelp: "Speichert die bisherige Zeit. Weiter geht es, wann du willst.",
+    pausedNote: "Die bisherige Zeit ist gespeichert. Weiter geht es, wann du willst.",
+    pauseFailed:
+      "Die Pause konnte nicht gespeichert werden. Dein Timer läuft weiter, versuch es bitte noch einmal.",
+    resumeFailed: "Der Fokus konnte nicht fortgesetzt werden. Versuch es bitte noch einmal.",
+    completeHelp: "Speichert die Zeit und hakt die Aufgabe ab.",
+    saving: "Wird gespeichert…",
+    saveFailed:
+      "Die Sitzung konnte nicht gespeichert werden. Dein Timer läuft weiter, versuch es bitte noch einmal.",
+    saved: (duration: string) => `${duration} gespeichert`,
+    savedWeek: (done: string, target: string) => `${done} von ${target} Stunden diese Woche`,
+    savedWeekFree: (done: string) => `${done} Stunden diese Woche`,
+    savedTask: "Aufgabe abgeschlossen.",
+    savedDuration: (seconds: number) => {
+      const total = Math.max(0, Math.round(seconds / 60));
+      const hours = Math.floor(total / 60);
+      const rest = total % 60;
+      if (hours === 0) {
+        return total === 1 ? "1 Minute" : `${total} Minuten`;
+      }
+      return rest === 0 ? `${hours} Std.` : `${hours} Std. ${rest} Min.`;
+    },
+    backToToday: "Zurück zu Heute",
+    again: "Neuen Fokus starten",
     pickTask: "Worauf fokussierst du dich?",
     freeFocus: "Freier Fokus",
     running: "Im Fokus",
@@ -490,6 +555,16 @@ export const de: Copy = {
     sessionSaved: (duration: string) => `${duration} erfasst.`,
     taskCompleted: "Aufgabe erledigt. Gut verdient.",
     open: "Fokusmodus öffnen",
+    scenes: {
+      pendulum: "Pendel",
+      bright: "Pendel · hell",
+      melodic: "Pendel · melodisch",
+      vintage: "Pendel · alt",
+      warm: "Pendel · warm",
+      night: "Pendel · Nacht",
+    },
+    muteSound: "Fokusklang stummschalten",
+    unmuteSound: "Fokusklang abspielen",
     logTime: "Zeit erfassen",
     logTitle: "Zeit erfassen",
     minutes: "Minuten",
@@ -521,9 +596,34 @@ export const de: Copy = {
       "Lass uns auf meine Woche zurückblicken. Was lief gut und was sollte ich ändern?",
   },
 
+  reminder: {
+    tabTitle: (task: string) =>
+      task ? `🍎 Ellma: „${task}“ wartet auf dich` : "🍎 Ellma: Dein nächster Schritt wartet",
+  },
+
   account: {
     title: "Dein Konto",
     lead: "Halte deine Anmeldung sicher. Deine Ziele hängen daran.",
+    behaviour: {
+      title: "Klänge und Erinnerungen",
+      lead: "So verhält sich Ellma auf diesem Gerät. Alles hier lässt sich ausschalten.",
+      sounds: {
+        title: "Klänge",
+        text: "Kurze, leise Klänge, wenn du den Fokus startest oder beendest, einen Schritt abschließt oder einen Meilenstein erreichst.",
+      },
+      ambience: {
+        title: "Fokusklang",
+        text: "Ruhige Pendelstücke mit stillen Pausen, morgens heller und nachts sanfter. Du kannst ihn auch im Fokusmodus stummschalten.",
+      },
+      notificationSounds: {
+        title: "Benachrichtigungstöne",
+        text: "Ein sanfter Ton, wenn Ellma etwas für dich erledigt hat oder Neuigkeiten hat, und der Erinnerungsklang. Dein Fokusklang bleibt davon unberührt.",
+      },
+      reminders: {
+        title: "Erinnerungen",
+        text: "Wenn ein Schritt wartet und du diesen Tab seit 20 Minuten verlassen hast, spielt Ellma einen sanften Klang und zeigt den Schritt im Tab-Titel. Höchstens dreimal, mit einer Stunde Abstand.",
+      },
+    },
     profileTitle: "Profil",
     name: "Name",
     role: "Rolle",
@@ -695,7 +795,7 @@ export const de: Copy = {
           body: [
             "Dein Konto: Vorname, E-Mail-Adresse und ein gehashtes Passwort.",
             "Wenn du die Zwei-Faktor-Anmeldung einschaltest: den Schlüssel deiner Authenticator-App in verschlüsselter Form und deine Ersatzcodes nur als Prüfsummen. Wenn du dein Passwort zurücksetzen lässt: eine Prüfsumme des Links, bis er benutzt wurde oder nach 30 Minuten abläuft.",
-            "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen und Wochenzielen, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit Ellma.",
+            "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen, Wochenzielen und deinen eigenen Tags, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit Ellma.",
             "Wir nutzen diese Daten nur, um dir Ellma bereitzustellen (Art. 6 Abs. 1 lit. b DSGVO). Es gibt keine Werbung, keine Analyse und kein Profiling.",
           ],
         },
@@ -722,8 +822,8 @@ export const de: Copy = {
         {
           title: "Cookies und Speicher in deinem Browser",
           body: [
-            "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet den lokalen Speicher deines Browsers: Anmeldung, Sprache, Design und einige Einstellungen der Begleitleiste sind nötig, damit die App funktioniert.",
-            "Für einen sofortigen Start kann Ellma zusätzlich eine Kopie deiner Ziele auf diesem Gerät behalten. Das kannst du jederzeit unter „Cookie-Einstellungen“ abschalten.",
+            "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet den lokalen Speicher deines Browsers: Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und einige Einstellungen der Begleitleiste sind nötig, damit die App funktioniert.",
+            "Für einen sofortigen Start kann Ellma zusätzlich eine Kopie deiner Ziele und eines pausierten Fokus auf diesem Gerät behalten und sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht auf Heute merken. Das kannst du jederzeit unter „Cookie-Einstellungen“ abschalten.",
           ],
         },
         {
@@ -813,11 +913,11 @@ export const de: Copy = {
       lead: "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet nur Speicher in deinem Browser, und du bestimmst, wie viel.",
       necessaryTitle: "Notwendig",
       necessaryText:
-        "Deine Anmeldung, Sprache, Design und die Einstellungen von Ellmas Begleitleiste. Ohne sie funktioniert die App nicht.",
+        "Deine Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und die Einstellungen von Ellmas Begleitleiste. Ohne sie funktioniert die App nicht.",
       alwaysOn: "Immer an",
       comfortTitle: "Sofortstart",
       comfortText:
-        "Behält eine Kopie deiner Ziele und Schritte auf diesem Gerät, damit Ellma ohne Warten öffnet. Auf gemeinsam genutzten Geräten besser ausschalten.",
+        "Behält eine Kopie deiner Ziele und Schritte auf diesem Gerät, damit Ellma ohne Warten öffnet (auch einen pausierten Fokus), und merkt sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht auf Heute. Auf gemeinsam genutzten Geräten besser ausschalten.",
       trackingTitle: "Statistik und Marketing",
       trackingText: "Gibt es nicht. Hier ist nichts abzuschalten.",
       never: "Nicht verwendet",
@@ -872,7 +972,9 @@ export const de: Copy = {
         list: [
           { combo: "F", label: "Fokusmodus" },
           { combo: "⌘/Strg ↵", label: "Aufgabe im Fokus abschließen" },
+          { combo: "P", label: "Sitzung pausieren / fortsetzen" },
           { combo: "S", label: "Stoppen und Sitzung speichern" },
+          { combo: "M", label: "Fokusklang an / aus" },
         ],
       },
     ],

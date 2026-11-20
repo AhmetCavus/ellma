@@ -9,6 +9,8 @@ import {
 import { Icon } from "../components/Icon";
 import { usePreferences } from "../lib/preferences";
 import type { Session } from "../lib/session";
+import { updateSettings, useSettings } from "../lib/settings";
+import { playSound } from "../lib/sound";
 import { useStore } from "../lib/store";
 
 /** Turns an API failure into one sentence; an expired session signs out instead. */
@@ -391,6 +393,50 @@ function TwoFactorCard({
 }
 
 /** Account management: who you are signed in as, your password and two-factor sign-in. */
+/** Default behaviours on this device: sounds, the focus soundscape and reminders. */
+function BehaviourCard() {
+  const { copy } = usePreferences();
+  const settings = useSettings();
+  const text = copy.account.behaviour;
+  const rows = [
+    { key: "sounds", ...text.sounds },
+    { key: "ambience", ...text.ambience },
+    { key: "notificationSounds", ...text.notificationSounds },
+    { key: "reminders", ...text.reminders },
+  ] as const;
+  return (
+    <section className="card">
+      <h2>{text.title}</h2>
+      <p className="muted card-lead">{text.lead}</p>
+      <div className="behaviour-rows">
+        {rows.map((row) => (
+          <label key={row.key} className="storage-row behaviour-row">
+            <div>
+              <strong>{row.title}</strong>
+              <p>{row.text}</p>
+            </div>
+            <span className="storage-state storage-toggle">
+              <input
+                type="checkbox"
+                checked={settings[row.key]}
+                onChange={(event) => {
+                  updateSettings({ [row.key]: event.target.checked });
+                  if (row.key === "sounds" && event.target.checked) {
+                    playSound("complete");
+                  } else if (row.key === "notificationSounds" && event.target.checked) {
+                    playSound("notification");
+                  }
+                }}
+              />
+              {settings[row.key] ? copy.legal.storage.on : copy.legal.storage.off}
+            </span>
+          </label>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function AccountPage({ session }: { session: Session }) {
   const { copy } = usePreferences();
   const failureText = useFailure(session);
@@ -454,6 +500,7 @@ export function AccountPage({ session }: { session: Session }) {
               </button>
             </div>
           </section>
+          <BehaviourCard />
           <PasswordCard session={session} />
           <TwoFactorCard session={session} account={account} onChanged={load} />
         </div>

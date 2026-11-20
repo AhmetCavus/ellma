@@ -13,7 +13,7 @@ import { celebrate } from "../lib/motion";
 import { usePreferences } from "../lib/preferences";
 import { linkHandler, navigate } from "../lib/router";
 import { useStore } from "../lib/store";
-import { playChime } from "../lib/voice";
+import { playChime } from "../lib/sound";
 
 export function GoalDetailPage({ goalId }: { goalId: string }) {
   const { copy } = usePreferences();

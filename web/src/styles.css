@@ -333,7 +333,9 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
   height: 100vh;
+  overflow-x: hidden;
   padding: 22px 16px;
   border-right: 1px solid var(--line);
   background: var(--surface);
@@ -679,7 +681,15 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  min-width: 0;
+  max-width: 100%;
   font-weight: 560;
+}
+
+/* A long goal name wraps inside the row instead of widening it. */
+.goal-tag > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .menu-anchor {
@@ -1043,6 +1053,12 @@ button:disabled {
   position: absolute;
   top: 20px;
   right: 20px;
+}
+
+.focus-sound {
+  position: absolute;
+  top: 20px;
+  right: 68px;
 }
 
 .focus-center {
@@ -1721,7 +1737,9 @@ kbd {
 .sidebar-goals {
   display: grid;
   gap: 6px;
+  min-width: 0;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -1752,10 +1770,15 @@ kbd {
   text-decoration: none;
 }
 
+/* Long names wrap onto two lines instead of pushing the sidebar sideways. */
 .sidebar-goals a span {
+  display: -webkit-box;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .sidebar-goals a:hover,
@@ -2933,6 +2956,13 @@ li:not(.journey-done) > button.journey-node:hover {
   gap: 8px;
 }
 
+/* On narrow phones the GitHub link keeps its mark and drops the word. */
+@media (max-width: 480px) {
+  .landing-nav-label {
+    display: none;
+  }
+}
+
 .landing-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
@@ -3678,4 +3708,455 @@ li:not(.journey-done) > button.journey-node:hover {
   .sidebar nav a.only-compact {
     display: flex;
   }
+}
+
+/* Sounds and reminders */
+
+.behaviour-rows {
+  display: grid;
+  gap: 10px;
+}
+
+.behaviour-row {
+  cursor: pointer;
+}
+
+.behaviour-row .storage-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 58px;
+  color: var(--text);
+}
+
+.focus-scene {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+/* ───────── Filter bar shared by Goals and Today ───────── */
+.view-controls {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+}
+
+.view-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+}
+
+.view-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.view-controls-label {
+  margin-right: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.view-controls-hint {
+  font-size: 0.84rem;
+}
+
+.view-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* Card / list switch: a small segmented pair of icon buttons. */
+.view-layout {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.view-layout .icon-button {
+  width: 34px;
+  height: 34px;
+}
+
+.view-layout .icon-button.is-on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.day-overdue-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 8px 8px 8px 14px;
+  border: 1px solid color-mix(in srgb, var(--goal-amber) 40%, var(--line));
+  border-radius: 12px;
+  color: var(--goal-amber);
+  font-weight: 600;
+}
+
+.view-active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.view-hint {
+  margin: -8px 0 10px;
+}
+
+/* ───────── Date groups ───────── */
+.date-group + .date-group {
+  margin-top: 28px;
+}
+
+.date-group-title,
+.day-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+}
+
+.date-group-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.date-group-overdue .date-group-title,
+.day-section-overdue h2 {
+  color: var(--goal-amber);
+}
+
+.day-sections {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.day-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.day-section-head h2 {
+  margin: 0 0 8px;
+}
+
+/* Today's work is the one section that stands out. */
+.day-section-today {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent) 8%, transparent),
+    var(--shadow);
+}
+
+.day-section-today h2 {
+  font-size: 1.3rem;
+}
+
+.day-section-overdue {
+  border-color: color-mix(in srgb, var(--goal-amber) 40%, var(--line));
+  background: color-mix(in srgb, var(--goal-amber) 5%, var(--surface));
+}
+
+.day-section-folded {
+  padding: 0;
+}
+
+.day-section-folded > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  list-style: none;
+}
+
+.day-section-folded > summary::-webkit-details-marker {
+  display: none;
+}
+
+.day-section-folded > summary h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.day-section-folded > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.day-section-folded > summary .icon {
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+
+.day-section-folded[open] > summary .icon {
+  transform: rotate(180deg);
+}
+
+.day-section-folded > .task-list {
+  padding: 0 14px 14px;
+}
+
+.task-focus-labelled {
+  flex: none;
+}
+
+/* ───────── Tags ───────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-remove {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+}
+
+.tag-remove:hover,
+.tag-remove:focus-visible {
+  background: var(--line);
+  color: var(--text);
+}
+
+.tag-editor {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tag-editor legend {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.tag-add {
+  display: flex;
+  gap: 8px;
+}
+
+.tag-add input {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-card-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0;
+}
+
+.goal-deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.goal-deadline small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.goal-deadline.is-late {
+  color: var(--goal-amber);
+}
+
+/* ───────── Ellma confirms: the apple hops once ───────── */
+.orb-face > span:not(.orb-ring) {
+  display: grid;
+  place-items: center;
+}
+
+.orb-success {
+  animation: orb-hop 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+@keyframes orb-hop {
+  30% {
+    transform: translateY(-7px) scale(1.12) rotate(-6deg);
+  }
+  60% {
+    transform: translateY(0) scale(0.96) rotate(3deg);
+  }
+}
+
+/* ───────── Focus mode ───────── */
+/* While the session runs the apple sways very slowly, like something growing. */
+.focus-apple {
+  transform-origin: 50% 85%;
+  animation: focus-sway 9s ease-in-out infinite;
+}
+
+@keyframes focus-sway {
+  25% {
+    transform: rotate(-2.5deg) scale(1.02);
+  }
+  75% {
+    transform: rotate(2.5deg) scale(1.02);
+  }
+}
+
+.focus-apple-filled {
+  animation: orb-hop 1.1s cubic-bezier(0.3, 1.4, 0.5, 1) 1.2s both;
+}
+
+.focus-done-text {
+  max-width: 34ch;
+  margin: 8px 0 6px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.focus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 20px;
+}
+
+.focus-action {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  max-width: 230px;
+}
+
+.focus-action small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.focus-action kbd {
+  font-size: 0.74rem;
+}
+
+@media (max-width: 720px) {
+  .view-sort {
+    margin-left: 0;
+  }
+
+  .goal-card-title,
+  .goal-day-head h2,
+  .focus-task {
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .task-focus-labelled span {
+    display: none;
+  }
+}
+
+/* A paused focus: the apple rests and the clock dims until it resumes. */
+.focus-center.is-paused .focus-apple {
+  animation: none;
+}
+
+.focus-center.is-paused .focus-clock {
+  opacity: 0.55;
+}
+
+/* Pause, end and complete fit on one line on wider screens. */
+.focus-center:has(.focus-actions) {
+  width: min(660px, 100%);
+}
+
+.focus-actions {
+  align-items: start;
+}
+
+.focus-action {
+  max-width: 200px;
+}
+
+/* Paused: Resume leads on its own line; ending or completing sits below it. */
+.focus-center.is-paused .focus-action:first-child {
+  flex-basis: 100%;
+  max-width: none;
+}
+
+.focus-paused-note {
+  max-width: 36ch;
+  margin: -4px 0 10px;
+  text-align: center;
+}
+
+.focus-bar.is-paused {
+  color: var(--muted);
 }

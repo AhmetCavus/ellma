@@ -184,32 +184,3 @@ export function useSpeaker(lang: string) {
 
   return { supported, speaking, say, cancel, whenIdle };
 }
-
-/** A soft two-note chime for completed tasks; quiet enough for an office. */
-export function playChime(): void {
-  try {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) {
-      return;
-    }
-    const context = new AudioContextClass();
-    const gain = context.createGain();
-    gain.connect(context.destination);
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.45);
-    [880, 1318.5].forEach((frequency, index) => {
-      const oscillator = context.createOscillator();
-      oscillator.type = "sine";
-      oscillator.frequency.value = frequency;
-      oscillator.connect(gain);
-      oscillator.start(context.currentTime + index * 0.09);
-      oscillator.stop(context.currentTime + 0.45);
-    });
-    window.setTimeout(() => void context.close(), 800);
-  } catch {
-    /* Sound is decoration only. */
-  }
-}

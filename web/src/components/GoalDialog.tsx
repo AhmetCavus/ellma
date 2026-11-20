@@ -1,9 +1,91 @@
-import { useState } from "react";
-import { GOAL_COLORS, type Goal, type GoalColor, type GoalStatus } from "@ellma/shared";
+import { useId, useState } from "react";
+import {
+  allTags,
+  GOAL_COLORS,
+  LIMITS,
+  uniqueTags,
+  type Goal,
+  type GoalColor,
+  type GoalStatus,
+} from "@ellma/shared";
 import { usePreferences } from "../lib/preferences";
 import { useStore } from "../lib/store";
 import { navigate } from "../lib/router";
 import { Dialog } from "./Dialog";
+import { Icon } from "./Icon";
+
+/** Tags are the user's own words: pick an existing one or type a new one. */
+function TagEditor({ tags, onChange }: { tags: string[]; onChange: (tags: string[]) => void }) {
+  const { copy } = usePreferences();
+  const store = useStore();
+  const [draft, setDraft] = useState("");
+  const listId = useId();
+  const known = allTags(store.goals).filter(
+    (tag) => !tags.some((own) => own.toLocaleLowerCase() === tag.toLocaleLowerCase()),
+  );
+  const full = tags.length >= LIMITS.tagsPerGoal;
+  const add = () => {
+    const tag = draft.trim().slice(0, LIMITS.tag);
+    if (tag && !full) {
+      onChange(uniqueTags([...tags, tag]));
+    }
+    setDraft("");
+  };
+  return (
+    <fieldset className="tag-editor">
+      <legend>{copy.goals.tags}</legend>
+      {tags.length > 0 && (
+        <ul className="tag-list">
+          {tags.map((tag) => (
+            <li key={tag} className="tag">
+              #{tag}
+              <button
+                type="button"
+                className="tag-remove"
+                aria-label={copy.goals.removeTag(tag)}
+                title={copy.goals.removeTag(tag)}
+                onClick={() => onChange(tags.filter((entry) => entry !== tag))}
+              >
+                <Icon name="close" size={12} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="tag-add">
+        <input
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === ",") {
+              event.preventDefault();
+              add();
+            }
+          }}
+          list={listId}
+          maxLength={LIMITS.tag}
+          disabled={full}
+          placeholder={copy.goals.tagPlaceholder}
+          aria-label={copy.goals.addTag}
+        />
+        <datalist id={listId}>
+          {known.map((tag) => (
+            <option key={tag} value={tag} />
+          ))}
+        </datalist>
+        <button
+          type="button"
+          className="button ghost small"
+          onClick={add}
+          disabled={full || !draft.trim()}
+        >
+          <Icon name="plus" size={14} /> {copy.goals.addTag}
+        </button>
+      </div>
+      {full && <p className="hint">{copy.goals.tagLimit}</p>}
+    </fieldset>
+  );
+}
 
 export function GoalDialog({ goal, onClose }: { goal?: Goal; onClose: () => void }) {
   const { copy } = usePreferences();
@@ -16,6 +98,7 @@ export function GoalDialog({ goal, onClose }: { goal?: Goal; onClose: () => void
   const [hours, setHours] = useState(goal ? String(goal.weeklyTargetMinutes / 60 || "") : "3");
   const [targetDate, setTargetDate] = useState(goal?.targetDate ?? "");
   const [status, setStatus] = useState<GoalStatus>(goal?.status ?? "active");
+  const [tags, setTags] = useState<string[]>(goal?.tags ?? []);
   const [busy, setBusy] = useState(false);
 
   return (
@@ -36,6 +119,7 @@ export function GoalDialog({ goal, onClose }: { goal?: Goal; onClose: () => void
             ),
             targetDate: targetDate || null,
             milestones: goal?.milestones ?? [],
+            tags,
           };
           if (goal) {
             void store
@@ -98,6 +182,7 @@ export function GoalDialog({ goal, onClose }: { goal?: Goal; onClose: () => void
             />
           </label>
         </div>
+        <TagEditor tags={tags} onChange={setTags} />
         <fieldset className="swatches">
           <legend>{copy.goals.color}</legend>
           {GOAL_COLORS.map((option) => (

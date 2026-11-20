@@ -28,6 +28,8 @@ export const LIMITS = {
   weeklyTargetMinutes: 7 * 24 * 60,
   estimateMinutes: 24 * 60,
   sessionHours: 16,
+  tag: 30,
+  tagsPerGoal: 10,
 } as const;
 
 const title = z.string().trim().min(1, "required").max(LIMITS.title);
@@ -40,6 +42,9 @@ export const milestoneSchema = z.object({
 });
 export type Milestone = z.infer<typeof milestoneSchema>;
 
+/** A user-defined label for goals. Compared without regard to case. */
+export const tagSchema = z.string().trim().min(1, "required").max(LIMITS.tag);
+
 export const goalInputSchema = z.object({
   title,
   why: notes.default(""),
@@ -48,6 +53,11 @@ export const goalInputSchema = z.object({
   targetDate: dateKeySchema.nullable().default(null),
   status: goalStatusSchema.default("active"),
   milestones: z.array(milestoneSchema).max(LIMITS.milestones).default([]),
+  tags: z
+    .array(tagSchema)
+    .max(LIMITS.tagsPerGoal)
+    .default([])
+    .transform((tags) => uniqueTags(tags)),
 });
 export type GoalInput = z.input<typeof goalInputSchema>;
 
@@ -145,6 +155,8 @@ export const sessionQuerySchema = z.object({
 export const focusStateSchema = z.object({
   active: focusSessionSchema.nullable(),
   completedTask: taskSchema.nullable().default(null),
+  /** The session that a stop just saved, as stored. */
+  stopped: focusSessionSchema.nullable().default(null),
 });
 export type FocusState = z.infer<typeof focusStateSchema>;
 
@@ -165,4 +177,19 @@ export function passwordProblems(password: string): ("length" | "special")[] {
     problems.push("special");
   }
   return problems;
+}
+
+/** Drops duplicates that differ only in case or spacing, keeping the first spelling. */
+export function uniqueTags(tags: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const raw of tags) {
+    const tag = raw.trim().replace(/\s+/g, " ");
+    const key = tag.toLocaleLowerCase();
+    if (tag && !seen.has(key)) {
+      seen.add(key);
+      result.push(tag);
+    }
+  }
+  return result;
 }

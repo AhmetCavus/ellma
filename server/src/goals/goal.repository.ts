@@ -10,6 +10,7 @@ function toGoal(record: StoredGoal): Goal {
     ...record,
     id: String(record._id),
     milestones: record.milestones ?? [],
+    tags: record.tags ?? [],
     targetDate: record.targetDate ?? null,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),

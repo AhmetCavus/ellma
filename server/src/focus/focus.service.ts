@@ -21,18 +21,20 @@ function cappedEnd(startedAt: string, now: Date): Date {
   return new Date(Math.min(now.getTime(), start + MAX_SESSION_MS));
 }
 
+/** Ends every running session and returns them as saved, with their end time. */
 async function endOpenSessions(ownerId: string, now: Date) {
   const open = await repository.listOpen(ownerId);
-  await Promise.all(
-    open.map((session) =>
-      repository.endSession(ownerId, session.id, cappedEnd(session.startedAt, now)),
-    ),
+  return Promise.all(
+    open.map(async (session) => {
+      const endedAt = cappedEnd(session.startedAt, now);
+      await repository.endSession(ownerId, session.id, endedAt);
+      return { ...session, endedAt: endedAt.toISOString() };
+    }),
   );
-  return open;
 }
 
 export async function focusState(ownerId: string): Promise<FocusState> {
-  return { active: await repository.findActive(ownerId), completedTask: null };
+  return { active: await repository.findActive(ownerId), completedTask: null, stopped: null };
 }
 
 export async function startFocus(ownerId: string, input: unknown): Promise<FocusState> {
@@ -56,18 +58,19 @@ export async function startFocus(ownerId: string, input: unknown): Promise<Focus
     startedAt: now,
     endedAt: null,
   });
-  return { active, completedTask: null };
+  return { active, completedTask: null, stopped: null };
 }
 
 export async function stopFocus(ownerId: string, input: unknown): Promise<FocusState> {
   const { completeTask } = focusStopSchema.parse(input);
   const ended = await endOpenSessions(ownerId, new Date());
-  const taskId = ended.at(-1)?.taskId;
+  const stopped = ended.at(-1) ?? null;
+  const taskId = stopped?.taskId;
   const completedTask =
     completeTask && taskId
       ? await updateTask(ownerId, taskId, { done: true }).catch(() => null)
       : null;
-  return { active: null, completedTask };
+  return { active: null, completedTask, stopped };
 }
 
 export async function listSessions(ownerId: string, query: unknown) {
