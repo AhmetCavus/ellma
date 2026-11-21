@@ -2,7 +2,7 @@ const LANGUAGE = { en: "English", de: "German" } as const;
 
 /** Stable instructions first so Ollama can reuse the cached prompt prefix between turns. */
 export function systemPrompt(locale: "en" | "de"): string {
-  return `You are Ellma, a personal guide whose only job is leading one person to their goals.
+  return `You are ellma, a personal guide whose only job is leading one person to their goals.
 
 Who you are: warm, upbeat and honest, like a good coach who believes in the user. You remember their goals and progress (given in the snapshot) and use real numbers when you encourage them.
 

@@ -1,7 +1,7 @@
 import type { Copy } from "./en.js";
 
 export const de: Copy = {
-  appName: "Ellma",
+  appName: "ellma",
   tagline: "Deine Begleiterin zu deinen Zielen",
   languageName: "Deutsch",
 
@@ -9,13 +9,13 @@ export const de: Copy = {
     eyebrow: "Eine persönliche Begleiterin für deine Ziele",
     titleStart: "Deine Ziele verdienen eine",
     titleEmphasis: "Begleiterin.",
-    lead: "Ellma behält deine Ziele im Blick, hört zu, wenn du sprichst, und kennt immer deinen nächsten kleinen Schritt. Jede investierte Stunde füllt einen Apfel, bis er reif ist.",
-    primary: "Ellma kennenlernen",
+    lead: "ellma behält deine Ziele im Blick, hört zu, wenn du sprichst, und kennt immer deinen nächsten kleinen Schritt. Jede investierte Stunde füllt einen Apfel, bis er reif ist.",
+    primary: "ellma kennenlernen",
     secondary: "Anmelden",
     github: "GitHub",
     githubHint: "Quellcode auf GitHub (öffnet in neuem Tab)",
     demo: {
-      caption: "So arbeitet Ellma. Wähle einen Satz und probiere es aus.",
+      caption: "So arbeitet ellma. Wähle einen Satz und probiere es aus.",
       goal: "Einen Halbmarathon laufen",
       nextStep: "Nächster Schritt",
       you: "Du",
@@ -46,7 +46,7 @@ export const de: Copy = {
     steps: [
       {
         title: "Ein Ziel pflanzen",
-        body: "Ellma stellt fünf kurze Fragen: was, warum, wie viele Stunden, bis wann und dein erster Schritt.",
+        body: "ellma stellt fünf kurze Fragen: was, warum, wie viele Stunden, bis wann und dein erster Schritt.",
       },
       {
         title: "Einfach sprechen",
@@ -64,16 +64,63 @@ export const de: Copy = {
       "Deutsch und Englisch",
     ],
     closingTitle: "Was willst du dieses Jahr erreichen?",
-    closingBody: "Schreib es auf. Den Rest übernimmt Ellma mit dir.",
+    closingBody: "Schreib es auf. Den Rest übernimmt ellma mit dir.",
     closingPlaceholder: "z. B. Einen Halbmarathon laufen",
-    closingAction: "Mit Ellma pflanzen",
-    footer: "Ellma · der rote Apfel am Horizont ist das Ziel, auf das du zugehst.",
+    closingAction: "Mit ellma pflanzen",
+    tourLink: "So funktioniert’s",
+    tour: {
+      eyebrow: "In Aktion",
+      title: "Vom Wunsch zum reifen Apfel",
+      lead: "Aufgenommen in ellma selbst, mit einem Beispielkonto.",
+      items: [
+        {
+          title: "Ein Ziel in fünf Fragen pflanzen",
+          body: "Kein Formular. ellma fragt, was, warum, wie viele Stunden pro Woche, bis wann und was der allererste kleine Schritt ist. Tippe die Antworten oder sprich sie.",
+          alt: "ellma stellt fünf kurze Fragen und das Ziel wird als Apfel gepflanzt",
+        },
+        {
+          title: "Die Woche per Ziehen planen",
+          body: "Leg ein Ziel auf einen Tag und sein nächster Schritt wandert dorthin. Zu jedem Ziehen gibt es auch einen Knopf, für Tastatur und Touchscreen.",
+          alt: "Eine Zielkarte wird auf morgen gezogen und ihr nächster Schritt wandert mit",
+        },
+        {
+          title: "Ein Schritt, ein Timer",
+          body: "Die Begleitung führt direkt in den Fokusmodus. Pausiere, wenn das Leben ruft. Sag oder schreib „fertig“, und der Schritt ist erledigt und die Zeit gespeichert.",
+          alt: "ellma schlägt den nächsten Schritt vor, der Fokusmodus startet und „fertig“ schließt ihn ab",
+        },
+        {
+          title: "Beim Reifen zusehen",
+          body: "Jede investierte Minute füllt den Apfel des Ziels. Erreichst du das Wochenziel, ist er reif, und ellma freut sich mit dir.",
+          alt: "Eine erfasste Stunde füllt den Apfel eines Ziels, bis er reif ist",
+        },
+      ],
+    },
+    privacy: {
+      eyebrow: "Datenschutz",
+      title: "Deine Ziele bleiben bei dir",
+      items: [
+        {
+          title: "Ein Modell auf diesem Server",
+          body: "ellmas Antworten stammen von einem Open-Weight-Modell, das direkt neben ihr läuft. Kein externer KI-Dienst liest deine Ziele oder was du ihr erzählst.",
+        },
+        {
+          title: "Deine eigene Installation",
+          body: "Ziele, Schritte und Fokuszeit liegen in der Datenbank dieser Installation. Jedes Konto sieht nur seine eigenen Daten.",
+        },
+        {
+          title: "Keine Cookies, kein Tracking",
+          body: "ellma setzt keine Cookies und hat weder Statistik noch Werbung. Der Browser behält nur, was die App zum Funktionieren braucht.",
+        },
+      ],
+    },
+    assmaHint: "assma, die Schwester-App für die Projektakquise von Freelancern",
+    footer: "ellma · der rote Apfel am Horizont ist das Ziel, auf das du zugehst.",
   },
 
   auth: {
     loginTitle: "Willkommen zurück",
-    signupTitle: "Lerne Ellma kennen",
-    signupLead: "Erstelle dein Konto. Ellma hilft dir, dein erstes Ziel festzulegen.",
+    signupTitle: "Lerne ellma kennen",
+    signupLead: "Erstelle dein Konto. ellma hilft dir, dein erstes Ziel festzulegen.",
     username: "Dein Vorname",
     email: "E-Mail",
     password: "Passwort",
@@ -98,7 +145,7 @@ export const de: Copy = {
     tooMany: "Zu viele Versuche. Bitte warte ein paar Minuten und versuch es dann noch einmal.",
     forgotTitle: "Passwort zurücksetzen",
     forgotLead:
-      "Gib deine E-Mail ein. Wenn es dazu ein Konto gibt, schickt Ellma dir einen Link, mit dem du ein neues Passwort wählst.",
+      "Gib deine E-Mail ein. Wenn es dazu ein Konto gibt, schickt ellma dir einen Link, mit dem du ein neues Passwort wählst.",
     forgotSend: "Link senden",
     forgotSent:
       "Wenn es zu dieser Adresse ein Konto gibt, ist ein Link unterwegs. Er gilt einmal und 30 Minuten lang.",
@@ -147,11 +194,11 @@ export const de: Copy = {
   },
 
   dock: {
-    label: "Ellma, deine Begleiterin",
-    talk: "Mit Ellma sprechen",
+    label: "ellma, deine Begleiterin",
+    talk: "Mit ellma sprechen",
     stopListening: "Zuhören beenden",
-    write: "Ellma schreiben",
-    writePlaceholder: "Erzähl Ellma, was du geschafft hast oder was du brauchst…",
+    write: "ellma schreiben",
+    writePlaceholder: "Erzähl ellma, was du geschafft hast oder was du brauchst…",
     send: "Senden",
     stop: "Stopp",
     listening: "Ich höre zu…",
@@ -170,8 +217,8 @@ export const de: Copy = {
     hintWrite: "schreiben",
     hintShortcuts: "alle Kürzel",
     spaceKey: "Leertaste",
-    minimize: "Ellma einklappen",
-    expand: "Ellmas Begleitung anzeigen",
+    minimize: "ellma einklappen",
+    expand: "ellmas Begleitung anzeigen",
     dismiss: "Antwort schließen",
     yes: "Ja",
     no: "Nein",
@@ -183,7 +230,7 @@ export const de: Copy = {
       "Der Mikrofonzugriff wurde blockiert. Erlaube ihn in den Browser-Einstellungen, um mit mir zu sprechen.",
     busy: "Ich antworte gerade noch in einem anderen Fenster.",
     unavailable: "Mein Modell ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.",
-    modelNote: "Ellma läuft auf einem Open-Weight-Modell auf eigenem Server und kann sich irren.",
+    modelNote: "ellma läuft auf einem Open-Weight-Modell auf eigenem Server und kann sich irren.",
     stepPlaceholder: (goal: string) => `Kleinster nächster Schritt für „${goal}“…`,
     stepAdd: "Für heute anlegen",
     brief: "Kurzes Briefing",
@@ -230,7 +277,7 @@ export const de: Copy = {
   intro: {
     steps: [
       {
-        title: "Hallo, ich bin Ellma.",
+        title: "Hallo, ich bin ellma.",
         text: "Ich begleite dich zu deinen Zielen. Ich bin hier unten auf jeder Seite und zeige dir immer den nächsten besten Schritt.",
       },
       {
@@ -266,7 +313,7 @@ export const de: Copy = {
           ? "Ein Schritt ist von einem früheren Tag übrig. Soll ich ihn auf heute legen?"
           : `${count} Schritte sind von früheren Tagen übrig. Soll ich sie auf heute legen?`,
       action: "Auf heute legen",
-      alt: "Mit Ellma planen",
+      alt: "Mit ellma planen",
     },
     start_task: {
       text: (task: string, goal: string) =>
@@ -288,7 +335,7 @@ export const de: Copy = {
           ? `Für heute ist nichts geplant. Wie wäre es mit „${task}“ für „${goal}“?`
           : `Für heute ist nichts geplant. Wie wäre es mit „${task}“?`,
       action: "Heute machen",
-      alt: "Mit Ellma planen",
+      alt: "Mit ellma planen",
     },
     weekly_gap: {
       text: (goal: string, left: string) =>
@@ -311,7 +358,7 @@ export const de: Copy = {
   },
 
   wizard: {
-    title: "Neues Ziel mit Ellma",
+    title: "Neues Ziel mit ellma",
     progress: (step: number, total: number) => `Frage ${step} von ${total}`,
     what: {
       ask: "Was möchtest du erreichen?",
@@ -383,7 +430,7 @@ export const de: Copy = {
     moveAllToToday: "Alle auf heute",
     done: "Heute erledigt",
     goalsTitle: "Deine Ziele",
-    goalsEmpty: "Noch keine aktiven Ziele. Erzähl Ellma von einem oder lege es selbst an.",
+    goalsEmpty: "Noch keine aktiven Ziele. Erzähl ellma von einem oder lege es selbst an.",
     hoursThisWeek: "diese Woche",
     focusedToday: "Heute fokussiert",
     tasksDone: "Erledigt",
@@ -410,6 +457,9 @@ export const de: Copy = {
     moveLater: "Später",
     deleteConfirm: "Diese Aufgabe löschen? Erfasste Fokuszeit bleibt erhalten.",
     more: "Weitere Aktionen",
+    created: "Aufgabe erstellt",
+    createdDetail: (title: string) => `„${title}“ steht auf deiner Liste.`,
+    ok: "OK",
   },
 
   goals: {
@@ -450,7 +500,7 @@ export const de: Copy = {
     milestonePlaceholder: "z. B. Erste 10 km ohne Pause",
     milestonesEmpty: "Meilensteine markieren die Momente, die man feiern sollte.",
     openTasks: "Nächste Schritte",
-    noTasks: "Keine offenen Schritte. Frag Ellma, was als Nächstes kommen könnte.",
+    noTasks: "Keine offenen Schritte. Frag ellma, was als Nächstes kommen könnte.",
     totalHours: "Investierte Stunden",
     thisWeek: "Diese Woche",
     target: "Ziel",
@@ -612,7 +662,7 @@ export const de: Copy = {
     ofTarget: (percent: number) => `${percent} % vom Ziel`,
     noTarget: "Kein Wochenziel",
     empty:
-      "Diese Woche noch keine Fokuszeit. Starte eine Fokus-Sitzung oder erzähl Ellma, woran du gearbeitet hast.",
+      "Diese Woche noch keine Fokuszeit. Starte eine Fokus-Sitzung oder erzähl ellma, woran du gearbeitet hast.",
     sessions: "Sitzungen",
     deleteSession: "Sitzung löschen",
     deleteSessionConfirm: "Diese Fokus-Sitzung löschen?",
@@ -620,14 +670,14 @@ export const de: Copy = {
     next: "Nächste Woche",
     thisWeek: "Diese Woche",
     weekNumber: (week: number) => `KW ${week}`,
-    reflect: "Mit Ellma reflektieren",
+    reflect: "Mit ellma reflektieren",
     reflectPrompt:
       "Lass uns auf meine Woche zurückblicken. Was lief gut und was sollte ich ändern?",
   },
 
   reminder: {
     tabTitle: (task: string) =>
-      task ? `🍎 Ellma: „${task}“ wartet auf dich` : "🍎 Ellma: Dein nächster Schritt wartet",
+      task ? `🍎 ellma: „${task}“ wartet auf dich` : "🍎 ellma: Dein nächster Schritt wartet",
   },
 
   account: {
@@ -635,7 +685,7 @@ export const de: Copy = {
     lead: "Halte deine Anmeldung sicher. Deine Ziele hängen daran.",
     behaviour: {
       title: "Klänge und Erinnerungen",
-      lead: "So verhält sich Ellma auf diesem Gerät. Alles hier lässt sich ausschalten.",
+      lead: "So verhält sich ellma auf diesem Gerät. Alles hier lässt sich ausschalten.",
       sounds: {
         title: "Klänge",
         text: "Kurze, leise Klänge, wenn du den Fokus startest oder beendest, einen Schritt abschließt oder einen Meilenstein erreichst.",
@@ -646,11 +696,11 @@ export const de: Copy = {
       },
       notificationSounds: {
         title: "Benachrichtigungstöne",
-        text: "Ein sanfter Ton, wenn Ellma etwas für dich erledigt hat oder Neuigkeiten hat, und der Erinnerungsklang. Dein Fokusklang bleibt davon unberührt.",
+        text: "Ein sanfter Ton, wenn ellma etwas für dich erledigt hat oder Neuigkeiten hat, und der Erinnerungsklang. Dein Fokusklang bleibt davon unberührt.",
       },
       reminders: {
         title: "Erinnerungen",
-        text: "Wenn ein Schritt wartet und du diesen Tab seit 20 Minuten verlassen hast, spielt Ellma einen sanften Klang und zeigt den Schritt im Tab-Titel. Höchstens dreimal, mit einer Stunde Abstand.",
+        text: "Wenn ein Schritt wartet und du diesen Tab seit 20 Minuten verlassen hast, spielt ellma einen sanften Klang und zeigt den Schritt im Tab-Titel. Höchstens dreimal, mit einer Stunde Abstand.",
       },
     },
     profileTitle: "Profil",
@@ -694,10 +744,10 @@ export const de: Copy = {
   },
   mail: {
     recovery: {
-      subject: "Dein Ellma-Passwort zurücksetzen",
+      subject: "Dein ellma-Passwort zurücksetzen",
       body: (name: string, link: string, minutes: number) => [
         `Hallo ${name},`,
-        "du möchtest dein Ellma-Passwort zurücksetzen. Öffne diesen Link, um ein neues zu wählen:",
+        "du möchtest dein ellma-Passwort zurücksetzen. Öffne diesen Link, um ein neues zu wählen:",
         link,
         `Der Link gilt einmal und ${minutes} Minuten lang. Wenn du die Zwei-Faktor-Anmeldung nutzt, bleibt sie an.`,
         "Wenn du das nicht warst, ignoriere diese E-Mail. Dein Passwort bleibt, wie es ist.",
@@ -705,7 +755,7 @@ export const de: Copy = {
     },
   },
   admin: {
-    title: "Ellma Admin",
+    title: "ellma Admin",
     subtitle: "Verwaltung",
     loginTitle: "Admin-Anmeldung",
     noPermission: "Dieses Konto hat keine Admin-Rechte.",
@@ -724,7 +774,7 @@ export const de: Copy = {
       tasksDone: "Erledigte Schritte",
       focusHours: "Investierte Stunden",
       focusHoursThisWeek: "Stunden diese Woche",
-      assistantMessages: "Nachrichten an Ellma",
+      assistantMessages: "Nachrichten an ellma",
       peopleTitle: "Menschen",
       usageTitle: "Nutzung",
     },
@@ -791,11 +841,11 @@ export const de: Copy = {
       imprint: "Impressum",
       poweredBy: "Powered by",
     },
-    back: "Zurück zu Ellma",
+    back: "Zurück zu ellma",
     updated: "Stand: 18. November 2026",
     imprint: {
       title: "Impressum",
-      lead: "Wer Ellma betreibt und wie du uns erreichst.",
+      lead: "Wer ellma betreibt und wie du uns erreichst.",
       operator: "Betreiber",
       representative: "Vertreten durch",
       contact: "Kontakt",
@@ -804,14 +854,14 @@ export const de: Copy = {
       register: "Registereintrag",
       vat: "USt-IdNr.",
       missing:
-        "Die Angaben zum Betreiber wurden für diese Installation noch nicht hinterlegt. Ellma befindet sich im geschlossenen Alpha-Test und wird nicht öffentlich angeboten.",
+        "Die Angaben zum Betreiber wurden für diese Installation noch nicht hinterlegt. ellma befindet sich im geschlossenen Alpha-Test und wird nicht öffentlich angeboten.",
       aboutTitle: "Über diesen Dienst",
       about:
-        "Ellma ist eine persönliche Begleiterin für deine Ziele und ein Testprojekt von yappai. Sie befindet sich im Alpha-Stadium: kostenlos und ohne zugesicherte Verfügbarkeit.",
+        "ellma ist eine persönliche Begleiterin für deine Ziele und ein Testprojekt von yappai. Sie befindet sich im Alpha-Stadium: kostenlos und ohne zugesicherte Verfügbarkeit.",
     },
     privacy: {
       title: "Datenschutz",
-      lead: "Ellma ist so gebaut, dass deine Ziele bei dir bleiben. Hier steht klar, was gespeichert wird, wo und warum.",
+      lead: "ellma ist so gebaut, dass deine Ziele bei dir bleiben. Hier steht klar, was gespeichert wird, wo und warum.",
       sections: [
         {
           title: "Wer verantwortlich ist",
@@ -820,12 +870,12 @@ export const de: Copy = {
           ],
         },
         {
-          title: "Was Ellma speichert",
+          title: "Was ellma speichert",
           body: [
             "Dein Konto: Vorname, E-Mail-Adresse und ein gehashtes Passwort.",
             "Wenn du die Zwei-Faktor-Anmeldung einschaltest: den Schlüssel deiner Authenticator-App in verschlüsselter Form und deine Ersatzcodes nur als Prüfsummen. Wenn du dein Passwort zurücksetzen lässt: eine Prüfsumme des Links, bis er benutzt wurde oder nach 30 Minuten abläuft.",
-            "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen, Wochenzielen und deinen eigenen Tags, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit Ellma.",
-            "Wir nutzen diese Daten nur, um dir Ellma bereitzustellen (Art. 6 Abs. 1 lit. b DSGVO). Es gibt keine Werbung, keine Analyse und kein Profiling.",
+            "Deine Inhalte: Ziele mit Beweggründen, Meilensteinen, Wochenzielen und deinen eigenen Tags, Schritte, Fokus-Sitzungen und erfasste Zeit, Tagesnotizen sowie das Gespräch mit ellma.",
+            "Wir nutzen diese Daten nur, um dir ellma bereitzustellen (Art. 6 Abs. 1 lit. b DSGVO). Es gibt keine Werbung, keine Analyse und kein Profiling.",
           ],
         },
         {
@@ -838,34 +888,34 @@ export const de: Copy = {
         {
           title: "Das KI-Modell",
           body: [
-            "Ellmas Antworten stammen von einem Sprachmodell mit offenen Gewichten, das auf demselben Server läuft. Was du Ellma sagst oder schreibst und die Ziele, die sie für ihre Antwort braucht, gehen an keinen externen KI-Anbieter und werden nicht zum Training von Modellen verwendet.",
+            "ellmas Antworten stammen von einem Sprachmodell mit offenen Gewichten, das auf demselben Server läuft. Was du ellma sagst oder schreibst und die Ziele, die sie für ihre Antwort braucht, gehen an keinen externen KI-Anbieter und werden nicht zum Training von Modellen verwendet.",
           ],
         },
         {
           title: "Sprache",
           body: [
-            "Zum Zuhören nutzt Ellma die Spracherkennung deines Browsers. Je nach Browser wandeln die Server des Browser-Herstellers die Aufnahme in Text um (in Chrome zum Beispiel Google). Ellma selbst erhält nur den Text und speichert keine Tonaufnahmen.",
-            "Das Mikrofon ist nur aktiv, solange du die Sprechtaste hältst oder das Zuhören eingeschaltet hast. Du kannst Ellma stattdessen auch schreiben.",
+            "Zum Zuhören nutzt ellma die Spracherkennung deines Browsers. Je nach Browser wandeln die Server des Browser-Herstellers die Aufnahme in Text um (in Chrome zum Beispiel Google). ellma selbst erhält nur den Text und speichert keine Tonaufnahmen.",
+            "Das Mikrofon ist nur aktiv, solange du die Sprechtaste hältst oder das Zuhören eingeschaltet hast. Du kannst ellma stattdessen auch schreiben.",
           ],
         },
         {
           title: "Cookies und Speicher in deinem Browser",
           body: [
-            "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet den lokalen Speicher deines Browsers: Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und einige Einstellungen der Begleitleiste sind nötig, damit die App funktioniert.",
-            "Für einen sofortigen Start kann Ellma zusätzlich eine Kopie deiner Ziele und eines pausierten Fokus auf diesem Gerät behalten und sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht und zusammengelegte Karten auf Heute merken. Das kannst du jederzeit unter „Cookie-Einstellungen“ abschalten.",
+            "ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet den lokalen Speicher deines Browsers: Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und einige Einstellungen der Begleitleiste sind nötig, damit die App funktioniert.",
+            "Für einen sofortigen Start kann ellma zusätzlich eine Kopie deiner Ziele und eines pausierten Fokus auf diesem Gerät behalten und sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht und zusammengelegte Karten auf Heute merken. Das kannst du jederzeit unter „Cookie-Einstellungen“ abschalten.",
           ],
         },
         {
           title: "Wie lange Daten bleiben",
           body: [
             "Deine Daten bleiben gespeichert, solange dein Konto besteht. Ziele, Schritte, Sitzungen und das Gespräch kannst du in der App selbst löschen. Um dein Konto mit allen Daten zu löschen, schreibe an den Kontakt im Impressum.",
-            "Ellma ist im Alpha-Stadium. Daten können verloren gehen oder zurückgesetzt werden, wenn sich das Datenmodell ändert; bewahre hier bitte nichts Wichtiges als einzige Kopie auf.",
+            "ellma ist im Alpha-Stadium. Daten können verloren gehen oder zurückgesetzt werden, wenn sich das Datenmodell ändert; bewahre hier bitte nichts Wichtiges als einzige Kopie auf.",
           ],
         },
         {
           title: "E-Mail",
           body: [
-            "Ellma schreibt dir nur dann eine E-Mail, wenn für deine Adresse das Zurücksetzen des Passworts angefordert wird. Die Nachricht wird über den Mailserver des Betreibers versendet und enthält nichts außer dem Link.",
+            "ellma schreibt dir nur dann eine E-Mail, wenn für deine Adresse das Zurücksetzen des Passworts angefordert wird. Die Nachricht wird über den Mailserver des Betreibers versendet und enthält nichts außer dem Link.",
           ],
         },
         {
@@ -885,18 +935,18 @@ export const de: Copy = {
     },
     terms: {
       title: "Allgemeine Geschäftsbedingungen",
-      lead: "Die Kurzfassung: Ellma ist eine kostenlose Alpha-Version. Nutze sie fair und verlasse dich bei Kritischem nicht auf sie.",
+      lead: "Die Kurzfassung: ellma ist eine kostenlose Alpha-Version. Nutze sie fair und verlasse dich bei Kritischem nicht auf sie.",
       sections: [
         {
           title: "Der Dienst",
           body: [
-            "Ellma hilft dir, Ziele festzuhalten, kleine Schritte zu planen, investierte Zeit zu erfassen und mit einer KI-Begleiterin darüber zu sprechen. Der im Impressum genannte Betreiber stellt sie kostenlos bereit.",
+            "ellma hilft dir, Ziele festzuhalten, kleine Schritte zu planen, investierte Zeit zu erfassen und mit einer KI-Begleiterin darüber zu sprechen. Der im Impressum genannte Betreiber stellt sie kostenlos bereit.",
           ],
         },
         {
           title: "Alpha-Stadium",
           body: [
-            "Ellma ist eine frühe Testversion. Funktionen können sich ändern oder entfallen, der Dienst kann nicht erreichbar sein, und gespeicherte Daten können ohne Migration zurückgesetzt werden. Ein Anspruch auf Verfügbarkeit oder bestimmte Funktionen besteht nicht.",
+            "ellma ist eine frühe Testversion. Funktionen können sich ändern oder entfallen, der Dienst kann nicht erreichbar sein, und gespeicherte Daten können ohne Migration zurückgesetzt werden. Ein Anspruch auf Verfügbarkeit oder bestimmte Funktionen besteht nicht.",
           ],
         },
         {
@@ -908,19 +958,19 @@ export const de: Copy = {
         {
           title: "Faire Nutzung",
           body: [
-            "Nutze Ellma für deine eigenen Ziele. Versuche nicht, auf Daten anderer zuzugreifen, den Dienst zu überlasten oder anzugreifen oder mit der KI-Begleiterin rechtswidrige Inhalte zu erzeugen. Konten, die das tun, können wir sperren.",
+            "Nutze ellma für deine eigenen Ziele. Versuche nicht, auf Daten anderer zuzugreifen, den Dienst zu überlasten oder anzugreifen oder mit der KI-Begleiterin rechtswidrige Inhalte zu erzeugen. Konten, die das tun, können wir sperren.",
           ],
         },
         {
-          title: "Was Ellma sagt",
+          title: "Was ellma sagt",
           body: [
-            "Ellmas Antworten erzeugt ein KI-Modell; sie können falsch oder unvollständig sein. Sie sind Ermutigung und Vorschläge, keine medizinische, psychologische, rechtliche oder finanzielle Beratung. Entscheidungen triffst du.",
+            "ellmas Antworten erzeugt ein KI-Modell; sie können falsch oder unvollständig sein. Sie sind Ermutigung und Vorschläge, keine medizinische, psychologische, rechtliche oder finanzielle Beratung. Entscheidungen triffst du.",
           ],
         },
         {
           title: "Deine Inhalte",
           body: [
-            "Deine Ziele und Notizen bleiben deine. Wir verarbeiten sie nur, um Ellma für dich zu betreiben, wie unter „Datenschutz“ beschrieben.",
+            "Deine Ziele und Notizen bleiben deine. Wir verarbeiten sie nur, um ellma für dich zu betreiben, wie unter „Datenschutz“ beschrieben.",
           ],
         },
         {
@@ -939,14 +989,14 @@ export const de: Copy = {
     },
     storage: {
       title: "Cookie-Einstellungen",
-      lead: "Ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet nur Speicher in deinem Browser, und du bestimmst, wie viel.",
+      lead: "ellma setzt keine Cookies und nutzt kein Tracking. Sie verwendet nur Speicher in deinem Browser, und du bestimmst, wie viel.",
       necessaryTitle: "Notwendig",
       necessaryText:
-        "Deine Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und die Einstellungen von Ellmas Begleitleiste. Ohne sie funktioniert die App nicht.",
+        "Deine Anmeldung, Sprache, Design, deine Klang- und Erinnerungseinstellungen und die Einstellungen von ellmas Begleitleiste. Ohne sie funktioniert die App nicht.",
       alwaysOn: "Immer an",
       comfortTitle: "Sofortstart",
       comfortText:
-        "Behält eine Kopie deiner Ziele und Schritte auf diesem Gerät, damit Ellma ohne Warten öffnet (auch einen pausierten Fokus), und merkt sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht und zusammengelegte Karten auf Heute. Auf gemeinsam genutzten Geräten besser ausschalten.",
+        "Behält eine Kopie deiner Ziele und Schritte auf diesem Gerät, damit ellma ohne Warten öffnet (auch einen pausierten Fokus), und merkt sich deine Filter auf Ziele und Heute sowie die Karten- oder Listenansicht und zusammengelegte Karten auf Heute. Auf gemeinsam genutzten Geräten besser ausschalten.",
       trackingTitle: "Statistik und Marketing",
       trackingText: "Gibt es nicht. Hier ist nichts abzuschalten.",
       never: "Nicht verwendet",
@@ -962,11 +1012,11 @@ export const de: Copy = {
     hint: "Drücke jederzeit ?, um diese Liste zu sehen.",
     groups: [
       {
-        title: "Ellma",
+        title: "ellma",
         list: [
-          { combo: "Leertaste", label: "Halten, um mit Ellma zu sprechen (überall)" },
+          { combo: "Leertaste", label: "Halten, um mit ellma zu sprechen (überall)" },
           { combo: "⌘/Strg J", label: "Zuhören starten / beenden" },
-          { combo: "/", label: "Ellma schreiben" },
+          { combo: "/", label: "ellma schreiben" },
           { combo: "V", label: "Antworten vorlesen an / aus" },
           { combo: "Esc", label: "Antwort und Sprache stoppen" },
         ],
@@ -983,7 +1033,7 @@ export const de: Copy = {
         title: "Erstellen",
         list: [
           { combo: "N", label: "Neue Aufgabe" },
-          { combo: "G", label: "Neues Ziel, begleitet von Ellma" },
+          { combo: "G", label: "Neues Ziel, begleitet von ellma" },
           { combo: "L", label: "Zeit erfassen" },
         ],
       },

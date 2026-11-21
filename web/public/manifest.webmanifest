@@ -1,6 +1,6 @@
 {
-  "name": "Ellma — personal goals assistant",
-  "short_name": "Ellma",
+  "name": "ellma — personal goals assistant",
+  "short_name": "ellma",
   "description": "Your personal goals assistant.",
   "start_url": "/goals",
   "display": "standalone",

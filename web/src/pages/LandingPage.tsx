@@ -10,6 +10,7 @@ import { SettingsInline } from "../components/Settings";
 import { celebrate, prefersReducedMotion } from "../lib/motion";
 import { usePreferences } from "../lib/preferences";
 import { linkHandler, navigate } from "../lib/router";
+import { REPOSITORY_URL } from "../lib/legal";
 import { SEED_GOAL_KEY, writeStored } from "../lib/storage";
 
 // The week behind each scene of the preview: hours invested out of a 5-hour target.
@@ -194,7 +195,32 @@ function RipeningApple({ ratio }: { ratio: number }) {
   );
 }
 
-const REPOSITORY_URL = "https://github.com/AhmetCavus/ellma";
+/** The recordings in web/public/tour, in the order of the tour copy. */
+const TOUR = ["plant", "plan", "focus", "ripen"] as const;
+
+/** One recording of the tour; people who prefer less motion see its still frame. */
+function TourShot({ name, alt }: { name: string; alt: string }) {
+  return (
+    <figure className="tour-shot">
+      <div className="window-bar" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcSet={`/tour/${name}.png`} />
+        <img
+          src={`/tour/${name}.gif`}
+          alt={alt}
+          width={960}
+          height={600}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </figure>
+  );
+}
 
 function GitHubMark() {
   return (
@@ -214,7 +240,7 @@ export function LandingPage() {
       <header className="landing-nav">
         <a className="brand" href="/" onClick={linkHandler("/")}>
           <AppleMark size={32} />
-          <span>Ellma</span>
+          <span>ellma</span>
         </a>
         <div className="landing-nav-actions">
           <a
@@ -250,6 +276,9 @@ export function LandingPage() {
               {landing.secondary}
             </a>
           </div>
+          <a className="tour-link" href="#tour">
+            {landing.tourLink} <Icon name="chevronRight" size={16} />
+          </a>
         </div>
         <LivePreview />
       </section>
@@ -268,6 +297,40 @@ export function LandingPage() {
         <ul className="landing-facts">
           {landing.facts.map((fact) => (
             <li key={fact}>{fact}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="tour" className="landing-tour">
+        <p className="eyebrow">{landing.tour.eyebrow}</p>
+        <h2>{landing.tour.title}</h2>
+        <p className="section-lead">{landing.tour.lead}</p>
+        <ol className="tour-list">
+          {landing.tour.items.map((item, index) => (
+            <li key={item.title} className="tour-item">
+              <div className="tour-text">
+                <span className="tour-number">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </div>
+              <TourShot name={TOUR[index] ?? "plant"} alt={item.alt} />
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="landing-privacy">
+        <p className="eyebrow">{landing.privacy.eyebrow}</p>
+        <h2>{landing.privacy.title}</h2>
+        <ul className="privacy-grid">
+          {landing.privacy.items.map((item, index) => (
+            <li key={item.title}>
+              <span className="privacy-icon">
+                <Icon name={(["server", "shield", "lock"] as const)[index] ?? "server"} size={22} />
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
           ))}
         </ul>
       </section>

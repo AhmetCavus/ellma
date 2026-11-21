@@ -50,9 +50,9 @@ test("the QR address names Ellma and the account", () => {
   const url = new URL(otpauthUrl(RFC_SECRET, "mia@example.test"));
   assert.equal(url.protocol, "otpauth:");
   assert.equal(url.host, "totp");
-  assert.equal(decodeURIComponent(url.pathname), "/Ellma:mia@example.test");
+  assert.equal(decodeURIComponent(url.pathname), "/ellma:mia@example.test");
   assert.equal(url.searchParams.get("secret"), RFC_SECRET);
-  assert.equal(url.searchParams.get("issuer"), "Ellma");
+  assert.equal(url.searchParams.get("issuer"), "ellma");
 });
 
 test("stored secrets are encrypted, tokens and codes only fingerprinted", () => {

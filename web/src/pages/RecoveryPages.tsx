@@ -12,7 +12,7 @@ function RecoveryFrame({ title, children }: { title: string; children: ReactNode
     <main className="auth">
       <a className="brand" href="/" onClick={linkHandler("/")}>
         <AppleMark size={34} />
-        <span>Ellma</span>
+        <span>ellma</span>
       </a>
       <section className="auth-card">
         <h1>{title}</h1>

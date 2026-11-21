@@ -34,7 +34,11 @@ export function AppleMark({ size = 32, className = "" }: { size?: number; classN
         strokeWidth="3.4"
         strokeLinecap="round"
       />
-      <path d="M30.4 13.8c-2.4-5.3-7.9-7.2-13.2-6 1.3 5.5 7 8.7 13.2 6z" fill="var(--leaf)" />
+      <path
+        className="apple-leaf"
+        d="M30.4 13.8c-2.4-5.3-7.9-7.2-13.2-6 1.3 5.5 7 8.7 13.2 6z"
+        fill="var(--leaf)"
+      />
     </svg>
   );
 }

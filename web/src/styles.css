@@ -36,6 +36,7 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
     --bg: #15120f;
+    --glass-edge: rgb(255 255 255 / 8%);
     --surface: #1e1a17;
     --surface-2: #26211d;
     --text: #f3ede6;
@@ -60,6 +61,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #15120f;
+  --glass-edge: rgb(255 255 255 / 8%);
   --surface: #1e1a17;
   --surface-2: #26211d;
   --text: #f3ede6;
@@ -4124,10 +4126,6 @@ li:not(.journey-done) > button.journey-node:hover {
 }
 
 /* A paused focus: the apple rests and the clock dims until it resumes. */
-.focus-center.is-paused .focus-apple {
-  animation: none;
-}
-
 .focus-center.is-paused .focus-clock {
   opacity: 0.55;
 }
@@ -4397,4 +4395,495 @@ li:not(.journey-done) > button.journey-node:hover {
   border-color: var(--accent);
   background: var(--accent);
   color: #fff;
+}
+
+/* ───────── Focus mode: blurred ambience ───────── */
+/* Soft colour fields in the goal's colour drift behind a frosted panel, like light through glass. */
+.focus-screen {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.focus-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    opacity 1.2s ease,
+    filter 1.2s ease;
+}
+
+.focus-ambient span {
+  position: absolute;
+  width: min(62vmax, 760px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.42;
+  will-change: transform;
+}
+
+.focus-ambient span:nth-child(1) {
+  top: -18%;
+  left: -12%;
+  background: var(--focus-tint);
+  animation: ambient-a 26s ease-in-out infinite alternate;
+}
+
+.focus-ambient span:nth-child(2) {
+  right: -16%;
+  bottom: -22%;
+  background: color-mix(in srgb, var(--focus-tint) 45%, var(--goal-amber));
+  opacity: 0.32;
+  animation: ambient-b 32s ease-in-out infinite alternate;
+}
+
+.focus-ambient span:nth-child(3) {
+  top: 30%;
+  left: 38%;
+  width: min(40vmax, 480px);
+  background: color-mix(in srgb, var(--focus-tint) 35%, var(--leaf));
+  opacity: 0.22;
+  animation: ambient-c 38s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-a {
+  to {
+    transform: translate(18vw, 14vh) scale(1.15);
+  }
+}
+
+@keyframes ambient-b {
+  to {
+    transform: translate(-16vw, -12vh) scale(0.9);
+  }
+}
+
+@keyframes ambient-c {
+  to {
+    transform: translate(-22vw, -18vh) scale(1.25);
+  }
+}
+
+/* Paused: the light cools and holds still until the session resumes. */
+.focus-screen.is-paused .focus-ambient {
+  opacity: 0.55;
+  filter: saturate(0.35);
+}
+
+.focus-screen.is-paused .focus-ambient span {
+  animation-play-state: paused;
+}
+
+.focus-exit,
+.focus-sound {
+  z-index: 2;
+}
+
+.focus-center {
+  position: relative;
+  z-index: 1;
+  padding: 36px 28px 32px;
+  border: 1px solid color-mix(in srgb, var(--surface) 65%, transparent);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge, rgb(255 255 255 / 35%)),
+    0 24px 60px rgb(40 20 10 / 12%);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .focus-center {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+  }
+}
+
+/* Each part of the panel comes into focus as it appears. */
+.focus-center > * {
+  animation: focus-in 0.8s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes focus-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(10px);
+  }
+}
+
+@media (max-width: 720px) {
+  .focus-center {
+    padding: 28px 18px 24px;
+    border-radius: 22px;
+  }
+}
+
+/* ───────── Focus mode: the apple emblem ───────── */
+/* The apple drifts in from a blur, then floats and breathes with a slow halo (about 6 breaths a
+   minute); its leaf stirs and the spark in its core glows on each breath. */
+.focus-emblem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+}
+
+.focus-center > .focus-emblem {
+  animation:
+    emblem-in 1s cubic-bezier(0.25, 1.4, 0.45, 1) both,
+    emblem-float 6.5s ease-in-out 1s infinite;
+}
+
+.focus-halo {
+  position: absolute;
+  inset: -45%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--focus-tint) 55%, transparent) 0,
+    transparent 62%
+  );
+  filter: blur(14px);
+  opacity: 0.5;
+  animation: halo-breathe 6.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.focus-emblem::after {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  border: 1.5px solid color-mix(in srgb, var(--focus-tint) 50%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: emblem-ripple 6.5s ease-out 1s infinite;
+  pointer-events: none;
+}
+
+.focus-emblem .focus-apple {
+  position: relative;
+  filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--focus-tint) 35%, transparent));
+  animation: emblem-sway 13s ease-in-out infinite;
+}
+
+.focus-emblem .goal-apple-leaf,
+.focus-emblem .apple-leaf {
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: emblem-leaf 4.2s ease-in-out infinite;
+}
+
+.focus-emblem .apple-spark {
+  animation: emblem-spark 6.5s ease-in-out infinite;
+}
+
+.focus-emblem .apple-glint {
+  animation: twinkle 3.2s ease-in-out 0.8s infinite;
+}
+
+@keyframes emblem-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.55) rotate(-14deg);
+    filter: blur(12px);
+  }
+}
+
+@keyframes emblem-float {
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: scale(0.82);
+  }
+  45% {
+    opacity: 0.62;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes emblem-ripple {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes emblem-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg) scale(1.03, 0.99);
+  }
+  50% {
+    transform: rotate(0deg) scale(0.99, 1.02);
+  }
+  75% {
+    transform: rotate(3deg) scale(1.03, 0.99);
+  }
+}
+
+@keyframes emblem-leaf {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+}
+
+@keyframes emblem-spark {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.85;
+  }
+  45% {
+    transform: scale(1.15) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+/* Paused: the apple rests, its halo dims and the ripple stops. */
+.focus-center.is-paused > .focus-emblem,
+.focus-center.is-paused .focus-emblem .focus-apple,
+.focus-center.is-paused .focus-emblem .goal-apple-leaf,
+.focus-center.is-paused .focus-emblem .apple-leaf,
+.focus-center.is-paused .focus-emblem .apple-spark,
+.focus-center.is-paused .focus-halo {
+  animation-play-state: paused;
+}
+
+.focus-center.is-paused .focus-emblem::after {
+  animation: none;
+}
+
+.focus-center.is-paused .focus-emblem {
+  filter: saturate(0.5);
+  transition: filter 0.8s;
+}
+
+/* Done: the filled apple hops once after the panel settles, then keeps breathing. */
+.focus-emblem .focus-apple-filled {
+  position: relative;
+  filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--focus-tint) 40%, transparent));
+}
+
+/* ───────── Landing: tour and privacy (shared look with assma) ───────── */
+.tour-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 18px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) 0.35s both;
+}
+
+.tour-link .icon {
+  transition: transform 0.2s ease;
+}
+
+.tour-link:hover .icon {
+  transform: translateX(3px);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.landing-tour,
+.landing-privacy {
+  display: grid;
+  justify-items: center;
+  padding: 72px 0 24px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  scroll-margin-top: 16px;
+}
+
+.landing-tour h2,
+.landing-privacy h2 {
+  font-size: clamp(1.7rem, 3.8vw, 2.6rem);
+  letter-spacing: -0.025em;
+}
+
+.section-lead {
+  max-width: 560px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.tour-list {
+  display: grid;
+  gap: clamp(48px, 7vw, 88px);
+  width: 100%;
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.tour-item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  align-items: center;
+  gap: clamp(28px, 4.5vw, 64px);
+}
+
+.tour-item:nth-child(even) {
+  grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.72fr);
+}
+
+.tour-item:nth-child(even) .tour-text {
+  order: 2;
+}
+
+.tour-number {
+  display: block;
+  color: var(--accent);
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-style: italic;
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.tour-text h3 {
+  margin: 10px 0 10px;
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.tour-text p,
+.privacy-grid p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.tour-shot {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow:
+    0 30px 60px -30px rgb(120 20 20 / 28%),
+    var(--shadow);
+}
+
+.window-bar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.window-bar i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.window-bar i:first-child {
+  background: color-mix(in srgb, var(--apple) 55%, var(--line));
+}
+
+.tour-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.privacy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.privacy-grid li {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.privacy-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.privacy-grid h3 {
+  margin: 16px 0 6px;
+  font-size: 1.08rem;
+}
+
+.landing-privacy + .landing-closing {
+  margin-top: 64px;
+}
+
+@media (max-width: 900px) {
+  .tour-item,
+  .tour-item:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tour-item:nth-child(even) .tour-text {
+    order: 0;
+  }
+
+  .privacy-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .landing-tour,
+  .landing-privacy {
+    padding-top: 48px;
+  }
 }

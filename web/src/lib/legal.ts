@@ -24,6 +24,9 @@ export const operatorConfigured = Boolean(
 );
 
 export const YAPPAI_URL = "https://yappai.de";
+/** The sister app, linked from the full footer as assma links back to ellma. */
+export const ASSMA_URL = "https://assma.yappai.de/";
+export const REPOSITORY_URL = "https://github.com/AhmetCavus/ellma";
 
 export const LEGAL_PAGES = ["privacy", "terms", "imprint"] as const;
 export type LegalPageName = (typeof LEGAL_PAGES)[number];

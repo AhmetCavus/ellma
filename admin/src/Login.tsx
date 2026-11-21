@@ -22,7 +22,7 @@ export function Login({ session, copy }: { session: AdminSession; copy: Copy }) 
       <div className="brand">
         <img src="/icon.svg" width={34} height={34} alt="" />
         <div>
-          Ellma
+          ellma
           <small>{copy.admin.subtitle}</small>
         </div>
       </div>

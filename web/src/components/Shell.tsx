@@ -87,7 +87,7 @@ export function Shell({
       <aside className="sidebar">
         <a className="brand" href="/goals" onClick={linkHandler("/goals")}>
           <AppleMark size={30} />
-          <span>Ellma</span>
+          <span>ellma</span>
         </a>
         <nav aria-label={copy.nav.label}>
           {NAVIGATION.map((item, index) => {

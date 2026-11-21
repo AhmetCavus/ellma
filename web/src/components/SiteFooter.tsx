@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { LEGAL_PAGES, legalPath, YAPPAI_URL } from "../lib/legal";
+import { ASSMA_URL, LEGAL_PAGES, legalPath, REPOSITORY_URL, YAPPAI_URL } from "../lib/legal";
 import { usePreferences } from "../lib/preferences";
 import { linkHandler } from "../lib/router";
 import { StorageDialog } from "./StorageDialog";
 
 /**
- * Legal links, the storage ("cookie") settings and the yappai credit. Shown on every public
+ * Legal links, the storage ("cookie") settings, the sister app assma and the yappai credit. Shown on every public
  * page and, in its compact form, in the sidebar of the app.
  */
 export function SiteFooter({ compact = false }: { compact?: boolean }) {
@@ -31,6 +31,16 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
         </button>
         {link(imprint)}
       </div>
+      {!compact && (
+        <div className="site-links">
+          <a href={ASSMA_URL} target="_blank" rel="noopener" title={copy.landing.assmaHint}>
+            assma
+          </a>
+          <a href={REPOSITORY_URL} target="_blank" rel="noopener">
+            GitHub
+          </a>
+        </div>
+      )}
       <a className="powered-by" href={YAPPAI_URL} target="_blank" rel="noopener">
         {text.poweredBy} <strong>yappai</strong>
       </a>

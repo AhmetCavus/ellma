@@ -1,5 +1,5 @@
 export const en = {
-  appName: "Ellma",
+  appName: "ellma",
   tagline: "Your guide to your goals",
   languageName: "English",
 
@@ -7,13 +7,13 @@ export const en = {
     eyebrow: "A personal guide for your goals",
     titleStart: "Your goals deserve a",
     titleEmphasis: "guide.",
-    lead: "Ellma keeps your goals in view, listens when you talk, and always knows your next small step. Every hour you invest fills an apple, until it's ripe.",
-    primary: "Meet Ellma",
+    lead: "ellma keeps your goals in view, listens when you talk, and always knows your next small step. Every hour you invest fills an apple, until it's ripe.",
+    primary: "Meet ellma",
     secondary: "Log in",
     github: "GitHub",
     githubHint: "Source code on GitHub (opens in a new tab)",
     demo: {
-      caption: "This is Ellma at work. Pick a sentence to try it.",
+      caption: "This is ellma at work. Pick a sentence to try it.",
       goal: "Run a half marathon",
       nextStep: "Next step",
       you: "You",
@@ -42,7 +42,7 @@ export const en = {
     steps: [
       {
         title: "Plant a goal",
-        body: "Ellma asks five short questions: what, why, how many hours, by when, and your first step.",
+        body: "ellma asks five short questions: what, why, how many hours, by when, and your first step.",
       },
       {
         title: "Just talk",
@@ -60,16 +60,63 @@ export const en = {
       "English and German",
     ],
     closingTitle: "What do you want to achieve this year?",
-    closingBody: "Write it down. Ellma takes it from there.",
+    closingBody: "Write it down. ellma takes it from there.",
     closingPlaceholder: "e.g. Run a half marathon",
-    closingAction: "Plant it with Ellma",
-    footer: "Ellma · the red apple on the horizon is the goal you keep walking towards.",
+    closingAction: "Plant it with ellma",
+    tourLink: "See how it works",
+    tour: {
+      eyebrow: "In action",
+      title: "From a wish to a ripe apple",
+      lead: "Recorded in ellma itself, with a sample account.",
+      items: [
+        {
+          title: "Plant a goal in five questions",
+          body: "No form. ellma asks what, why, how many hours a week, by when and the very first small step. Type your answers or say them.",
+          alt: "ellma asks five short questions and the goal is planted as an apple",
+        },
+        {
+          title: "Plan your week by dragging",
+          body: "Drop a goal on a day and its next step moves there. Every drag also has a button, for keyboards and touch screens.",
+          alt: "A goal card is dragged onto tomorrow and its next step moves with it",
+        },
+        {
+          title: "One step, one timer",
+          body: "The guide leads straight into focus mode. Pause when life calls. Say or type “done” and the step is finished and the time is saved.",
+          alt: "ellma suggests the next step, focus mode starts, and “done” completes it",
+        },
+        {
+          title: "Watch it ripen",
+          body: "Every minute you invest fills the goal’s apple. Reach the week’s target and it turns ripe, and ellma celebrates with you.",
+          alt: "Logging an hour fills the apple of a goal until it turns ripe",
+        },
+      ],
+    },
+    privacy: {
+      eyebrow: "Privacy",
+      title: "Your goals stay with you",
+      items: [
+        {
+          title: "A model on this server",
+          body: "ellma’s answers come from an open-weight model running next to her. No outside AI service reads your goals or what you tell her.",
+        },
+        {
+          title: "Your own installation",
+          body: "Goals, steps and focus time live in this installation’s database. Each account sees only its own data.",
+        },
+        {
+          title: "No cookies, no tracking",
+          body: "ellma sets no cookies and has no analytics or advertising. The browser only keeps what the app needs to work.",
+        },
+      ],
+    },
+    assmaHint: "assma, the sister app for freelance project acquisition",
+    footer: "ellma · the red apple on the horizon is the goal you keep walking towards.",
   },
 
   auth: {
     loginTitle: "Welcome back",
-    signupTitle: "Meet Ellma",
-    signupLead: "Create your account. Ellma will help you set your first goal.",
+    signupTitle: "Meet ellma",
+    signupLead: "Create your account. ellma will help you set your first goal.",
     username: "Your first name",
     email: "Email",
     password: "Password",
@@ -94,7 +141,7 @@ export const en = {
     tooMany: "Too many attempts. Please wait a few minutes and try again.",
     forgotTitle: "Reset your password",
     forgotLead:
-      "Enter your email. If an account exists for it, Ellma sends you a link to choose a new password.",
+      "Enter your email. If an account exists for it, ellma sends you a link to choose a new password.",
     forgotSend: "Send reset link",
     forgotSent:
       "If an account exists for this address, a link is on its way. It works once and for 30 minutes.",
@@ -142,11 +189,11 @@ export const en = {
   },
 
   dock: {
-    label: "Ellma, your guide",
-    talk: "Talk to Ellma",
+    label: "ellma, your guide",
+    talk: "Talk to ellma",
     stopListening: "Stop listening",
-    write: "Write to Ellma",
-    writePlaceholder: "Tell Ellma what you did or what you need…",
+    write: "Write to ellma",
+    writePlaceholder: "Tell ellma what you did or what you need…",
     send: "Send",
     stop: "Stop",
     listening: "I'm listening…",
@@ -165,8 +212,8 @@ export const en = {
     hintWrite: "write",
     hintShortcuts: "all shortcuts",
     spaceKey: "Space",
-    minimize: "Tuck Ellma away",
-    expand: "Show Ellma's guidance",
+    minimize: "Tuck ellma away",
+    expand: "Show ellma's guidance",
     dismiss: "Close answer",
     yes: "Yes",
     no: "No",
@@ -177,7 +224,7 @@ export const en = {
     micDenied: "Microphone access was blocked. Allow it in your browser settings to talk to me.",
     busy: "I'm still answering in another window.",
     unavailable: "My model is not reachable right now. Please try again in a moment.",
-    modelNote: "Ellma runs on an open-weight model on its own server and can make mistakes.",
+    modelNote: "ellma runs on an open-weight model on its own server and can make mistakes.",
     stepPlaceholder: (goal: string) => `Smallest next step for “${goal}”…`,
     stepAdd: "Add for today",
     brief: "Brief me",
@@ -223,7 +270,7 @@ export const en = {
   intro: {
     steps: [
       {
-        title: "Hi, I'm Ellma.",
+        title: "Hi, I'm ellma.",
         text: "I'm your guide to your goals. I live down here on every page and always show you the next best step.",
       },
       {
@@ -258,7 +305,7 @@ export const en = {
           ? "One step is left over from an earlier day. Shall I move it to today?"
           : `${count} steps are left over from earlier days. Shall I move them to today?`,
       action: "Move to today",
-      alt: "Plan with Ellma",
+      alt: "Plan with ellma",
     },
     start_task: {
       text: (task: string, goal: string) =>
@@ -280,7 +327,7 @@ export const en = {
           ? `Nothing is planned for today. How about “${task}” for “${goal}”?`
           : `Nothing is planned for today. How about “${task}”?`,
       action: "Do it today",
-      alt: "Plan with Ellma",
+      alt: "Plan with ellma",
     },
     weekly_gap: {
       text: (goal: string, left: string) =>
@@ -303,7 +350,7 @@ export const en = {
   },
 
   wizard: {
-    title: "New goal with Ellma",
+    title: "New goal with ellma",
     progress: (step: number, total: number) => `Question ${step} of ${total}`,
     what: {
       ask: "What do you want to achieve?",
@@ -370,7 +417,7 @@ export const en = {
     moveAllToToday: "Move all to today",
     done: "Done today",
     goalsTitle: "Your goals",
-    goalsEmpty: "No active goals yet. Tell Ellma about one, or create it yourself.",
+    goalsEmpty: "No active goals yet. Tell ellma about one, or create it yourself.",
     hoursThisWeek: "this week",
     focusedToday: "Focused today",
     tasksDone: "Tasks done",
@@ -397,6 +444,9 @@ export const en = {
     moveLater: "Later",
     deleteConfirm: "Delete this task? Logged focus time is kept.",
     more: "More actions",
+    created: "Task created",
+    createdDetail: (title: string) => `“${title}” is on your list.`,
+    ok: "OK",
   },
 
   goals: {
@@ -437,7 +487,7 @@ export const en = {
     milestonePlaceholder: "e.g. First 10 km without a break",
     milestonesEmpty: "Milestones mark the moments worth celebrating.",
     openTasks: "Next steps",
-    noTasks: "No open steps. Ask Ellma what could come next.",
+    noTasks: "No open steps. Ask ellma what could come next.",
     totalHours: "Hours invested",
     thisWeek: "This week",
     target: "Target",
@@ -595,7 +645,7 @@ export const en = {
     bestDay: "Best day",
     ofTarget: (percent: number) => `${percent}% of target`,
     noTarget: "No weekly target",
-    empty: "No focus time this week yet. Start a focus session or tell Ellma what you worked on.",
+    empty: "No focus time this week yet. Start a focus session or tell ellma what you worked on.",
     sessions: "Sessions",
     deleteSession: "Delete session",
     deleteSessionConfirm: "Delete this focus session?",
@@ -603,13 +653,13 @@ export const en = {
     next: "Next week",
     thisWeek: "This week",
     weekNumber: (week: number) => `Week ${week}`,
-    reflect: "Reflect with Ellma",
+    reflect: "Reflect with ellma",
     reflectPrompt: "Let's look back at my week. What went well and what should I change?",
   },
 
   reminder: {
     tabTitle: (task: string) =>
-      task ? `🍎 Ellma: “${task}” is waiting` : "🍎 Ellma: your next step is waiting",
+      task ? `🍎 ellma: “${task}” is waiting` : "🍎 ellma: your next step is waiting",
   },
 
   account: {
@@ -617,7 +667,7 @@ export const en = {
     lead: "Keep your sign-in safe. Your goals depend on it.",
     behaviour: {
       title: "Sounds and reminders",
-      lead: "How Ellma behaves on this device. Everything here can be switched off.",
+      lead: "How ellma behaves on this device. Everything here can be switched off.",
       sounds: {
         title: "Sounds",
         text: "Short, quiet sounds when you start or stop focus, finish a step or reach a milestone.",
@@ -628,11 +678,11 @@ export const en = {
       },
       notificationSounds: {
         title: "Notification sounds",
-        text: "One soft sound when Ellma has done something for you or has news, and the reminder sound. Your focus sound is not affected.",
+        text: "One soft sound when ellma has done something for you or has news, and the reminder sound. Your focus sound is not affected.",
       },
       reminders: {
         title: "Reminders",
-        text: "When a step is waiting and you have been away from this tab for 20 minutes, Ellma plays a soft sound and shows the step in the tab title. At most three times, with an hour in between.",
+        text: "When a step is waiting and you have been away from this tab for 20 minutes, ellma plays a soft sound and shows the step in the tab title. At most three times, with an hour in between.",
       },
     },
     profileTitle: "Profile",
@@ -675,10 +725,10 @@ export const en = {
   },
   mail: {
     recovery: {
-      subject: "Reset your Ellma password",
+      subject: "Reset your ellma password",
       body: (name: string, link: string, minutes: number) => [
         `Hi ${name},`,
-        "you asked to reset your Ellma password. Open this link to choose a new one:",
+        "you asked to reset your ellma password. Open this link to choose a new one:",
         link,
         `The link works once and for ${minutes} minutes. If you use two-factor sign-in, it stays on.`,
         "If this wasn't you, ignore this email. Your password stays as it is.",
@@ -686,7 +736,7 @@ export const en = {
     },
   },
   admin: {
-    title: "Ellma Admin",
+    title: "ellma Admin",
     subtitle: "Administration",
     loginTitle: "Admin sign-in",
     noPermission: "This account has no admin rights.",
@@ -705,7 +755,7 @@ export const en = {
       tasksDone: "Steps done",
       focusHours: "Hours invested",
       focusHoursThisWeek: "Hours this week",
-      assistantMessages: "Messages to Ellma",
+      assistantMessages: "Messages to ellma",
       peopleTitle: "People",
       usageTitle: "Usage",
     },
@@ -771,11 +821,11 @@ export const en = {
       imprint: "Imprint",
       poweredBy: "Powered by",
     },
-    back: "Back to Ellma",
+    back: "Back to ellma",
     updated: "Last updated: 18 November 2026",
     imprint: {
       title: "Imprint",
-      lead: "Who runs Ellma and how to reach us.",
+      lead: "Who runs ellma and how to reach us.",
       operator: "Operator",
       representative: "Represented by",
       contact: "Contact",
@@ -784,14 +834,14 @@ export const en = {
       register: "Register entry",
       vat: "VAT ID",
       missing:
-        "The operator details for this installation have not been entered yet. Ellma is in a closed alpha test and is not offered to the public.",
+        "The operator details for this installation have not been entered yet. ellma is in a closed alpha test and is not offered to the public.",
       aboutTitle: "About this service",
       about:
-        "Ellma is a personal guide for your goals and a test project of yappai. It is in alpha: free of charge, without guaranteed availability.",
+        "ellma is a personal guide for your goals and a test project of yappai. It is in alpha: free of charge, without guaranteed availability.",
     },
     privacy: {
       title: "Data privacy",
-      lead: "Ellma is built to keep your goals with you. This page says plainly what is stored, where, and why.",
+      lead: "ellma is built to keep your goals with you. This page says plainly what is stored, where, and why.",
       sections: [
         {
           title: "Who is responsible",
@@ -800,12 +850,12 @@ export const en = {
           ],
         },
         {
-          title: "What Ellma stores",
+          title: "What ellma stores",
           body: [
             "Your account: first name, email address and a hashed password.",
             "If you switch on two-factor sign-in: the key of your authenticator app in encrypted form, and your backup codes as fingerprints only. If you ask for a password reset: a fingerprint of the reset link until it is used or expires after 30 minutes.",
-            "Your content: goals with their reasons, milestones, weekly targets and your own tags, steps, focus sessions and logged time, daily notes, and the conversation with Ellma.",
-            "We use this data only to provide Ellma to you (Art. 6(1)(b) GDPR). There is no advertising, no analytics and no profiling.",
+            "Your content: goals with their reasons, milestones, weekly targets and your own tags, steps, focus sessions and logged time, daily notes, and the conversation with ellma.",
+            "We use this data only to provide ellma to you (Art. 6(1)(b) GDPR). There is no advertising, no analytics and no profiling.",
           ],
         },
         {
@@ -818,34 +868,34 @@ export const en = {
         {
           title: "The AI model",
           body: [
-            "Ellma's answers come from an open-weight language model that runs on the same server. What you say or write to Ellma, and the goals she needs to answer, are not sent to an external AI provider and are not used to train models.",
+            "ellma's answers come from an open-weight language model that runs on the same server. What you say or write to ellma, and the goals she needs to answer, are not sent to an external AI provider and are not used to train models.",
           ],
         },
         {
           title: "Voice",
           body: [
-            "Listening uses your browser's speech recognition. Depending on the browser, the audio is converted to text by the browser maker's servers (in Chrome, for example, by Google). Ellma itself only receives the text and stores no audio.",
-            "The microphone is only active while you hold the talk key or have switched listening on. If you prefer, write to Ellma instead.",
+            "Listening uses your browser's speech recognition. Depending on the browser, the audio is converted to text by the browser maker's servers (in Chrome, for example, by Google). ellma itself only receives the text and stores no audio.",
+            "The microphone is only active while you hold the talk key or have switched listening on. If you prefer, write to ellma instead.",
           ],
         },
         {
           title: "Cookies and storage in your browser",
           body: [
-            "Ellma sets no cookies and uses no tracking. It uses your browser's local storage: your sign-in, language, theme, your sound and reminder settings and a few settings of the guide bar are necessary for the app to work.",
-            "For an instant start, Ellma can also keep a copy of your goals and a paused focus on this device and remember your filters on Goals and Today and the card or list view and merged cards on Today. You can switch that off at any time under “Cookie settings”.",
+            "ellma sets no cookies and uses no tracking. It uses your browser's local storage: your sign-in, language, theme, your sound and reminder settings and a few settings of the guide bar are necessary for the app to work.",
+            "For an instant start, ellma can also keep a copy of your goals and a paused focus on this device and remember your filters on Goals and Today and the card or list view and merged cards on Today. You can switch that off at any time under “Cookie settings”.",
           ],
         },
         {
           title: "How long data is kept",
           body: [
             "Your data is kept as long as your account exists. You can delete goals, steps, sessions and the conversation yourself in the app. To delete your account with all data, write to the contact in the imprint.",
-            "Ellma is in alpha. Data can be lost or reset when the data model changes; please do not keep the only copy of something important here.",
+            "ellma is in alpha. Data can be lost or reset when the data model changes; please do not keep the only copy of something important here.",
           ],
         },
         {
           title: "Email",
           body: [
-            "Ellma emails you only when a password reset is requested for your address. The message is sent through the mail server the operator uses and contains nothing but the reset link.",
+            "ellma emails you only when a password reset is requested for your address. The message is sent through the mail server the operator uses and contains nothing but the reset link.",
           ],
         },
         {
@@ -865,18 +915,18 @@ export const en = {
     },
     terms: {
       title: "Terms and conditions",
-      lead: "The short version: Ellma is a free alpha. Use it kindly, and don't rely on it for anything critical.",
+      lead: "The short version: ellma is a free alpha. Use it kindly, and don't rely on it for anything critical.",
       sections: [
         {
           title: "The service",
           body: [
-            "Ellma helps you keep goals, plan small steps, track the time you invest and talk about them with an AI guide. It is provided free of charge by the operator named in the imprint.",
+            "ellma helps you keep goals, plan small steps, track the time you invest and talk about them with an AI guide. It is provided free of charge by the operator named in the imprint.",
           ],
         },
         {
           title: "Alpha status",
           body: [
-            "Ellma is an early test version. Features can change or disappear, the service can be unavailable, and stored data can be reset without migration. There is no claim to availability or to a particular feature.",
+            "ellma is an early test version. Features can change or disappear, the service can be unavailable, and stored data can be reset without migration. There is no claim to availability or to a particular feature.",
           ],
         },
         {
@@ -888,19 +938,19 @@ export const en = {
         {
           title: "Fair use",
           body: [
-            "Use Ellma for your own goals. Do not try to access other people's data, overload or attack the service, or use the AI guide to produce unlawful content. We may block accounts that do.",
+            "Use ellma for your own goals. Do not try to access other people's data, overload or attack the service, or use the AI guide to produce unlawful content. We may block accounts that do.",
           ],
         },
         {
-          title: "What Ellma says",
+          title: "What ellma says",
           body: [
-            "Ellma's answers are generated by an AI model and can be wrong or incomplete. They are encouragement and suggestions, not medical, psychological, legal or financial advice. Decisions remain yours.",
+            "ellma's answers are generated by an AI model and can be wrong or incomplete. They are encouragement and suggestions, not medical, psychological, legal or financial advice. Decisions remain yours.",
           ],
         },
         {
           title: "Your content",
           body: [
-            "Your goals and notes remain yours. We only process them to run Ellma for you, as described under “Data privacy”.",
+            "Your goals and notes remain yours. We only process them to run ellma for you, as described under “Data privacy”.",
           ],
         },
         {
@@ -912,21 +962,21 @@ export const en = {
         {
           title: "Ending and changes",
           body: [
-            "You can stop using Ellma at any time and ask for your account to be deleted. We can end the test or change these terms; the current version is always on this page.",
+            "You can stop using ellma at any time and ask for your account to be deleted. We can end the test or change these terms; the current version is always on this page.",
           ],
         },
       ],
     },
     storage: {
       title: "Cookie settings",
-      lead: "Ellma sets no cookies and uses no tracking. It only uses storage in your browser, and you decide how much.",
+      lead: "ellma sets no cookies and uses no tracking. It only uses storage in your browser, and you decide how much.",
       necessaryTitle: "Necessary",
       necessaryText:
-        "Your sign-in, language, theme, your sound and reminder settings and the settings of Ellma's guide bar. Without these the app does not work.",
+        "Your sign-in, language, theme, your sound and reminder settings and the settings of ellma's guide bar. Without these the app does not work.",
       alwaysOn: "Always on",
       comfortTitle: "Instant start",
       comfortText:
-        "Keeps a copy of your goals and steps on this device so Ellma opens without waiting (a paused focus included), and remembers your filters on Goals and Today and the card or list view and merged cards on Today. Switch it off on shared devices.",
+        "Keeps a copy of your goals and steps on this device so ellma opens without waiting (a paused focus included), and remembers your filters on Goals and Today and the card or list view and merged cards on Today. Switch it off on shared devices.",
       trackingTitle: "Statistics and marketing",
       trackingText: "None. There is nothing to switch off.",
       never: "Not used",
@@ -942,11 +992,11 @@ export const en = {
     hint: "Press ? anytime to see this list.",
     groups: [
       {
-        title: "Ellma",
+        title: "ellma",
         list: [
-          { combo: "Space", label: "Hold to talk to Ellma (anywhere)" },
+          { combo: "Space", label: "Hold to talk to ellma (anywhere)" },
           { combo: "⌘/Ctrl J", label: "Start / stop listening" },
-          { combo: "/", label: "Write to Ellma" },
+          { combo: "/", label: "Write to ellma" },
           { combo: "V", label: "Read answers aloud on / off" },
           { combo: "Esc", label: "Stop the answer and speech" },
         ],
@@ -963,7 +1013,7 @@ export const en = {
         title: "Create",
         list: [
           { combo: "N", label: "New task" },
-          { combo: "G", label: "New goal, guided by Ellma" },
+          { combo: "G", label: "New goal, guided by ellma" },
           { combo: "L", label: "Log time" },
         ],
       },

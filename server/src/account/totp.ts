@@ -87,7 +87,7 @@ export function matchCode(
 }
 
 /** The address authenticator apps read from the QR code. */
-export function otpauthUrl(secret: string, account: string, issuer = "Ellma"): string {
+export function otpauthUrl(secret: string, account: string, issuer = "ellma"): string {
   const label = encodeURIComponent(`${issuer}:${account}`);
   const query = new URLSearchParams({
     secret,

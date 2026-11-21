@@ -30,7 +30,7 @@ const app = new Yappio({
   platform: {
     enabled: true,
     appId: "ellma",
-    appName: "Ellma",
+    appName: "ellma",
     version: "1.0.0",
     environment: process.env.NODE_ENV ?? "development",
     authAdmin: {

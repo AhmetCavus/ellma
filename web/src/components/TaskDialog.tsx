@@ -25,7 +25,16 @@ export function TaskDialog({
     task?.estimateMinutes ? String(task.estimateMinutes) : "",
   );
   const [busy, setBusy] = useState(false);
+  const [created, setCreated] = useState<Task | null>(null);
   const goals = store.goals.filter((goal) => goal.status === "active" || goal.id === goalId);
+
+  if (created) {
+    return (
+      <Dialog title={copy.tasks.newTask} onClose={onClose}>
+        <TaskCreated task={created} onOk={onClose} />
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog title={task ? copy.tasks.editTask : copy.tasks.newTask} onClose={onClose}>
@@ -41,8 +50,17 @@ export function TaskDialog({
             plannedOn: plannedOn || null,
             estimateMinutes: estimate ? Math.max(1, Math.min(1440, Number(estimate))) : null,
           };
-          const request = task ? store.patchTask(task.id, values) : store.createTask(values);
-          void request.then((saved) => saved && onClose()).finally(() => setBusy(false));
+          if (task) {
+            void store
+              .patchTask(task.id, values)
+              .then((saved) => saved && onClose())
+              .finally(() => setBusy(false));
+          } else {
+            void store
+              .createTask(values)
+              .then((saved) => saved && setCreated(saved))
+              .finally(() => setBusy(false));
+          }
         }}
       >
         <label>
@@ -109,5 +127,24 @@ export function TaskDialog({
         </footer>
       </form>
     </Dialog>
+  );
+}
+
+/** Confirms a newly created task; OK returns to the screen the dialog was opened from. */
+export function TaskCreated({ task, onOk }: { task: Task; onOk: () => void }) {
+  const { copy } = usePreferences();
+  return (
+    <div className="form task-created" role="status">
+      <p>
+        <strong>{copy.tasks.created}</strong>
+        <br />
+        {copy.tasks.createdDetail(task.title)}
+      </p>
+      <footer className="form-actions">
+        <button type="button" className="button" onClick={onOk} autoFocus>
+          {copy.tasks.ok}
+        </button>
+      </footer>
+    </div>
   );
 }

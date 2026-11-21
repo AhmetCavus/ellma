@@ -75,7 +75,7 @@ function Dashboard({
         <div className="brand">
           <img src="/icon.svg" width={30} height={30} alt="" />
           <div>
-            Ellma
+            ellma
             <small>{copy.admin.subtitle}</small>
           </div>
         </div>

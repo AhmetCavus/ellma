@@ -71,7 +71,7 @@ export function LegalPage({ page }: { page: LegalPageName }) {
       <header className="legal-top">
         <a className="brand" href="/" onClick={linkHandler("/")}>
           <AppleMark size={32} />
-          <span>Ellma</span>
+          <span>ellma</span>
         </a>
         <a className="link-button" href="/" onClick={linkHandler("/")}>
           <Icon name="chevronLeft" size={16} /> {copy.legal.back}

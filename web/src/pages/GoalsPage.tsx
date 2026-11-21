@@ -14,8 +14,10 @@ import {
   type Goal,
   type GoalPulse,
   type PlanTarget,
+  type Task,
 } from "@ellma/shared";
 import { Dialog } from "../components/Dialog";
+import { TaskCreated } from "../components/TaskDialog";
 import { CountedHours } from "../components/Counted";
 import { GoalApple } from "../components/GoalApple";
 import { Icon } from "../components/Icon";
@@ -227,6 +229,7 @@ function FirstStepDialog({
   const store = useStore();
   const [title, setTitle] = useState("");
   const [busy, setBusy] = useState(false);
+  const [created, setCreated] = useState<Task | null>(null);
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (!title.trim() || busy) {
@@ -238,11 +241,18 @@ function FirstStepDialog({
       .then((task) => {
         if (task) {
           onAdded();
-          onClose();
+          setCreated(task);
         }
       })
       .finally(() => setBusy(false));
   };
+  if (created) {
+    return (
+      <Dialog title={copy.views.firstStepTitle(goal.title)} onClose={onClose}>
+        <TaskCreated task={created} onOk={onClose} />
+      </Dialog>
+    );
+  }
   return (
     <Dialog title={copy.views.firstStepTitle(goal.title)} onClose={onClose}>
       <form className="form" onSubmit={submit}>

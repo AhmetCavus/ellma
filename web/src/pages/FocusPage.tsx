@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import {
   formatClock,
   reviewWeek,
@@ -24,6 +24,16 @@ type Outcome = FocusResult & { color: GoalColor | null };
 function hoursAndMinutes(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}`;
+}
+
+/** The apple at the top of focus mode, with a soft halo that breathes with the session. */
+function FocusEmblem({ children }: { children: ReactNode }) {
+  return (
+    <div className="focus-emblem">
+      <span className="focus-halo" aria-hidden="true" />
+      {children}
+    </div>
+  );
 }
 
 /**
@@ -68,11 +78,13 @@ function FocusDone({ outcome, onAgain }: { outcome: Outcome; onAgain: () => void
 
   return (
     <div className="focus-center focus-done">
-      {outcome.color ? (
-        <GoalApple color={outcome.color} ratio={fill} size={96} className="focus-apple-filled" />
-      ) : (
-        <AppleMark size={64} className="focus-apple-filled" />
-      )}
+      <FocusEmblem>
+        {outcome.color ? (
+          <GoalApple color={outcome.color} ratio={fill} size={96} className="focus-apple-filled" />
+        ) : (
+          <AppleMark size={64} className="focus-apple-filled" />
+        )}
+      </FocusEmblem>
       <p className="focus-done-text" role="status">
         {sentence}
       </p>
@@ -204,8 +216,17 @@ export function FocusPage() {
     };
   }, [active, copy, elapsed, heading, run]);
 
+  const tint = run ? goal?.color : outcome?.color;
   return (
-    <div className="focus-screen">
+    <div
+      className={`focus-screen ${paused ? "is-paused" : ""}`}
+      style={{ ["--focus-tint" as string]: tint ? `var(--goal-${tint})` : "var(--apple)" }}
+    >
+      <div className="focus-ambient" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <button
         type="button"
         className="icon-button focus-exit"
@@ -237,26 +258,28 @@ export function FocusPage() {
         />
       ) : run ? (
         <div className={`focus-center ${paused ? "is-paused" : ""}`}>
-          {goal ? (
-            <GoalApple
-              color={goal.color}
-              ratio={goalTarget > 0 ? goalWeek / goalTarget : 0}
-              size={72}
-              className="focus-apple"
-              label={
-                goalTarget > 0
-                  ? copy.goals.weekOf(
-                      hoursAndMinutes(goalWeek),
-                      (goalTarget / 3600).toLocaleString(copy.dateLocale, {
-                        maximumFractionDigits: 1,
-                      }),
-                    )
-                  : undefined
-              }
-            />
-          ) : (
-            <AppleMark size={56} className="focus-apple" />
-          )}
+          <FocusEmblem>
+            {goal ? (
+              <GoalApple
+                color={goal.color}
+                ratio={goalTarget > 0 ? goalWeek / goalTarget : 0}
+                size={72}
+                className="focus-apple"
+                label={
+                  goalTarget > 0
+                    ? copy.goals.weekOf(
+                        hoursAndMinutes(goalWeek),
+                        (goalTarget / 3600).toLocaleString(copy.dateLocale, {
+                          maximumFractionDigits: 1,
+                        }),
+                      )
+                    : undefined
+                }
+              />
+            ) : (
+              <AppleMark size={56} className="focus-apple" />
+            )}
+          </FocusEmblem>
           <p className="eyebrow" role="status">
             {paused ? copy.focus.paused : multi ? copy.focus.multi : copy.focus.running}
           </p>
@@ -362,7 +385,9 @@ export function FocusPage() {
             void store.startFocus(choice || null);
           }}
         >
-          <AppleMark size={56} />
+          <FocusEmblem>
+            <AppleMark size={56} className="focus-apple" />
+          </FocusEmblem>
           <h1>{copy.focus.pickTask}</h1>
           <select
             value={choice}
